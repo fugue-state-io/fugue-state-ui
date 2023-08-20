@@ -41,7 +41,7 @@ function Raison() {
   return (
     <div id='raison' className='text-center py-24 relative mx-auto px-4 sm:px-6 bg-gray-900'>
       <h1 className='text-lg font-semibold tracking-wider text-pink-400'>
-        <span className='block'>Raison D'etre</span>
+        <span className='block'>Raison D&apos;etre</span>
       </h1>
       <p className='text-gray-400 tracking-tight'>Make learning music intuitive</p>
     </div>
@@ -55,7 +55,7 @@ export default function Hero() {
         <div className='text-center'>
           <h1 className='text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl'>
             <span className='block'>fugue-state.io</span>
-            <span className='block text-green-600'>A work in progress</span>
+            <span className='block text-green-600'>A Music Learning Engine</span>
           </h1>
           <div className='mt-3 mx-auto grid text-gray-800 text-xl max-w-xs grid-cols-3'>
             <p className='grid-cols-1'>Modular</p>
@@ -66,9 +66,9 @@ export default function Hero() {
       </div>
       <Raison />
       <Features>
-        <Feature svg='' title='feature' description='it is a thing'/>
-        <Feature svg='' title='feature' description='it is a thing'/>
-        <Feature svg='' title='feature' description='it is a thing'/>
+        <Feature svg='' title='Metronome' description='Simple Meters, Compound Meters, Complex Meters and Swing Ratios. All made easy.'/>
+        <Feature svg='' title='Playback Engine' description='Pitch Transposition, Metric Modulation, Karaoke Mode, and Equalization for audio files.'/>
+        <Feature svg='' title='Data Driven Practice' description="Stop spinning your wheels. Practice how proven to work. Compare with others."/>
       </Features>
       <Modus />
     </>
