@@ -10,7 +10,7 @@ export default function PlaybackEngine() {
     console.log(file)
   };
   return (
-    <div className='bg-gray-900 text-center'>
+    <div className='bg-gray-900 text-center py-4'>
       <h3 className='text-lg font-semibold tracking-wider text-green-400'>Playback Engine</h3>
       <div className='mx-auto max-w-md'><FileUploader handleChange={handleChange} name="file" types={fileTypes} /></div>
     </div>

@@ -44,7 +44,7 @@ export default function Metronome() {
   }, [playing]);
   return (
     <>
-      <div className='bg-gray-900 text-center'>
+      <div className='bg-gray-900 text-center py-4'>
         <h3 className='text-lg font-semibold tracking-wider text-pink-400'>Metronome</h3>
         <div className='items-center rounded-md py-12'>
           <span id="0" className={'relative px-2 mx-1 rounded-md shadow-lg shadow-lg ' + (step % 8 == 0 ? "bg-pink-400" : "bg-pink-700")}></span>
