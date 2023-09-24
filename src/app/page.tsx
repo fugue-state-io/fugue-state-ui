@@ -2,6 +2,7 @@
 import Navigation from "../components/navigation"
 import Hero from "../components/hero"
 import Metronome from "../components/metronome"
+import PlaybackEngine from "../components/playback_engine"
 
 export default function Home() {
   return (
@@ -9,6 +10,7 @@ export default function Home() {
       <Navigation />
       <Hero />
       <Metronome />
+      <PlaybackEngine />
     </main>
   )
 }
