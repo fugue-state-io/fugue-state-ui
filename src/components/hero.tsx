@@ -12,12 +12,14 @@ function Modus() {
 function Feature(props: {
   title: React.ReactNode
   description: React.ReactNode
-  svg: React.ReactNode 
+  svg: React.ReactNode
+  textColorClass: string
+  svgColorClass: string
 }) {
   return (
     <div className='flow-root grid-cols-1 mx-auto'>
-      <span className='inline-flex items-center justify-center p-3 rounded-md shadow-lg bg-pink-400'>{props.svg}</span>
-      <h3 className='mt-8 text-lg font-medium tracking-tight text-pink-400'>{props.title}</h3>
+      <span className={`inline-flex items-center justify-center p-3 rounded-md shadow-lg ${props.svgColorClass}`}>{props.svg}</span>
+      <h3 className={`mt-8 text-lg font-medium tracking-tight ${props.textColorClass}`}>{props.title}</h3>
       <p className='mt-5 text-base text-gray-400'>{props.description}</p>
     </div>
   )
@@ -30,6 +32,11 @@ function Features({
 }) {
   return (
     <div id='features' className='bg-gray-900'>
+      <div id='modus' className='text-center py-24 relative mx-auto px-4 sm:px-6 bg-gray-900'>
+        <h1 className='text-lg font-semibold tracking-wider text-green-400'>
+          <span className='block'>Features</span>
+        </h1>
+      </div>
       <div className='max-w-3xl grid grid-cols-3 text-center mx-auto relative '>
         {children}
       </div>
@@ -57,18 +64,16 @@ export default function Hero() {
             <span className='block'>fugue-state.io</span>
             <span className='block text-green-600'>A Music Learning Engine</span>
           </h1>
-          <div className='mt-3 mx-auto grid text-gray-800 text-xl max-w-xs grid-cols-3'>
-            <p className='grid-cols-1'>Modular</p>
-            <p className='grid-cols-1'>Free</p>
-            <p className='grid-cols-1'>Extensible</p>
+          <div className='mt-3 mx-auto grid text-gray-800 text-xl'>
+            a work in progress
           </div>
         </div>
       </div>
       <Raison />
       <Features>
-        <Feature svg='' title='Metronome' description='Simple Meters, Compound Meters, Complex Meters and Swing Ratios. All made easy.'/>
-        <Feature svg='' title='Playback Engine' description='Pitch Transposition, Metric Modulation, Karaoke Mode, and Equalization for audio files.'/>
-        <Feature svg='' title='Data Driven Practice' description="Stop spinning your wheels. Practice how proven to work. Compare with others."/>
+        <Feature svg='' textColorClass="text-pink-400" svgColorClass="bg-pink-400" title='Metronome' description='Simple Meters, Compound Meters, Complex Meters and Swing Ratios. All made easy.'/>
+        <Feature svg='' textColorClass="text-green-400" svgColorClass="bg-green-400" title='Playback Engine' description='Pitch Transposition, Metric Modulation, Karaoke Mode, and Equalization for audio files.'/>
+        <Feature svg='' textColorClass="text-pink-400" svgColorClass="bg-pink-400" title='Data Driven Practice' description="Stop spinning your wheels. Practice how proven to work. Compare with others."/>
       </Features>
       <Modus />
     </>
