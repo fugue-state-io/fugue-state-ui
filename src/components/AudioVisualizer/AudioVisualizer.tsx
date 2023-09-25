@@ -110,6 +110,7 @@ const AudioVisualizer: ForwardRefExoticComponent<
 
         const audioBuffer = await blob.arrayBuffer();
         const audioContext = new AudioContext();
+        
         await audioContext.decodeAudioData(audioBuffer, (buffer) => {
           if (!canvasRef.current) return;
           setDuration(buffer.duration);
@@ -130,28 +131,26 @@ const AudioVisualizer: ForwardRefExoticComponent<
             barColor,
             barPlayedColor
           );
+          const observer = new ResizeObserver((entries) => {
+            draw(
+              barsData,
+              canvasRef.current,
+              barWidth,
+              gap,
+              backgroundColor,
+              barColor,
+              barPlayedColor
+            );
+          });
+          observer.observe(document.documentElement);
+          return () => {
+            observer.unobserve(document.documentElement);
+          };
         });
       };
 
       processBlob();
     }, [blob, canvasRef.current]);
-    useEffect(() => {
-      const observer = new ResizeObserver((entries) => {
-        draw(
-          data,
-          canvasRef.current,
-          barWidth,
-          gap,
-          backgroundColor,
-          barColor,
-          barPlayedColor
-        );
-      });
-      observer.observe(document.documentElement);
-      return () => {
-        observer.unobserve(document.documentElement);
-      };
-    }, []);
 
     useEffect(() => {
       if (!canvasRef.current) return;
