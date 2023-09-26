@@ -12,6 +12,7 @@ export default function PlaybackEngine() {
   const [playing, setPlaying] = useState(false);
   const [height, setHeight] = useState(0);
   const debouncedWidth = useDebounce(width, 50);
+  const player: Tone.Player = useState(null);
 
   useEffect(() => {
     const observer = new ResizeObserver((entries) => {
@@ -33,6 +34,7 @@ export default function PlaybackEngine() {
 
   const handleChange = (file: React.SetStateAction<null>) => {
     setFile(file);
+    setPlaying(new Tone.Player(file));
     console.log(file)
   };
   return (
@@ -46,8 +48,8 @@ export default function PlaybackEngine() {
           blob={file}
           width={debouncedWidth}
           height={300}
-          barWidth={1}
-          gap={0}
+          barWidth={3}
+          gap={1}
           barColor={'#16A34A'}/>
       <div className='items-center px-4 py-2 rounded-md'>
         <span onClick={() => setPlaying(!playing)} className='relative mx-auto inline-flex items-center px-4 py-2 mx-2 rounded-md shadow-lg bg-pink-400 hover:bg-pink-700 shadow-lg'>
