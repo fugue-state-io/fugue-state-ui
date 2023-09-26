@@ -1,0 +1,11 @@
+make metronome programmable
+- bpm
+- time signature
+- no upbeat
+drone generator
+- select a drone C1-C8
+complete playback engine
+- play
+- pause
+- seek
+- repeat segment
