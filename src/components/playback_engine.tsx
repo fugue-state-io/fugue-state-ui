@@ -1,13 +1,15 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { FileUploader } from "react-drag-drop-files";
-import { AudioVisualizer } from './AudioVisualizer';
+import { AudioVisualizer } from './AudioVisualizer'
+import { useDebounce } from "@uidotdev/usehooks";
 const fileTypes = ["MP3", "WAV", "FLAC"];
 
 export default function PlaybackEngine() {
   const [file, setFile] = useState(null);
   const [width, setWidth] = useState(1280);
   const [height, setHeight] = useState(0);
+  const debouncedWidth = useDebounce(width, 50);
 
   useEffect(() => {
     const observer = new ResizeObserver((entries) => {
@@ -32,7 +34,7 @@ export default function PlaybackEngine() {
       <AudioVisualizer
           id="canvas"
           blob={file}
-          width={width}
+          width={debouncedWidth}
           height={300}
           barWidth={1}
           gap={0}

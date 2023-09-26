@@ -131,26 +131,11 @@ const AudioVisualizer: ForwardRefExoticComponent<
             barColor,
             barPlayedColor
           );
-          const observer = new ResizeObserver((entries) => {
-            draw(
-              barsData,
-              canvasRef.current,
-              barWidth,
-              gap,
-              backgroundColor,
-              barColor,
-              barPlayedColor
-            );
-          });
-          observer.observe(document.documentElement);
-          return () => {
-            observer.unobserve(document.documentElement);
-          };
         });
       };
 
       processBlob();
-    }, [blob, canvasRef.current]);
+    }, [blob, canvasRef.current, width]);
 
     useEffect(() => {
       if (!canvasRef.current) return;
