@@ -31,6 +31,7 @@ export default function PlaybackEngine() {
     <div className='bg-gray-900 text-center py-4'>
       <h3 className='text-lg font-semibold tracking-wider text-green-400'>Playback Engine</h3>
       <div className='mx-auto max-w-md'><FileUploader handleChange={handleChange} name="file" types={fileTypes} /></div>
+      <div></div>
       <AudioVisualizer
           id="canvas"
           blob={file}
@@ -38,8 +39,7 @@ export default function PlaybackEngine() {
           height={300}
           barWidth={1}
           gap={0}
-          barColor={'#16A34A'}
-        />
+          barColor={'#16A34A'}/>
     </div>
   )
 }
