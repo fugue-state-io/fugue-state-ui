@@ -10,12 +10,15 @@ import {
 } from "react";
 import { type dataPoint } from "./types";
 import { calculateBarData, draw } from "./utils";
+import * as Tone from 'tone';
 
 interface Props {
   /**
    * Audio blob to visualize
    */
   blob: Blob;
+
+  player: Tone.Player;
   /**
    * Width of the visualizer
    */
@@ -65,6 +68,7 @@ const AudioVisualizer: ForwardRefExoticComponent<
   (
     {
       blob,
+      player,
       width,
       height,
       barWidth = 2,
@@ -114,6 +118,8 @@ const AudioVisualizer: ForwardRefExoticComponent<
         await audioContext.decodeAudioData(audioBuffer, (buffer) => {
           if (!canvasRef.current) return;
           setDuration(buffer.duration);
+          player.buffer = buffer;
+          player.toDestination();
           const barsData = calculateBarData(
             buffer,
             height,

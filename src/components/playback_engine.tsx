@@ -10,9 +10,10 @@ export default function PlaybackEngine() {
   const [file, setFile] = useState(null);
   const [width, setWidth] = useState(1280);
   const [playing, setPlaying] = useState(false);
+  const [playable, setPlayable] = useState(false);
   const [height, setHeight] = useState(0);
   const debouncedWidth = useDebounce(width, 50);
-  const player: Tone.Player = useState(null);
+  const [player, setPlayer] = useState<Tone.Player>(new Tone.Player());
 
   useEffect(() => {
     const observer = new ResizeObserver((entries) => {
@@ -27,14 +28,18 @@ export default function PlaybackEngine() {
   }, []);
 
   useEffect(() => {
-    if (playing) {
-
+    if (file) {
+      if (playing) {
+        player.start();
+      } else {
+        player.stop();
+      }
     }
+
   }, [playing]);
 
   const handleChange = (file: React.SetStateAction<null>) => {
     setFile(file);
-    setPlaying(new Tone.Player(file));
     console.log(file)
   };
   return (
@@ -46,6 +51,7 @@ export default function PlaybackEngine() {
       <AudioVisualizer
           id="canvas"
           blob={file}
+          player={player}
           width={debouncedWidth}
           height={300}
           barWidth={3}
