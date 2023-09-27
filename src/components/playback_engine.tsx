@@ -48,14 +48,22 @@ export default function PlaybackEngine() {
       <div className='mx-auto max-w-md'>
         <FileUploader handleChange={handleChange} name="file" types={fileTypes} />
       </div>
+      <div className='max-w-3xl grid grid-cols-2 text-center mx-auto relative '>
+        <div className='flow-root grid-cols-1 mx-auto'>
+          <span className={`inline-flex items-center justify-center p-3 rounded-md shadow-lg`}>{player.imediate}</span>
+        </div>
+        <div className='flow-root grid-cols-1 mx-auto'>
+          <span className={`inline-flex items-center justify-center p-3 rounded-md shadow-lg`}>{file ? file.duration : "0"}</span>
+        </div>
+      </div>
       <AudioVisualizer
           id="canvas"
           blob={file}
           player={player}
           width={debouncedWidth}
           height={300}
-          barWidth={3}
-          gap={1}
+          barWidth={1}
+          gap={0}
           barColor={'#16A34A'}/>
       <div className='items-center px-4 py-2 rounded-md'>
         <span onClick={() => setPlaying(!playing)} className='relative mx-auto inline-flex items-center px-4 py-2 mx-2 rounded-md shadow-lg bg-pink-400 hover:bg-pink-700 shadow-lg'>

@@ -32,7 +32,7 @@ function Features({
 }) {
   return (
     <div id='features' className='bg-gray-900'>
-      <div id='modus' className='text-center py-24 relative mx-auto px-4 sm:px-6 bg-gray-900'>
+      <div className='text-center py-24 relative mx-auto px-4 sm:px-6 bg-gray-900'>
         <h1 className='text-lg font-semibold tracking-wider text-green-400'>
           <span className='block'>Features</span>
         </h1>
