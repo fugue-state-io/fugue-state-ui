@@ -1,70 +1,102 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef} from 'react';
 import { FileUploader } from "react-drag-drop-files";
 import { AudioVisualizer } from './AudioVisualizer'
 import { useDebounce } from "@uidotdev/usehooks";
 import * as Tone from 'tone';
 const fileTypes = ["MP3", "WAV", "FLAC"];
 
+const useAnimationFrame = callback => {
+  // Use useRef for mutable variables that we want to persist
+  // without triggering a re-render on their change
+  const requestRef = React.useRef();
+  const previousTimeRef = React.useRef();
+  
+  const animate = time => {
+    if (previousTimeRef.current != undefined) {
+      const deltaTime = time - previousTimeRef.current;
+      callback(deltaTime)
+    }
+    previousTimeRef.current = time;
+    requestRef.current = requestAnimationFrame(animate);
+  }
+  
+  React.useEffect(() => {
+    requestRef.current = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(requestRef.current);
+  }, []); // Make sure the effect runs only once
+}
+
 export default function PlaybackEngine() {
-  const [file, setFile] = useState(null);
-  const [width, setWidth] = useState(1280);
+  const [file, setFile] = useState<Blob | null>(null);
+  const [url, setUrl] = useState("");
   const [playing, setPlaying] = useState(false);
-  const [playable, setPlayable] = useState(false);
-  const [height, setHeight] = useState(0);
-  const debouncedWidth = useDebounce(width, 50);
-  const [player, setPlayer] = useState<Tone.Player>(new Tone.Player());
+  const [duration, setDuration] = useState(0);
+  const [elapsed, setElapsed] = useState(0);
+  const audioElem = useRef();
 
   useEffect(() => {
-    const observer = new ResizeObserver((entries) => {
-      const rect = entries[0].contentRect;
-      setWidth(rect.width);
-      setHeight(rect.height);
-    });
-    observer.observe(document.documentElement);
     return () => {
-      observer.unobserve(document.documentElement);
-    };
-  }, []);
+      window.URL.revokeObjectURL(url);
+    }
+  })
 
   useEffect(() => {
     if (file) {
-      if (playing) {
-        player.start();
+      if (audioElem.current && playing) {
+        audioElem.current.play();
       } else {
-        player.stop();
+        audioElem.current.pause();
       }
     }
 
-  }, [playing]);
+  }, [playing, url]);
 
+  useEffect(() => {
+    if(file) {
+      setUrl(window.URL.createObjectURL(file));
+    }
+  }, [file])
   const handleChange = (file: React.SetStateAction<null>) => {
     setFile(file);
-    console.log(file)
   };
+
+  const onPlaying = () => {
+    if(audioElem.current) {
+      setDuration(audioElem.current.duration);
+      setElapsed(audioElem.current.currentTime)
+    } else {
+      console.log("This should be disabled!")
+    }
+  }
   return (
     <div className='bg-gray-900 text-center py-4'>
       <h3 className='text-lg font-semibold tracking-wider text-green-400'>Playback Engine</h3>
       <div className='mx-auto max-w-md'>
         <FileUploader handleChange={handleChange} name="file" types={fileTypes} />
       </div>
-      <div className='max-w-3xl grid grid-cols-2 text-center mx-auto relative '>
-        <div className='flow-root grid-cols-1 mx-auto'>
-          <span className={`inline-flex items-center justify-center p-3 rounded-md shadow-lg`}>{player.imediate}</span>
+      <div className='max-w-3xl grid grid-cols-2 text-center mx-auto relative my-2'>
+        <div className='flow-root grid-cols-2 px-1 border-r leading-none align-middle'>
+          <span className='text-base text-gray-400 float-right'>{Math.round(elapsed * 100) / 100}</span>
         </div>
-        <div className='flow-root grid-cols-1 mx-auto'>
-          <span className={`inline-flex items-center justify-center p-3 rounded-md shadow-lg`}>{file ? file.duration : "0"}</span>
+        <div className='flow-root grid-cols-2 px-1 border-l leading-none align-middle'>
+          <span className='text-base text-gray-400 float-left'>{Math.round(duration * 100) / 100}</span>
         </div>
       </div>
+      <div className="bg-gray-900 max-w-3xl mx-auto">
       <AudioVisualizer
           id="canvas"
+          style={{"width": "100%"}}
           blob={file}
-          player={player}
-          width={debouncedWidth}
+          width={1200}
           height={300}
           barWidth={1}
+          currentTime={elapsed}
           gap={0}
-          barColor={'#16A34A'}/>
+          barColor={'#16A34A'}
+          barPlayedColor={'#f472b6'}/>
+      </div>
+      <audio src={url} ref={audioElem} onTimeUpdate={onPlaying}/>
       <div className='items-center px-4 py-2 rounded-md'>
         <span onClick={() => setPlaying(!playing)} className='relative mx-auto inline-flex items-center px-4 py-2 mx-2 rounded-md shadow-lg bg-pink-400 hover:bg-pink-700 shadow-lg'>
           <span id="play" className='text-white font-bold'>{!playing ? "Play" : "Pause"}</span>
