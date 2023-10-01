@@ -3,12 +3,16 @@ import React, { useState, useEffect, useRef} from 'react';
 import { FileUploader } from "react-drag-drop-files";
 import { AudioVisualizer } from './AudioVisualizer'
 const fileTypes = ["MP3", "WAV", "FLAC"];
+import RangeSlider from 'react-range-slider-input';
+import 'react-range-slider-input/dist/style.css';
 
 export default function PlaybackEngine() {
   const [file, setFile] = useState<Blob | null>(null);
   const [files, setFiles] = useState<Blob [] | null>(null);
+  const [loopPercents, setLoopPercents] = useState([0,1000]);
   const [url, setUrl] = useState("");
   const [playing, setPlaying] = useState(false);
+  const [repeat, setRepeat] = useState(true);
   const [duration, setDuration] = useState(0);
   const [elapsed, setElapsed] = useState(0);
   const audioElem = useRef<HTMLAudioElement>(null);
@@ -19,6 +23,22 @@ export default function PlaybackEngine() {
     }
   })
 
+  useEffect(() => {
+    if(file && audioElem.current) {
+      audioElem.current.currentTime = duration * (loopPercents[0] / 1000);
+    }
+  }, [loopPercents]);
+  useEffect(() => {
+    if(elapsed > duration * (loopPercents[1] / 1000)) {
+      if (audioElem.current) {
+        if (!repeat) {
+          audioElem.current.pause();
+          setPlaying(false);
+        }
+        audioElem.current.currentTime = duration * (loopPercents[0] / 1000);
+      }
+    }
+  }, [elapsed]);
   useEffect(() => {
     if (file && audioElem.current) {
       if (playing) {
@@ -34,7 +54,8 @@ export default function PlaybackEngine() {
     if(file) {
       setUrl(window.URL.createObjectURL(file));
     }
-  }, [file])
+  }, [file]);
+
   const handleChange = (file: React.SetStateAction<Blob | null>) => {
     setFile(file);
   };
@@ -60,6 +81,20 @@ export default function PlaybackEngine() {
         <div className='flow-root grid-cols-2 px-1 border-l leading-none align-middle'>
           <span className='text-base text-gray-400 float-left'>{Math.round(duration * 100) / 100}</span>
         </div>
+      </div>
+      <div className="bg-gray-900 max-w-md mx-auto">
+        <RangeSlider min={0} max={999} step={1} value={loopPercents} onInput={setLoopPercents} disabled={playing}>
+        </RangeSlider>
+        <AudioVisualizer
+          style={{"width": "100%"}}
+          blob={file}
+          width={1200}
+          height={75}
+          barWidth={1}
+          currentTime={elapsed}
+          gap={0}
+          barColor={'#16A34A'}
+          barPlayedColor={'#f472b6'}/>
       </div>
       <div className="bg-gray-900 max-w-3xl mx-auto">
       <AudioVisualizer

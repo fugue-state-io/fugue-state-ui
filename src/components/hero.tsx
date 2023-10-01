@@ -71,9 +71,9 @@ export default function Hero() {
       </div>
       <Raison />
       <Features>
-        <Feature svg='' textColorClass="text-pink-400" svgColorClass="bg-pink-400" title='Metronome' description='Simple Meters, Compound Meters, Complex Meters and Swing Ratios. All made easy.'/>
-        <Feature svg='' textColorClass="text-green-400" svgColorClass="bg-green-400" title='Playback Engine' description='Pitch Transposition, Metric Modulation, Karaoke Mode, and Equalization for audio files.'/>
-        <Feature svg='' textColorClass="text-pink-400" svgColorClass="bg-pink-400" title='Data Driven Practice' description="Stop spinning your wheels. Practice how proven to work. Compare with others."/>
+        <Feature svg='' textColorClass="text-green-400" svgColorClass="bg-green-400" title='Metronome' description='Simple Meters, Compound Meters, Complex Meters and Swing Ratios. All made easy.'/>
+        <Feature svg='' textColorClass="text-pink-400" svgColorClass="bg-pink-400" title='Playback Engine' description='Pitch Transposition, Metric Modulation, Karaoke Mode, and Equalization for audio files.'/>
+        <Feature svg='' textColorClass="text-green-400" svgColorClass="bg-green-400" title='Data Driven Practice' description="Stop spinning your wheels. Practice how proven to work. Compare with others."/>
       </Features>
       <Modus />
     </>
