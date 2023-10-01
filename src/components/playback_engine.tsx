@@ -2,8 +2,6 @@
 import React, { useState, useEffect, useRef} from 'react';
 import { FileUploader } from "react-drag-drop-files";
 import { AudioVisualizer } from './AudioVisualizer'
-import { useDebounce } from "@uidotdev/usehooks";
-import * as Tone from 'tone';
 const fileTypes = ["MP3", "WAV", "FLAC"];
 
 export default function PlaybackEngine() {
