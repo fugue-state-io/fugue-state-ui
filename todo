@@ -5,7 +5,7 @@ make metronome programmable
 drone generator
 - select a drone C1-C8
 complete playback engine
-- play
-- pause
 - seek
 - repeat segment
+- speed up
+- pitch shift
