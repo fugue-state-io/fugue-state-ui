@@ -15,7 +15,7 @@ interface Props {
   /**
    * Audio blob to visualize
    */
-  blob: Blob;
+  blob: Blob | null;
   /**
    * Width of the visualizer
    */
@@ -56,11 +56,11 @@ interface Props {
   /**
    * A `ForwardedRef` for the `HTMLCanvasElement`
    */
-  ref?: React.ForwardedRef<HTMLCanvasElement>;
+  ref?: React.ForwardedRef<HTMLCanvasElement | null>;
 }
 
 const AudioVisualizer: ForwardRefExoticComponent<
-  Props & RefAttributes<HTMLCanvasElement>
+  Props & RefAttributes<HTMLCanvasElement | undefined>
 > = forwardRef(
   (
     {

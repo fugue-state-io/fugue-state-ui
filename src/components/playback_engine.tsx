@@ -6,34 +6,13 @@ import { useDebounce } from "@uidotdev/usehooks";
 import * as Tone from 'tone';
 const fileTypes = ["MP3", "WAV", "FLAC"];
 
-const useAnimationFrame = callback => {
-  // Use useRef for mutable variables that we want to persist
-  // without triggering a re-render on their change
-  const requestRef = React.useRef();
-  const previousTimeRef = React.useRef();
-  
-  const animate = time => {
-    if (previousTimeRef.current != undefined) {
-      const deltaTime = time - previousTimeRef.current;
-      callback(deltaTime)
-    }
-    previousTimeRef.current = time;
-    requestRef.current = requestAnimationFrame(animate);
-  }
-  
-  React.useEffect(() => {
-    requestRef.current = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(requestRef.current);
-  }, []); // Make sure the effect runs only once
-}
-
 export default function PlaybackEngine() {
   const [file, setFile] = useState<Blob | null>(null);
   const [url, setUrl] = useState("");
   const [playing, setPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [elapsed, setElapsed] = useState(0);
-  const audioElem = useRef();
+  const audioElem = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
     return () => {
@@ -42,8 +21,8 @@ export default function PlaybackEngine() {
   })
 
   useEffect(() => {
-    if (file) {
-      if (audioElem.current && playing) {
+    if (file && audioElem.current) {
+      if (playing) {
         audioElem.current.play();
       } else {
         audioElem.current.pause();
@@ -57,7 +36,7 @@ export default function PlaybackEngine() {
       setUrl(window.URL.createObjectURL(file));
     }
   }, [file])
-  const handleChange = (file: React.SetStateAction<null>) => {
+  const handleChange = (file: React.SetStateAction<Blob | null>) => {
     setFile(file);
   };
 
@@ -85,7 +64,6 @@ export default function PlaybackEngine() {
       </div>
       <div className="bg-gray-900 max-w-3xl mx-auto">
       <AudioVisualizer
-          id="canvas"
           style={{"width": "100%"}}
           blob={file}
           width={1200}
