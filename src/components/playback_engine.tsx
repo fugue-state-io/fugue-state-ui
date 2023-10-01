@@ -6,6 +6,7 @@ const fileTypes = ["MP3", "WAV", "FLAC"];
 
 export default function PlaybackEngine() {
   const [file, setFile] = useState<Blob | null>(null);
+  const [files, setFiles] = useState<Blob [] | null>(null);
   const [url, setUrl] = useState("");
   const [playing, setPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
