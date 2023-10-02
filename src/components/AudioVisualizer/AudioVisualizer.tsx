@@ -61,6 +61,8 @@ interface Props {
    * A `ForwardedRef` for the `HTMLCanvasElement`
    */
   ref?: React.ForwardedRef<HTMLCanvasElement | null>;
+
+  zoom: boolean;
 }
 
 const AudioVisualizer: ForwardRefExoticComponent<
@@ -81,6 +83,7 @@ const AudioVisualizer: ForwardRefExoticComponent<
       barColor = "rgb(184, 184, 184)",
       barPlayedColor = "rgb(160, 198, 255)",
       unsetColor = "rgb(107, 114, 128)",
+      zoom = false,
     }: Props,
     ref?: ForwardedRef<HTMLCanvasElement>
   ) => {
@@ -104,6 +107,7 @@ const AudioVisualizer: ForwardRefExoticComponent<
             min: 0,
           }));
           draw(
+            zoom,
             startPercentage,
             stopPercentage,
             barsData,
@@ -113,7 +117,7 @@ const AudioVisualizer: ForwardRefExoticComponent<
             backgroundColor,
             unsetColor,
             barColor,
-            barPlayedColor
+            barPlayedColor,
           );
           return;
         }
@@ -132,6 +136,7 @@ const AudioVisualizer: ForwardRefExoticComponent<
           );
           setData(barsData);
           draw(
+            zoom,
             startPercentage,
             stopPercentage,
             barsData,
@@ -141,7 +146,7 @@ const AudioVisualizer: ForwardRefExoticComponent<
             backgroundColor,
             unsetColor,
             barColor,
-            barPlayedColor
+            barPlayedColor,
           );
         });
       };
@@ -153,6 +158,7 @@ const AudioVisualizer: ForwardRefExoticComponent<
       if (!canvasRef.current) return;
 
       draw(
+        zoom,
         startPercentage,
         stopPercentage,
         data,
@@ -164,7 +170,7 @@ const AudioVisualizer: ForwardRefExoticComponent<
         barPlayedColor,
         unsetColor,
         currentTime,
-        duration
+        duration,
       );
     }, [currentTime, duration, stopPercentage]);
 

@@ -66,6 +66,7 @@ export const calculateBarData = (
 };
 
 export const draw = (
+  zoom: boolean = false,
   startPercentage: number,
   stopPercentage: number,
   data: dataPoint[],
@@ -77,13 +78,15 @@ export const draw = (
   barPlayedColor?: string,
   unsetColor?: string,
   currentTime: number = 0,
-  duration: number = 1
+  duration: number = 1,
 ): void => {
   const amp = canvas.height / 2;
 
   const ctx = canvas.getContext("2d") as CustomCanvasRenderingContext2D;
   if (!ctx) return;
-
+  if (zoom) {
+    ctx.setTransform(1 / (stopPercentage - startPercentage), 0, 0, 1, -data.length * startPercentage * 1 / (stopPercentage - startPercentage), 0);
+  }
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   if (backgroundColor !== "transparent") {
