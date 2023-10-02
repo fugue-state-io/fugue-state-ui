@@ -12,6 +12,8 @@ import { type dataPoint } from "./types";
 import { calculateBarData, draw } from "./utils";
 
 interface Props {
+  startPercentage: number;
+  stopPercentage: number;
   /**
    * Audio blob to visualize
    */
@@ -44,6 +46,8 @@ interface Props {
    * Color for the bars that have been played: Default: `"rgb(160, 198, 255)""`
    */
   barPlayedColor?: string;
+  
+  unsetColor?: string;
   /**
    * Current time stamp till which the audio blob has been played.
    * Visualized bars that fall before the current time will have `barPlayerColor`, while that ones that fall after will have `barColor`
@@ -64,6 +68,8 @@ const AudioVisualizer: ForwardRefExoticComponent<
 > = forwardRef(
   (
     {
+      startPercentage,
+      stopPercentage,
       blob,
       width,
       height,
@@ -74,6 +80,7 @@ const AudioVisualizer: ForwardRefExoticComponent<
       backgroundColor = "transparent",
       barColor = "rgb(184, 184, 184)",
       barPlayedColor = "rgb(160, 198, 255)",
+      unsetColor = "rgb(107, 114, 128)",
     }: Props,
     ref?: ForwardedRef<HTMLCanvasElement>
   ) => {
@@ -97,11 +104,14 @@ const AudioVisualizer: ForwardRefExoticComponent<
             min: 0,
           }));
           draw(
+            startPercentage,
+            stopPercentage,
             barsData,
             canvasRef.current,
             barWidth,
             gap,
             backgroundColor,
+            unsetColor,
             barColor,
             barPlayedColor
           );
@@ -122,11 +132,14 @@ const AudioVisualizer: ForwardRefExoticComponent<
           );
           setData(barsData);
           draw(
+            startPercentage,
+            stopPercentage,
             barsData,
             canvasRef.current,
             barWidth,
             gap,
             backgroundColor,
+            unsetColor,
             barColor,
             barPlayedColor
           );
@@ -140,6 +153,8 @@ const AudioVisualizer: ForwardRefExoticComponent<
       if (!canvasRef.current) return;
 
       draw(
+        startPercentage,
+        stopPercentage,
         data,
         canvasRef.current,
         barWidth,
@@ -147,10 +162,11 @@ const AudioVisualizer: ForwardRefExoticComponent<
         backgroundColor,
         barColor,
         barPlayedColor,
+        unsetColor,
         currentTime,
         duration
       );
-    }, [currentTime, duration]);
+    }, [currentTime, duration, stopPercentage]);
 
     return (
       <canvas

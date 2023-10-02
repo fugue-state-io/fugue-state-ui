@@ -66,6 +66,8 @@ export const calculateBarData = (
 };
 
 export const draw = (
+  startPercentage: number,
+  stopPercentage: number,
   data: dataPoint[],
   canvas: HTMLCanvasElement,
   barWidth: number,
@@ -73,6 +75,7 @@ export const draw = (
   backgroundColor: string,
   barColor: string,
   barPlayedColor?: string,
+  unsetColor?: string,
   currentTime: number = 0,
   duration: number = 1
 ): void => {
@@ -93,7 +96,13 @@ export const draw = (
   data.forEach((dp, i) => {
     const mappingPercent = i / data.length;
     const played = playedPercent > mappingPercent;
-    ctx.fillStyle = played && barPlayedColor ? barPlayedColor : barColor;
+    if (mappingPercent < startPercentage) {
+      ctx.fillStyle = unsetColor ? unsetColor : barColor;
+    } else if (mappingPercent > startPercentage && mappingPercent < stopPercentage) {
+      ctx.fillStyle = played && barPlayedColor ? barPlayedColor : barColor;
+    } else if (mappingPercent > stopPercentage) {
+      ctx.fillStyle = unsetColor ? unsetColor : barColor;
+    }
 
     const x = i * (barWidth + gap);
     const y = amp + dp.min;

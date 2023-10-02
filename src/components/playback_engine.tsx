@@ -86,6 +86,8 @@ export default function PlaybackEngine() {
         <RangeSlider min={0} max={999} step={1} value={loopPercents} onInput={setLoopPercents} disabled={playing}>
         </RangeSlider>
         <AudioVisualizer
+          startPercentage={loopPercents[0] / 1000}
+          stopPercentage={loopPercents[1] / 1000}
           style={{"width": "100%"}}
           blob={file}
           width={1200}
@@ -98,6 +100,8 @@ export default function PlaybackEngine() {
       </div>
       <div className="bg-gray-900 max-w-3xl mx-auto">
       <AudioVisualizer
+          startPercentage={loopPercents[0] / 1000}
+          stopPercentage={loopPercents[1] / 1000}
           style={{"width": "100%"}}
           blob={file}
           width={1200}
