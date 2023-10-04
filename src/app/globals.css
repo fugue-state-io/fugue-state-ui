@@ -23,3 +23,26 @@ html, body {
   padding: 0;
   border: 0;
 }
+
+#range-slider-waveform {
+  background: rgb(0, 0, 0, 0);
+  opacity: 100%;
+  position: relative;
+  padding-top:20px;
+  margin-bottom: -25px;
+}
+
+#range-slider-waveform .range-slider__range {
+  background: #FFF;
+  opacity: 30%;
+  height:32px;
+}
+
+#range-slider-waveform .range-slider__thumb {
+  background: #FFF;
+  width:4px;
+  height:32px;
+  border-radius: 0px;
+  
+}
+

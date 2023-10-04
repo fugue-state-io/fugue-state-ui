@@ -77,7 +77,7 @@ export default function PlaybackEngine() {
       <h3 className='text-lg font-semibold tracking-wider text-green-400'>Playback Engine</h3>
       <div className='mx-auto max-w-md'>
         <FileUploader handleChange={handleChange} name="file" types={fileTypes} />
-        <ul>
+        <ul className='text-md text-gray-400'>
           {files.map((item: Blob, index: number) => <li key={index}>{item.name}</li>)}
         </ul>
       </div>
@@ -91,7 +91,7 @@ export default function PlaybackEngine() {
           </div>
         </div>
         <div className={"bg-gray-900 max-w-lg mx-auto"}>
-          <RangeSlider min={0} max={999} step={1} value={loopPercents} onInput={setLoopPercents} disabled={playing}>
+          <RangeSlider id="range-slider-waveform" min={0} max={999} step={1} value={loopPercents} onInput={setLoopPercents} disabled={playing}>
           </RangeSlider>
           <AudioVisualizer
             zoom={false}
