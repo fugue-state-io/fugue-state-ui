@@ -37,7 +37,7 @@ export default function Metronome() {
   const getTime = (timeSignature: number) => {
     let content = [];
     for (let i = 0; i < timeSignature; i++) {
-      content.push(<span id={i.toString()} className={'relative px-2 mx-1 rounded-md shadow-lg shadow-lg ' + (step % timeSignature == i ? "bg-pink-400" : "bg-pink-700")}></span>);
+      content.push(<span id={i.toString()} key={i.toString()} className={'relative px-2 mx-1 rounded-md shadow-lg shadow-lg ' + (step % timeSignature == i ? "bg-pink-400" : "bg-pink-700")}></span>);
     }
     return content;
   };

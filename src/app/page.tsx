@@ -1,12 +1,10 @@
-import Navigation from "../components/navigation"
-import Hero from "../components/hero"
-import Metronome from "../components/metronome"
-import PlaybackEngine from "../components/playback_engine"
+import Hero from "../components/Hero"
+import Metronome from "../components/Metronome"
+import PlaybackEngine from "../components/PlaybackEngine"
 
 export default function Home() {
   return (
     <main className="">
-      <Navigation />
       <Hero />
       <Metronome />
       <PlaybackEngine />
