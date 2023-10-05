@@ -7,4 +7,5 @@ complete playback engine
 - seek
 - repeat segment
 - speed up
+- slow down
 - pitch shift
