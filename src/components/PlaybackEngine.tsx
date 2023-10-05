@@ -71,6 +71,11 @@ export default function PlaybackEngine() {
       console.log("This should be disabled!")
     }
   }
+  const setVolume = (percents: Number []) => {
+    if(audioElem.current) {
+      audioElem.current.volume = Number(percents[1]);
+    }
+  }
 
   return (
     <div className='bg-gray-900 text-center py-4'>
@@ -123,6 +128,15 @@ export default function PlaybackEngine() {
             barPlayedColor={'#f472b6'}/>
         </div>
         <audio src={url} ref={audioElem} onTimeUpdate={onPlaying}/>
+        <RangeSlider
+          className="single-thumb"
+          defaultValue={[0, 1]}
+          min={0}
+          max={1}
+          step={0.01}
+          thumbsDisabled={[true, false]}
+          rangeSlideDisabled={true}
+          onInput={setVolume}/>
         <div className='items-center px-4 py-2 rounded-md'>
           <span onClick={() => setPlaying(!playing)} className='relative mx-auto inline-flex items-center px-4 py-2 mx-2 rounded-md shadow-lg bg-pink-400 hover:bg-pink-700 shadow-lg'>
             <span id="play" className='text-white font-bold'>{!playing ? "Play" : "Pause"}</span>
