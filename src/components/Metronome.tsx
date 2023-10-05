@@ -20,8 +20,8 @@ export default function Metronome() {
   const scheduleRepeat = () => {
     Tone.Transport.stop();
     Tone.Transport.cancel();
-    Tone.Transport.scheduleRepeat((time: number) => {
-      const nextStep = Math.round(Tone.Transport.seconds / Tone.Time(debouncedTimeSignature + "n").toSeconds());
+    const loop = new Tone.Loop((time: number) => {
+      const nextStep = Math.round(time / Tone.Time(debouncedTimeSignature + "n").toSeconds());
       if (synth) {
         if (nextStep % debouncedTimeSignature == 0) {
           synth.triggerAttackRelease("C4", "32n", time);
@@ -30,7 +30,7 @@ export default function Metronome() {
         }
       }
       setStep(nextStep);
-    }, debouncedTimeSignature + "n");
+    }, debouncedTimeSignature + "n").start(0);
     Tone.Transport.start();
   }
 
