@@ -1,7 +1,6 @@
 make metronome programmable
-- bpm
-- time signature
 - no upbeat
+- start offset
 drone generator
 - select a drone C1-C8
 complete playback engine
