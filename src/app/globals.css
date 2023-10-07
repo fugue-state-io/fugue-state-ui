@@ -40,10 +40,11 @@ html, body {
 
 #range-slider-waveform .range-slider__thumb {
   background: #FFF;
-  width:4px;
+  width:8px;
   height:32px;
   border-radius: 0px;
-  
+  cursor:ew-resize;
+  opacity: 90%;
 }
 
 /* Range Slider as a Single Thumb Slider */

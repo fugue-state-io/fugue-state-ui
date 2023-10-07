@@ -76,7 +76,11 @@ export default function PlaybackEngine() {
       audioElem.current.volume = Number(percents[1]);
     }
   }
-
+  const setPlaybackRate = (percents: Number []) => {
+    if(audioElem.current) {
+      audioElem.current.playbackRate= Number(percents[1]);
+    }
+  }
   return (
     <div className='bg-gray-900 text-center py-4'>
       <h3 className='text-lg font-semibold tracking-wider text-green-400'>Playback Engine</h3>
@@ -128,15 +132,39 @@ export default function PlaybackEngine() {
             barPlayedColor={'#f472b6'}/>
         </div>
         <audio src={url} ref={audioElem} onTimeUpdate={onPlaying}/>
-        <RangeSlider
-          className="single-thumb"
-          defaultValue={[0, 1]}
-          min={0}
-          max={1}
-          step={0.01}
-          thumbsDisabled={[true, false]}
-          rangeSlideDisabled={true}
-          onInput={setVolume}/>
+        <div className='max-w-md grid grid-cols-2 text-center mx-auto relative my-2'>
+          <div className='flow-root grid-cols-1 px-1 leading-none align-middle'>
+            <label htmlFor="volume" className="block text-sm font-medium leading-6 text-gray-400">
+              Volume
+            </label>
+            <RangeSlider
+              id="volume"
+              className="single-thumb"
+              defaultValue={[0, 1]}
+              min={0}
+              max={1}
+              step={0.01}
+              thumbsDisabled={[true, false]}
+              rangeSlideDisabled={true}
+              onInput={setVolume}/>
+          </div>
+          <div className='flow-root grid-cols-1 px-1 leading-none align-middle'>
+            <label htmlFor="playbackRate" className="block text-sm font-medium leading-6 text-gray-400">
+              Playback Speed
+            </label>
+            <RangeSlider
+              id="playbackRate"
+              className="single-thumb"
+              defaultValue={[0, 1]}
+              min={0.2}
+              max={2}
+              step={0.01}
+              thumbsDisabled={[true, false]}
+              rangeSlideDisabled={true}
+              onInput={setPlaybackRate}/>
+          </div>
+        </div>
+
         <div className='items-center px-4 py-2 rounded-md'>
           <span onClick={() => setPlaying(!playing)} className='relative mx-auto inline-flex items-center px-4 py-2 mx-2 rounded-md shadow-lg bg-pink-400 hover:bg-pink-700 shadow-lg'>
             <span id="play" className='text-white font-bold'>{!playing ? "Play" : "Pause"}</span>
