@@ -26,12 +26,14 @@ export default function PlaybackEngine() {
   })
 
   useEffect(() => {
-    if(file && audioElem.current) {
+    if(file && audioElem.current && !Number.isNaN(duration)) {
+      console.log(loopPercents)
+      console.log(duration);
       audioElem.current.currentTime = duration * (loopPercents[0] / 1000);
     }
   }, [loopPercents]);
   useEffect(() => {
-    if(elapsed > duration * (loopPercents[1] / 1000)) {
+    if(elapsed > duration * (loopPercents[1] / 1000) && !Number.isNaN(duration)) {
       if (audioElem.current) {
         if (!repeat) {
           audioElem.current.pause();
