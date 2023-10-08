@@ -27,8 +27,6 @@ export default function PlaybackEngine() {
 
   useEffect(() => {
     if(file && audioElem.current && !Number.isNaN(duration)) {
-      console.log(loopPercents)
-      console.log(duration);
       audioElem.current.currentTime = duration * (loopPercents[0] / 1000);
     }
   }, [loopPercents]);
