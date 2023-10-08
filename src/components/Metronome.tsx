@@ -11,6 +11,7 @@ export default function Metronome() {
   const [timeSignature, setTimeSignature] = useState(4);
   const [bpm, setBpm] = useState(60);
   const [step, setStep] = useState(0);
+  const [startOffset, setStartOffset] = useState(0);
 
   let synth: Tone.Synth | null = null;
   let scheduledRepeat: Number | null = null; 
@@ -28,7 +29,7 @@ export default function Metronome() {
         }
       }
       setStep(nextStep);
-    }, timeSignature + "n").start(0);
+    }, timeSignature + "n").start(startOffset);
     Tone.Transport.start();
   }
 
