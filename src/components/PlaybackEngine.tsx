@@ -15,6 +15,8 @@ export default function PlaybackEngine() {
   const [repeat, setRepeat] = useState(true);
   const [duration, setDuration] = useState(0);
   const [elapsed, setElapsed] = useState(0);
+  const [playbackRate, setPlaybackRate] = useState(1.00);
+  const [volume, setVolume] = useState(1.00);
   const audioElem = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
@@ -57,6 +59,19 @@ export default function PlaybackEngine() {
     }
   }, [file]);
 
+  useEffect(() => {
+    if(volume) {
+      setElementVolume
+    }
+  }, [volume]);
+
+  useEffect(() => {
+    if(file) {
+      setUrl(window.URL.createObjectURL(file));
+      setFiles([...files, file]);
+    }
+  }, [file]);
+
   const handleChange = (file: React.SetStateAction<Blob | null>) => {
     if (file) {
       setFile(file);
@@ -71,12 +86,14 @@ export default function PlaybackEngine() {
       console.log("This should be disabled!")
     }
   }
-  const setVolume = (percents: Number []) => {
+  const setElementVolume = (percents: Number []) => {
+    setVolume(Number(percents[1]));
     if(audioElem.current) {
       audioElem.current.volume = Number(percents[1]);
     }
   }
-  const setPlaybackRate = (percents: Number []) => {
+  const setElementPlaybackRate = (percents: Number []) => { 
+    setPlaybackRate(Number(percents[1]));
     if(audioElem.current) {
       audioElem.current.playbackRate= Number(percents[1]);
     }
@@ -146,7 +163,10 @@ export default function PlaybackEngine() {
               step={0.01}
               thumbsDisabled={[true, false]}
               rangeSlideDisabled={true}
-              onInput={setVolume}/>
+              onInput={setElementVolume}/>
+            <label htmlFor="playbackRate" className="block text-sm font-medium leading-6 text-gray-400">
+              {volume * 100}%
+            </label>
           </div>
           <div className='flow-root grid-cols-1 px-1 leading-none align-middle'>
             <label htmlFor="playbackRate" className="block text-sm font-medium leading-6 text-gray-400">
@@ -161,7 +181,10 @@ export default function PlaybackEngine() {
               step={0.01}
               thumbsDisabled={[true, false]}
               rangeSlideDisabled={true}
-              onInput={setPlaybackRate}/>
+              onInput={setElementPlaybackRate}/>
+            <label htmlFor="playbackRate" className="block text-sm font-medium leading-6 text-gray-400">
+              {playbackRate}x
+            </label>
           </div>
         </div>
 

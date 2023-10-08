@@ -2,7 +2,6 @@
 
 import Script from 'next/script';
 import React, { useState, useEffect } from 'react';
-import { useDebounce } from "@uidotdev/usehooks";
 import * as Tone from 'tone';
 
 export default function Metronome() {
@@ -10,9 +9,7 @@ export default function Metronome() {
   const [playing, setPlaying] = useState(false);
   const [upBeat, setUpBeat] = useState(false);
   const [timeSignature, setTimeSignature] = useState(4);
-  const debouncedTimeSignature = useDebounce(timeSignature, 300);
   const [bpm, setBpm] = useState(60);
-  const debouncedBpm = useDebounce(bpm, 300);
   const [step, setStep] = useState(0);
 
   let synth: Tone.Synth | null = null;
@@ -22,16 +19,16 @@ export default function Metronome() {
     Tone.Transport.stop();
     Tone.Transport.cancel();
     const loop = new Tone.Loop((time: number) => {
-      const nextStep = Math.round(time / Tone.Time(debouncedTimeSignature + "n").toSeconds());
+      const nextStep = Math.round(time / Tone.Time(timeSignature + "n").toSeconds());
       if (synth) {
-        if (nextStep % debouncedTimeSignature == 0 && upBeat) {
+        if (nextStep % timeSignature == 0 && upBeat) {
           synth.triggerAttackRelease("C4", "32n", time);
         } else {
           synth.triggerAttackRelease("C3", "32n", time);
         }
       }
       setStep(nextStep);
-    }, debouncedTimeSignature + "n").start(0);
+    }, timeSignature + "n").start(0);
     Tone.Transport.start();
   }
 
@@ -45,7 +42,7 @@ export default function Metronome() {
 
 
   useEffect(() => {
-    Tone.start()
+    Tone.start();
     if (playing) {
       synth = new Tone.Synth();
       scheduleRepeat();
@@ -59,17 +56,18 @@ export default function Metronome() {
   }, [playing]);
 
   useEffect(() => {
-    if (debouncedBpm) {
-      Tone.Transport.bpm.value = debouncedBpm;
+    if (bpm) {
+      Tone.Transport.bpm.value = bpm;
     }
-  }, [debouncedBpm]);
+  }, [bpm]);
 
   useEffect(() => {
     if (playing) {
       Tone.Transport.stop();
+      Tone.Transport.timeSignature = timeSignature;
       scheduleRepeat();
     }
-  },[debouncedTimeSignature]);
+  },[timeSignature]);
   return (
     <>
       <div className='bg-gray-900 text-center py-4'>
