@@ -11,16 +11,17 @@ export default function Metronome() {
   const [timeSignature, setTimeSignature] = useState(4);
   const [bpm, setBpm] = useState(60);
   const [step, setStep] = useState(0);
-  const [startOffset, setStartOffset] = useState(0);
 
   let synth: Tone.Synth | null = null;
-  let scheduledRepeat: Number | null = null; 
+  let scheduledRepeat: Number | null = null;
+  let startTime = 0;
 
   const scheduleRepeat = () => {
     Tone.Transport.stop();
     Tone.Transport.cancel();
     const loop = new Tone.Loop((time: number) => {
-      const nextStep = Math.round(time / Tone.Time(timeSignature + "n").toSeconds());
+      console.log(time)
+      const nextStep = Math.round((time) / Tone.Time(timeSignature * 4 + "n").toSeconds());
       if (synth) {
         if (nextStep % timeSignature == 0 && upBeat) {
           synth.triggerAttackRelease("C4", "32n", time);
@@ -29,7 +30,7 @@ export default function Metronome() {
         }
       }
       setStep(nextStep);
-    }, timeSignature + "n").start(startOffset);
+    }, timeSignature * 4 + "n").start();
     Tone.Transport.start();
   }
 
