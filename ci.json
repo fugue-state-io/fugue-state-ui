@@ -1,6 +1,6 @@
 [
   {
     "image" : "fugue-state-ui",
-    "dockerfile" : "./Dockerfile"
+    "dockerfile" : "Dockerfile"
   }
 ]
