@@ -10,11 +10,15 @@ export const draw = (
   subDivisions: number,
   duration:number
 ): void => {
-  const amp = canvas.height / 2;
-
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  let ctx = null;
+  if (canvas) {
+    ctx = canvas.getContext("2d");
+    if (ctx) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  } else {
+    return;
+  }
 };
 
 export default function MetronomeVisualizer(props: {
