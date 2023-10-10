@@ -4,17 +4,17 @@ import Script from 'next/script';
 import React, { useState, useEffect } from 'react';
 import * as Tone from 'tone';
 
-export default function Metronome() {
-  
-  const [playing, setPlaying] = useState(false);
+export default function Metronome(props: {
+  playing: boolean,
+  setPlayingCallback: Function,
+  playbackRate: Number
+}) {
   const [upBeat, setUpBeat] = useState(false);
   const [timeSignature, setTimeSignature] = useState(4);
   const [bpm, setBpm] = useState(60);
   const [step, setStep] = useState(0);
 
   let synth: Tone.Synth | null = null;
-  let scheduledRepeat: Number | null = null;
-  let startTime = 0;
 
   const scheduleRepeat = () => {
     Tone.Transport.stop();
@@ -45,7 +45,7 @@ export default function Metronome() {
 
   useEffect(() => {
     Tone.start();
-    if (playing) {
+    if (props.playing) {
       synth = new Tone.Synth();
       scheduleRepeat();
       synth.toDestination();
@@ -55,8 +55,7 @@ export default function Metronome() {
     return () => {
       Tone.Transport.stop();
     }
-  }, [playing]);
-
+  }, [props.playing]);
   useEffect(() => {
     if (bpm) {
       Tone.Transport.bpm.value = bpm;
@@ -64,7 +63,7 @@ export default function Metronome() {
   }, [bpm]);
 
   useEffect(() => {
-    if (playing) {
+    if (props.playing) {
       Tone.Transport.stop();
       Tone.Transport.timeSignature = timeSignature;
       scheduleRepeat();
@@ -73,7 +72,6 @@ export default function Metronome() {
   return (
     <>
       <div className='bg-gray-900 text-center py-4'>
-        <h3 className='text-lg font-semibold tracking-wider text-pink-400'>Metronome</h3>
         <div className='items-center rounded-md py-12'>
           {getTime(timeSignature)}
         </div>
@@ -82,28 +80,23 @@ export default function Metronome() {
             <label htmlFor="bpm" className="block text-sm font-medium leading-6 text-gray-400">
               BPM
             </label>
-            <input name="bpm" id="bpm" onChange={event => setBpm(parseInt(event?.target.value))} type="number" value={bpm} pattern='\d+' disabled={playing} className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-1"/>
+            <input name="bpm" id="bpm" onChange={event => setBpm(parseInt(event?.target.value))} type="number" value={bpm} pattern='\d+' disabled={props.playing} className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-1"/>
           </div>
           <div className='flow-root grid-cols-1 px-1 leading-none align-middle'>
             <label htmlFor="timeSignature" className="block text-sm font-medium leading-6 text-gray-400">
               Subdivisions
             </label>
-            <input name="timeSignature" id="timeSignature"  onChange={event => setTimeSignature(parseInt(event?.target.value))} type="number" value={timeSignature} pattern='\d+'  disabled={playing} className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-1"/>
+            <input name="timeSignature" id="timeSignature"  onChange={event => setTimeSignature(parseInt(event?.target.value))} type="number" value={timeSignature} pattern='\d+'  disabled={props.playing} className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-1"/>
           </div>
           <div className='flow-root grid-cols-1 px-1 leading-none align-middle'>
             <label htmlFor="checkbox" className="block text-sm font-medium leading-6 text-gray-400">
               Up Beat
             </label>
             <label className="relative inline-flex items-center cursor-pointer my-2">
-              <input type="checkbox" checked={upBeat} className="sr-only peer" onChange={() => setUpBeat(!upBeat)} disabled={playing}/>
+              <input type="checkbox" checked={upBeat} className="sr-only peer" onChange={() => setUpBeat(!upBeat)} disabled={props.playing}/>
               <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
             </label>
           </div>
-        </div>
-        <div className='items-center px-4 py-2 rounded-md'>
-          <span onClick={() => setPlaying(!playing)} className='relative mx-auto inline-flex items-center px-4 py-2 mx-2 rounded-md shadow-lg bg-pink-400 hover:bg-pink-700 shadow-lg'>
-            <span id="play" className='text-white font-bold'>{!playing ? "Start" : "Stop"}</span>
-          </span>
         </div>
       </div>
     </>

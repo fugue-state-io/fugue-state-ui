@@ -37,7 +37,7 @@ export default function MetronomeVisualizer(props: {
   },[]);
   useEffect(() => {
     draw(canvasRef.current, props.bpm, props.subDivisions, props.duration)
-  },[props.width, props.height, props.bpm, props.subDivisions])
+  },[props.width, props.height, props.bpm, props.subDivisions, props.duration])
   return (
     <canvas ref={canvasRef} width={props.width} height={props.height}></canvas>
   )

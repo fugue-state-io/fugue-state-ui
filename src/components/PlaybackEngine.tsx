@@ -1,22 +1,27 @@
 'use client';
-import React, { useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef, ReactNode} from 'react';
 import { FileUploader } from "react-drag-drop-files";
 import { AudioVisualizer } from './AudioVisualizer';
-const fileTypes = ["MP3", "WAV", "FLAC"];
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 
-export default function PlaybackEngine() {
+const fileTypes = ["MP3", "WAV", "FLAC"];
+
+
+export default function PlaybackEngine(props: {
+  playing: boolean,
+  setPlayingCallback: Function,
+  volume: Number,
+  playbackRate: Number,
+  children?: ReactNode
+}) {
   const [file, setFile] = useState<Blob | null>(null);
   const [files, setFiles] = useState<Blob []>([]);
   const [loopPercents, setLoopPercents] = useState([0,1000]);
   const [url, setUrl] = useState("");
-  const [playing, setPlaying] = useState(false);
   const [repeat, setRepeat] = useState(true);
   const [duration, setDuration] = useState(0);
   const [elapsed, setElapsed] = useState(0);
-  const [playbackRate, setPlaybackRate] = useState(1.00);
-  const [volume, setVolume] = useState(1.00);
   const audioElem = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
@@ -35,7 +40,7 @@ export default function PlaybackEngine() {
       if (audioElem.current) {
         if (!repeat) {
           audioElem.current.pause();
-          setPlaying(false);
+          props.setPlayingCallback(false);
         }
         audioElem.current.currentTime = duration * (loopPercents[0] / 1000);
       }
@@ -43,14 +48,14 @@ export default function PlaybackEngine() {
   }, [elapsed]);
   useEffect(() => {
     if (file && audioElem.current) {
-      if (playing) {
+      if (props.playing) {
         audioElem.current.play();
       } else {
         audioElem.current.pause();
       }
     }
 
-  }, [playing, url]);
+  }, [props.playing, url]);
 
   useEffect(() => {
     if(file) {
@@ -60,10 +65,19 @@ export default function PlaybackEngine() {
   }, [file]);
 
   useEffect(() => {
-    if(volume) {
-      setElementVolume
+    if(props.volume) {
+      if(audioElem.current) {
+        audioElem.current.volume = props.volume;
+      }
     }
-  }, [volume]);
+  }, [props.volume]);
+  useEffect(() => {
+    if(props.playbackRate) {
+      if(audioElem.current) {
+        audioElem.current.playbackRate = props.playbackRate;
+      }
+    }
+  }, [props.playbackRate]);
 
   useEffect(() => {
     if(file) {
@@ -78,7 +92,7 @@ export default function PlaybackEngine() {
     }
   };
 
-  const onPlaying = () => {
+  const updateTimes = () => {
     if(audioElem.current) {
       setDuration(audioElem.current.duration);
       setElapsed(audioElem.current.currentTime)
@@ -86,21 +100,8 @@ export default function PlaybackEngine() {
       console.log("This should be disabled!")
     }
   }
-  const setElementVolume = (percents: Number []) => {
-    setVolume(Number(percents[1]));
-    if(audioElem.current) {
-      audioElem.current.volume = Number(percents[1]);
-    }
-  }
-  const setElementPlaybackRate = (percents: Number []) => { 
-    setPlaybackRate(Number(percents[1]));
-    if(audioElem.current) {
-      audioElem.current.playbackRate= Number(percents[1]);
-    }
-  }
   return (
     <div className='bg-gray-900 text-center py-4'>
-      <h3 className='text-lg font-semibold tracking-wider text-green-400'>Playback Engine</h3>
       <div className='mx-auto max-w-md'>
         <FileUploader handleChange={handleChange} name="file" types={fileTypes} />
         <ul className='text-md text-gray-400'>
@@ -117,7 +118,7 @@ export default function PlaybackEngine() {
           </div>
         </div>
         <div className={"bg-gray-900 max-w-lg mx-auto"}>
-          <RangeSlider id="range-slider-waveform" min={0} max={999} step={1} value={loopPercents} onInput={setLoopPercents} disabled={playing}>
+          <RangeSlider id="range-slider-waveform" min={0} max={999} step={1} value={loopPercents} onInput={setLoopPercents} disabled={props.playing}>
           </RangeSlider>
           <AudioVisualizer
             zoom={false}
@@ -148,53 +149,9 @@ export default function PlaybackEngine() {
             barColor={'#16A34A'}
             barPlayedColor={'#f472b6'}/>
         </div>
-        <audio src={url} ref={audioElem} onTimeUpdate={onPlaying}/>
-        <div className='max-w-md grid grid-cols-2 text-center mx-auto relative my-2'>
-          <div className='flow-root grid-cols-1 px-1 leading-none align-middle'>
-            <label htmlFor="volume" className="block text-sm font-medium leading-6 text-gray-400">
-              Volume
-            </label>
-            <RangeSlider
-              id="volume"
-              className="single-thumb"
-              defaultValue={[0, 1]}
-              min={0}
-              max={1}
-              step={0.01}
-              thumbsDisabled={[true, false]}
-              rangeSlideDisabled={true}
-              onInput={setElementVolume}/>
-            <label htmlFor="playbackRate" className="block text-sm font-medium leading-6 text-gray-400">
-              {volume * 100}%
-            </label>
-          </div>
-          <div className='flow-root grid-cols-1 px-1 leading-none align-middle'>
-            <label htmlFor="playbackRate" className="block text-sm font-medium leading-6 text-gray-400">
-              Playback Speed
-            </label>
-            <RangeSlider
-              id="playbackRate"
-              className="single-thumb"
-              defaultValue={[0, 1]}
-              min={0.2}
-              max={2}
-              step={0.01}
-              thumbsDisabled={[true, false]}
-              rangeSlideDisabled={true}
-              onInput={setElementPlaybackRate}/>
-            <label htmlFor="playbackRate" className="block text-sm font-medium leading-6 text-gray-400">
-              {playbackRate}x
-            </label>
-          </div>
-        </div>
-
-        <div className='items-center px-4 py-2 rounded-md'>
-          <span onClick={() => setPlaying(!playing)} className='relative mx-auto inline-flex items-center px-4 py-2 mx-2 rounded-md shadow-lg bg-pink-400 hover:bg-pink-700 shadow-lg'>
-            <span id="play" className='text-white font-bold'>{!playing ? "Play" : "Pause"}</span>
-          </span>
-        </div>
+        {props.children}
+        <audio src={url} ref={audioElem} onTimeUpdate={updateTimes}/>
       </div>
-      
     </div>
   )
 }
