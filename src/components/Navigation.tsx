@@ -24,13 +24,11 @@ export default function Navigation() {
           <NavLink href='#raison'>Raison D&apos;etre</NavLink>
           <NavLink href='#modus'>Modus Operandi</NavLink>
           <NavLink href='#features'>Features</NavLink>
-          <NavLink href='/blog'>Blog</NavLink>
         </div>
         <div className='py-4 flex flex-wrap justify-center space-x-6 lg:hidden'>
           <NavLink href='#raison'>Raison D&apos;etre</NavLink>
           <NavLink href='#modus'>Modus Operandi</NavLink>
           <NavLink href='#features'>Features</NavLink>
-          <NavLink href='/blog'>Blog</NavLink>
         </div>
       </nav>
     </header>

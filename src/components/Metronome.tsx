@@ -6,12 +6,13 @@ import * as Tone from 'tone';
 
 export default function Metronome(props: {
   playing: boolean,
-  setPlayingCallback: Function,
+  bpm: number,
+  subdivisions: number,
+  setBpmCallback: Function,
+  setSubdivisionsCallback: Function,
   playbackRate: Number
 }) {
   const [upBeat, setUpBeat] = useState(false);
-  const [timeSignature, setTimeSignature] = useState(4);
-  const [bpm, setBpm] = useState(60);
   const [step, setStep] = useState(0);
 
   let synth: Tone.Synth | null = null;
@@ -21,16 +22,16 @@ export default function Metronome(props: {
     Tone.Transport.cancel();
     const loop = new Tone.Loop((time: number) => {
       console.log(time)
-      const nextStep = Math.round((time) / Tone.Time(timeSignature * 4 + "n").toSeconds());
+      const nextStep = Math.round((time) / Tone.Time(props.subdivisions * 4 + "n").toSeconds());
       if (synth) {
-        if (nextStep % timeSignature == 0 && upBeat) {
+        if (nextStep % props.subdivisions == 0 && upBeat) {
           synth.triggerAttackRelease("C4", "32n", time);
         } else {
           synth.triggerAttackRelease("C3", "32n", time);
         }
       }
       setStep(nextStep);
-    }, timeSignature * 4 + "n").start();
+    }, props.subdivisions * 4 + "n").start();
     Tone.Transport.start();
   }
 
@@ -57,36 +58,36 @@ export default function Metronome(props: {
     }
   }, [props.playing]);
   useEffect(() => {
-    if (bpm) {
-      Tone.Transport.bpm.value = bpm;
+    if (props.bpm) {
+      Tone.Transport.bpm.value = props.bpm;
     }
-  }, [bpm]);
+  }, [props.bpm]);
 
   useEffect(() => {
     if (props.playing) {
       Tone.Transport.stop();
-      Tone.Transport.timeSignature = timeSignature;
+      Tone.Transport.timeSignature = props.subdivisions;
       scheduleRepeat();
     }
-  },[timeSignature]);
+  },[props.subdivisions]);
   return (
     <>
       <div className='bg-gray-900 text-center py-4'>
         <div className='items-center rounded-md py-12'>
-          {getTime(timeSignature)}
+          {getTime(props.subdivisions)}
         </div>
         <div className='max-w-md grid grid-cols-3 text-center mx-auto relative my-2'>
           <div className='flow-root grid-cols-1 px-1 leading-none align-middle'>
             <label htmlFor="bpm" className="block text-sm font-medium leading-6 text-gray-400">
               BPM
             </label>
-            <input name="bpm" id="bpm" onChange={event => setBpm(parseInt(event?.target.value))} type="number" value={bpm} pattern='\d+' disabled={props.playing} className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-1"/>
+            <input name="bpm" id="bpm" onChange={event => props.setBpmCallback(parseInt(event?.target.value))} type="number" value={props.bpm} pattern='\d+' disabled={props.playing} className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-1"/>
           </div>
           <div className='flow-root grid-cols-1 px-1 leading-none align-middle'>
             <label htmlFor="timeSignature" className="block text-sm font-medium leading-6 text-gray-400">
               Subdivisions
             </label>
-            <input name="timeSignature" id="timeSignature"  onChange={event => setTimeSignature(parseInt(event?.target.value))} type="number" value={timeSignature} pattern='\d+'  disabled={props.playing} className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-1"/>
+            <input name="timeSignature" id="timeSignature"  onChange={event => props.setSubdivisionsCallback(parseInt(event?.target.value))} type="number" value={props.subdivisions} pattern='\d+'  disabled={props.playing} className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-1"/>
           </div>
           <div className='flow-root grid-cols-1 px-1 leading-none align-middle'>
             <label htmlFor="checkbox" className="block text-sm font-medium leading-6 text-gray-400">

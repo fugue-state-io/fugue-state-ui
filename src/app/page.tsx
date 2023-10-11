@@ -1,29 +1,41 @@
 "use client";
-import MetronomeVisualizer from "fugue-state-ui/components/MetronomeVisualizer"
+import MetronomeVisualizer from "../components/MetronomeVisualizer"
 import Hero from "../components/Hero"
 import Metronome from "../components/Metronome"
 import PlaybackEngine from "../components/PlaybackEngine"
-import { useState } from "react";
+import { ReactElement, createRef, useRef, useState } from "react";
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
-import * as Tone from 'tone';
-
+import FileMenu from "../components/FileMenu";
 export default function Home() {
   const [playing, setPlaying] = useState<boolean>(false);
   const [volume, setVolume] = useState<number>(1.0);
   const [playbackRate, setPlaybackRate] = useState<number>(1.0);
+  const [bpm, setBpm] = useState<number>(60);
+  const [subdivisions, setSubdivisions] = useState<number>(4);
+  const [loopPercents, setLoopPercents] = useState<number []>([]);
+  const [duration, setDuration] = useState<number>(0);
+  const [file, setFile] = useState<Blob | null>(null);
+  const fileChanged = (file: React.SetStateAction<Blob | null>) => {
+    if (file) {
+      setFile(file);
+    }
+  };
+  const playbackEngineRef = createRef<ReactElement>();
+  const metronomeRef = createRef<ReactElement>();
   const onVolumeInput = (percents: Number []) => {
     setVolume(Number(percents[1]));
-  }
+  };
   const onPlaybackRateInput = (percents: Number []) => { 
     setPlaybackRate(Number(percents[1]));
-  }
+  };
   return (
     <main className="">
       <Hero />
-      <Metronome playing={playing} setPlayingCallback={setPlaying} playbackRate={playbackRate}/>
-      <PlaybackEngine playing={playing} setPlayingCallback={setPlaying} volume={volume} playbackRate={playbackRate}>
-        <MetronomeVisualizer width={1200} height={30} bpm={60} zoom={[0, 1]} subDivisions={4} duration={180}/>
+      <FileMenu fileTypes={["MP3", "WAV", "FLAC"]} fileChangedCallback={fileChanged}/>
+      <Metronome playing={playing} playbackRate={playbackRate} bpm={bpm} setBpmCallback={setBpm} subdivisions={subdivisions} setSubdivisionsCallback={setSubdivisions}/>
+      <PlaybackEngine playing={playing} setPlayingCallback={setPlaying} volume={volume} playbackRate={playbackRate} file={file} setDurationCallback={setDuration} setLoopPercentsCallback={setLoopPercents}>
+        <MetronomeVisualizer width={1200} height={30} bpm={bpm} zoom={true} loopPercents={loopPercents} subDivisions={subdivisions} duration={duration} style={{width:"100%"}}/>
       </PlaybackEngine>
       <div className='max-w-md grid grid-cols-2 text-center mx-auto relative my-2'>
         <div className='flow-root grid-cols-1 px-1 leading-none align-middle'>

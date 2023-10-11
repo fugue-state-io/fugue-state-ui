@@ -8,13 +8,31 @@ export const draw = (
   canvas: HTMLCanvasElement | null,
   bpm: number,
   subDivisions: number,
-  duration:number
+  width: number,
+  duration:number,
+  loopPercents: number []
 ): void => {
   let ctx = null;
   if (canvas) {
     ctx = canvas.getContext("2d");
     if (ctx) {
+      ctx.fillStyle = "#111827";
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#9CA3AF";
+
+      let totalBeats = duration * bpm / 60;
+      let totalSubdivisions = totalBeats * subDivisions;
+      let pxBetweenSub = width / totalSubdivisions
+      let pxBetweenBeat = width / totalBeats
+      for (let i = 0; i < totalSubdivisions; i++) {
+        ctx.fillRect(i * pxBetweenSub, 0, 1, 15);
+      }
+
+      for (let i = 0; i < totalBeats; i++) {
+        ctx.fillRect(i * pxBetweenBeat, 0, 1, 30);
+      }
+
+      ctx.setTransform(1 / ((loopPercents[1] / 1000) - (loopPercents[0] / 1000)), 0, 0, 1, 0, 0);
     }
   } else {
     return;
@@ -22,13 +40,14 @@ export const draw = (
 };
 
 export default function MetronomeVisualizer(props: {
-  width: string | number | undefined
-  height: string | number | undefined
-  zoom: number [],
+  width: number
+  height: number 
+  zoom: boolean,
   bpm: number,
   subDivisions : number,
   duration: number,
-  style?: React.CSSProperties
+  loopPercents: number [],
+  style?: React.CSSProperties,
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
@@ -36,9 +55,9 @@ export default function MetronomeVisualizer(props: {
     }
   },[]);
   useEffect(() => {
-    draw(canvasRef.current, props.bpm, props.subDivisions, props.duration)
-  },[props.width, props.height, props.bpm, props.subDivisions, props.duration])
+    draw(canvasRef.current, props.bpm, props.subDivisions, props.width, props.duration, props.loopPercents);
+  },[props.width, props.height, props.bpm, props.subDivisions, props.duration, props.loopPercents])
   return (
-    <canvas ref={canvasRef} width={props.width} height={props.height}></canvas>
+    <canvas ref={canvasRef} width={props.width} height={props.height} style={{...props.style}}></canvas>
   )
 }

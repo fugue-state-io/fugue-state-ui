@@ -1,22 +1,20 @@
 'use client';
 import React, { useState, useEffect, useRef, ReactNode} from 'react';
-import { FileUploader } from "react-drag-drop-files";
 import { AudioVisualizer } from './AudioVisualizer';
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 
-const fileTypes = ["MP3", "WAV", "FLAC"];
-
 
 export default function PlaybackEngine(props: {
   playing: boolean,
+  file: Blob | null,
   setPlayingCallback: Function,
+  setDurationCallback: Function,
+  setLoopPercentsCallback: Function,
   volume: Number,
   playbackRate: Number,
   children?: ReactNode
 }) {
-  const [file, setFile] = useState<Blob | null>(null);
-  const [files, setFiles] = useState<Blob []>([]);
   const [loopPercents, setLoopPercents] = useState([0,1000]);
   const [url, setUrl] = useState("");
   const [repeat, setRepeat] = useState(true);
@@ -31,8 +29,13 @@ export default function PlaybackEngine(props: {
   })
 
   useEffect(() => {
-    if(file && audioElem.current && !Number.isNaN(duration)) {
+    props.setDurationCallback(duration);
+  }, [duration])
+
+  useEffect(() => {
+    if(props.file && audioElem.current && !Number.isNaN(duration)) {
       audioElem.current.currentTime = duration * (loopPercents[0] / 1000);
+      props.setLoopPercentsCallback(loopPercents);
     }
   }, [loopPercents]);
   useEffect(() => {
@@ -47,7 +50,7 @@ export default function PlaybackEngine(props: {
     }
   }, [elapsed]);
   useEffect(() => {
-    if (file && audioElem.current) {
+    if (props.file && audioElem.current) {
       if (props.playing) {
         audioElem.current.play();
       } else {
@@ -58,19 +61,13 @@ export default function PlaybackEngine(props: {
   }, [props.playing, url]);
 
   useEffect(() => {
-    if(file) {
-      setUrl(window.URL.createObjectURL(file));
-      setFiles([...files, file]);
-    }
-  }, [file]);
-
-  useEffect(() => {
     if(props.volume) {
       if(audioElem.current) {
         audioElem.current.volume = props.volume;
       }
     }
   }, [props.volume]);
+
   useEffect(() => {
     if(props.playbackRate) {
       if(audioElem.current) {
@@ -80,17 +77,10 @@ export default function PlaybackEngine(props: {
   }, [props.playbackRate]);
 
   useEffect(() => {
-    if(file) {
-      setUrl(window.URL.createObjectURL(file));
-      setFiles([...files, file]);
+    if(props.file) {
+      setUrl(window.URL.createObjectURL(props.file));
     }
-  }, [file]);
-
-  const handleChange = (file: React.SetStateAction<Blob | null>) => {
-    if (file) {
-      setFile(file);
-    }
-  };
+  }, [props.file]);
 
   const updateTimes = () => {
     if(audioElem.current) {
@@ -102,13 +92,7 @@ export default function PlaybackEngine(props: {
   }
   return (
     <div className='bg-gray-900 text-center py-4'>
-      <div className='mx-auto max-w-md'>
-        <FileUploader handleChange={handleChange} name="file" types={fileTypes} />
-        <ul className='text-md text-gray-400'>
-          {files.map((item: Blob, index: number) => <li key={index}>{item.name}</li>)}
-        </ul>
-      </div>
-      <div className={file ? "" : "hidden"}>
+      <div className={props.file ? "" : "hidden"}>
         <div className='max-w-3xl grid grid-cols-2 text-center mx-auto relative my-2'>
           <div className='flow-root grid-cols-2 px-1 border-r leading-none align-middle'>
             <span className='text-base text-gray-400 float-right'>{Math.round(elapsed * 100) / 100}</span>
@@ -125,7 +109,7 @@ export default function PlaybackEngine(props: {
             startPercentage={loopPercents[0] / 1000}
             stopPercentage={loopPercents[1] / 1000}
             style={{"width": "100%"}}
-            blob={file}
+            blob={props.file}
             width={1200}
             height={75}
             barWidth={1}
@@ -140,7 +124,7 @@ export default function PlaybackEngine(props: {
             startPercentage={loopPercents[0] / 1000}
             stopPercentage={loopPercents[1] / 1000}
             style={{"width": "100%"}}
-            blob={file}
+            blob={props.file}
             width={1200}
             height={300}
             barWidth={1}
@@ -148,8 +132,8 @@ export default function PlaybackEngine(props: {
             gap={0}
             barColor={'#16A34A'}
             barPlayedColor={'#f472b6'}/>
+          {props.children}
         </div>
-        {props.children}
         <audio src={url} ref={audioElem} onTimeUpdate={updateTimes}/>
       </div>
     </div>
