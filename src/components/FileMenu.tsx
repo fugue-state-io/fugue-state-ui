@@ -16,11 +16,13 @@ export default function MetronomeVisualizer(props: {
     }
   };
   return (
-  <div className='mx-auto max-w-md'>
-    <FileUploader handleChange={props.fileChangedCallback} name="file" types={props.fileTypes} />
-    <ul className='text-md text-gray-400'>
-      {files.map((item: Blob, index: number) => <li key={index}>{item.name}</li>)}
-    </ul>
+  <div className='bg-gray-900'>
+    <div className='mx-auto max-w-md'>
+      <FileUploader handleChange={fileChanged} name="file" types={props.fileTypes} />
+      <ul className='text-md text-gray-400'>
+        {files.map((item: Blob, index: number) => <li key={index}>{item.name}</li>)}
+      </ul>
+    </div>
   </div>
   )
 }

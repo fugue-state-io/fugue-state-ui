@@ -3,10 +3,12 @@ import MetronomeVisualizer from "../components/MetronomeVisualizer"
 import Hero from "../components/Hero"
 import Metronome from "../components/Metronome"
 import PlaybackEngine from "../components/PlaybackEngine"
-import { ReactElement, createRef, useRef, useState } from "react";
+import { ReactElement, createRef, useEffect, useRef, useState } from "react";
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 import FileMenu from "../components/FileMenu";
+
+
 export default function Home() {
   const [playing, setPlaying] = useState<boolean>(false);
   const [volume, setVolume] = useState<number>(1.0);
@@ -16,13 +18,12 @@ export default function Home() {
   const [loopPercents, setLoopPercents] = useState<number []>([]);
   const [duration, setDuration] = useState<number>(0);
   const [file, setFile] = useState<Blob | null>(null);
+  const [audioBuffer, setAudioBuffer] = useState<AudioBuffer | null>(null);
   const fileChanged = (file: React.SetStateAction<Blob | null>) => {
     if (file) {
       setFile(file);
     }
   };
-  const playbackEngineRef = createRef<ReactElement>();
-  const metronomeRef = createRef<ReactElement>();
   const onVolumeInput = (percents: Number []) => {
     setVolume(Number(percents[1]));
   };

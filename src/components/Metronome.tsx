@@ -14,6 +14,7 @@ export default function Metronome(props: {
 }) {
   const [upBeat, setUpBeat] = useState(false);
   const [step, setStep] = useState(0);
+  const [enabled, setEnabled] = useState(true);
 
   let synth: Tone.Synth | null = null;
 
@@ -23,7 +24,7 @@ export default function Metronome(props: {
     const loop = new Tone.Loop((time: number) => {
       console.log(time)
       const nextStep = Math.round((time) / Tone.Time(props.subdivisions * 4 + "n").toSeconds());
-      if (synth) {
+      if (synth && enabled) {
         if (nextStep % props.subdivisions == 0 && upBeat) {
           synth.triggerAttackRelease("C4", "32n", time);
         } else {
@@ -76,7 +77,7 @@ export default function Metronome(props: {
         <div className='items-center rounded-md py-12'>
           {getTime(props.subdivisions)}
         </div>
-        <div className='max-w-md grid grid-cols-3 text-center mx-auto relative my-2'>
+        <div className='max-w-md grid grid-cols-4 text-center mx-auto relative my-2'>
           <div className='flow-root grid-cols-1 px-1 leading-none align-middle'>
             <label htmlFor="bpm" className="block text-sm font-medium leading-6 text-gray-400">
               BPM
@@ -95,6 +96,15 @@ export default function Metronome(props: {
             </label>
             <label className="relative inline-flex items-center cursor-pointer my-2">
               <input type="checkbox" checked={upBeat} className="sr-only peer" onChange={() => setUpBeat(!upBeat)} disabled={props.playing}/>
+              <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+            </label>
+          </div>
+          <div className='flow-root grid-cols-1 px-1 leading-none align-middle'>
+            <label htmlFor="checkbox" className="block text-sm font-medium leading-6 text-gray-400">
+              Enabled
+            </label>
+            <label className="relative inline-flex items-center cursor-pointer my-2">
+              <input type="checkbox" checked={enabled} className="sr-only peer" onChange={() => setEnabled(!enabled)} disabled={props.playing}/>
               <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
             </label>
           </div>

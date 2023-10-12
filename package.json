@@ -18,6 +18,8 @@
     "autoprefixer": "10.4.14",
     "eslint": "8.46.0",
     "eslint-config-next": "13.4.12",
+    "gl-react": "^5.2.0",
+    "gl-react-dom": "^5.2.1",
     "next": "^13.5.4",
     "postcss": "8.4.27",
     "range-slider-input": "^2.4.4",

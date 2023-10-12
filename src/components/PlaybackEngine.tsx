@@ -11,8 +11,8 @@ export default function PlaybackEngine(props: {
   setPlayingCallback: Function,
   setDurationCallback: Function,
   setLoopPercentsCallback: Function,
-  volume: Number,
-  playbackRate: Number,
+  volume: number,
+  playbackRate: number,
   children?: ReactNode
 }) {
   const [loopPercents, setLoopPercents] = useState([0,1000]);
@@ -110,7 +110,7 @@ export default function PlaybackEngine(props: {
             stopPercentage={loopPercents[1] / 1000}
             style={{"width": "100%"}}
             blob={props.file}
-            width={1200}
+            width={10000}
             height={75}
             barWidth={1}
             currentTime={elapsed}
@@ -125,7 +125,7 @@ export default function PlaybackEngine(props: {
             stopPercentage={loopPercents[1] / 1000}
             style={{"width": "100%"}}
             blob={props.file}
-            width={1200}
+            width={10000}
             height={300}
             barWidth={1}
             currentTime={elapsed}

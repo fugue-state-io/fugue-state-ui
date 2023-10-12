@@ -32,7 +32,7 @@ export const draw = (
         ctx.fillRect(i * pxBetweenBeat, 0, 1, 30);
       }
 
-      ctx.setTransform(1 / ((loopPercents[1] / 1000) - (loopPercents[0] / 1000)), 0, 0, 1, 0, 0);
+      ctx.setTransform(1 / ((loopPercents[1] / 1000) - (loopPercents[0] / 1000)), 0, 0, 1, -width * (loopPercents[0] / 1000) / (loopPercents[1] /1000 - loopPercents[0] /1000), 0);
     }
   } else {
     return;
