@@ -25,11 +25,11 @@ export const draw = (
       let pxBetweenSub = width / totalSubdivisions
       let pxBetweenBeat = width / totalBeats
       for (let i = 0; i < totalSubdivisions; i++) {
-        ctx.fillRect(i * pxBetweenSub, 0, 1, 15);
+        ctx.fillRect(i * pxBetweenSub, 0, 1, 30);
       }
 
       for (let i = 0; i < totalBeats; i++) {
-        ctx.fillRect(i * pxBetweenBeat, 0, 1, 30);
+        ctx.fillRect(i * pxBetweenBeat, 0, 1, 60);
       }
 
       ctx.setTransform(1 / ((loopPercents[1] / 1000) - (loopPercents[0] / 1000)), 0, 0, 1, -width * (loopPercents[0] / 1000) / (loopPercents[1] /1000 - loopPercents[0] /1000), 0);

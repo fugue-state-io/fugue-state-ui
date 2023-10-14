@@ -102,16 +102,16 @@ export default function PlaybackEngine(props: {
           </div>
         </div>
         <div className={"bg-gray-900 max-w-lg mx-auto"}>
-          <RangeSlider id="range-slider-waveform" min={0} max={999} step={1} value={loopPercents} onInput={setLoopPercents} disabled={props.playing}>
+          <RangeSlider id="range-slider-waveform" min={0} max={1000} step={1} value={loopPercents} onInput={setLoopPercents} disabled={props.playing}>
           </RangeSlider>
           <AudioVisualizer
             zoom={false}
             startPercentage={loopPercents[0] / 1000}
             stopPercentage={loopPercents[1] / 1000}
-            style={{"width": "100%"}}
+            style={{"width": "100%", "height":"100%"}}
             blob={props.file}
-            width={10000}
-            height={75}
+            width={3000}
+            height={175}
             barWidth={1}
             currentTime={elapsed}
             gap={0}
@@ -123,10 +123,10 @@ export default function PlaybackEngine(props: {
             zoom={true}
             startPercentage={loopPercents[0] / 1000}
             stopPercentage={loopPercents[1] / 1000}
-            style={{"width": "100%"}}
+            style={{"width": "100%", "height":"100%"}}
             blob={props.file}
-            width={10000}
-            height={300}
+            width={3000}
+            height={1000}
             barWidth={1}
             currentTime={elapsed}
             gap={0}

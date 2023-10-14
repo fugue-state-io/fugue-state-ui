@@ -85,7 +85,7 @@ export const draw = (
   const ctx = canvas.getContext("2d") as CustomCanvasRenderingContext2D;
   if (!ctx) return;
   if (zoom) {
-    ctx.setTransform(1 / (stopPercentage - startPercentage), 0, 0, 1, -data.length * (startPercentage + (1 / data.length)) / (stopPercentage - startPercentage), 0);
+    ctx.setTransform(1 / (stopPercentage - startPercentage), 0, 0, 1, -data.length * (startPercentage) / (stopPercentage - startPercentage), 0);
   }
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -101,7 +101,7 @@ export const draw = (
     const played = playedPercent > mappingPercent;
     if (mappingPercent < startPercentage) {
       ctx.fillStyle = unsetColor ? unsetColor : barColor;
-    } else if (mappingPercent > startPercentage && mappingPercent < stopPercentage) {
+    } else if (mappingPercent >= startPercentage && mappingPercent < stopPercentage) {
       ctx.fillStyle = played && barPlayedColor ? barPlayedColor : barColor;
     } else if (mappingPercent > stopPercentage) {
       ctx.fillStyle = unsetColor ? unsetColor : barColor;
