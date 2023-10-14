@@ -13,12 +13,10 @@ interface CustomCanvasRenderingContext2D extends CanvasRenderingContext2D {
 export const calculateBarData = (
   buffer: AudioBuffer,
   height: number,
-  width: number,
-  barWidth: number,
   gap: number
 ): dataPoint[] => {
   const bufferData = buffer.getChannelData(0);
-  const units = width / (barWidth + gap);
+  const units = 1;
   const step = Math.floor(bufferData.length / units);
   const amp = height / 2;
 
