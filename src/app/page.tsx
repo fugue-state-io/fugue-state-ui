@@ -7,7 +7,6 @@ import { ReactElement, createRef, useEffect, useRef, useState } from "react";
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 import FileMenu from "../components/FileMenu";
-import WaveformVisualizer from "../components/WaveformVisualizer";
 
 
 export default function Home() {
