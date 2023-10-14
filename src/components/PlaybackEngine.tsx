@@ -110,29 +110,25 @@ export default function PlaybackEngine(props: {
             stopPercentage={loopPercents[1] / 1000}
             style={{"width": "100%", "height":"100%"}}
             blob={props.file}
-            width={3000}
-            height={175}
-            barWidth={1}
+            width={2000}
+            height={125}
             currentTime={elapsed}
-            gap={0}
             barColor={'#16A34A'}
             barPlayedColor={'#f472b6'}/>
         </div>
         <div className="bg-gray-900 max-w-3xl mx-auto">
+        {props.children}
         <AudioVisualizer
             zoom={true}
             startPercentage={loopPercents[0] / 1000}
             stopPercentage={loopPercents[1] / 1000}
             style={{"width": "100%", "height":"100%"}}
             blob={props.file}
-            width={3000}
-            height={1000}
-            barWidth={1}
+            width={2000}
+            height={800}
             currentTime={elapsed}
-            gap={0}
             barColor={'#16A34A'}
             barPlayedColor={'#f472b6'}/>
-          {props.children}
         </div>
         <audio src={url} ref={audioElem} onTimeUpdate={updateTimes}/>
       </div>

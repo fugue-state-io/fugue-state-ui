@@ -9,7 +9,7 @@ export default function MetronomeVisualizer(props: {
 }) {
   
   const [files, setFiles] = useState<Blob []>([]);
-  const fileChanged = (file: React.SetStateAction<Blob | null>) => {
+  const fileChanged = (file: Blob) => {
     if (file) {
       setFiles([file, ...files]);
       props.fileChangedCallback(file);

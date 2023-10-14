@@ -20,7 +20,7 @@ export const draw = (
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.fillStyle = "#9CA3AF";
 
-      let totalBeats = duration * bpm / 60;
+      let totalBeats = duration * bpm / 120;
       let totalSubdivisions = totalBeats * subDivisions;
       let pxBetweenSub = width / totalSubdivisions
       let pxBetweenBeat = width / totalBeats
@@ -29,7 +29,7 @@ export const draw = (
       }
 
       for (let i = 0; i < totalBeats; i++) {
-        ctx.fillRect(i * pxBetweenBeat, 0, 1, 60);
+        ctx.fillRect(i * pxBetweenBeat - 1, 0, 3, 60);
       }
 
       ctx.setTransform(1 / ((loopPercents[1] / 1000) - (loopPercents[0] / 1000)), 0, 0, 1, -width * (loopPercents[0] / 1000) / (loopPercents[1] /1000 - loopPercents[0] /1000), 0);

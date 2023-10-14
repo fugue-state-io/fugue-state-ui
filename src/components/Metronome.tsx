@@ -23,7 +23,7 @@ export default function Metronome(props: {
     Tone.Transport.cancel();
     const loop = new Tone.Loop((time: number) => {
       console.log(time)
-      const nextStep = Math.round((time) / Tone.Time(props.subdivisions * 4 + "n").toSeconds());
+      const nextStep = Math.round((time) / Tone.Time(props.subdivisions * 2 + "n").toSeconds());
       if (synth && enabled) {
         if (nextStep % props.subdivisions == 0 && upBeat) {
           synth.triggerAttackRelease("C4", "32n", time);
@@ -32,7 +32,7 @@ export default function Metronome(props: {
         }
       }
       setStep(nextStep);
-    }, props.subdivisions * 4 + "n").start();
+    }, props.subdivisions * 2 + "n").start();
     Tone.Transport.start();
   }
 
@@ -72,11 +72,8 @@ export default function Metronome(props: {
     }
   },[props.subdivisions]);
   return (
-    <>
+    <div>
       <div className='bg-gray-900 text-center py-4'>
-        <div className='items-center rounded-md py-12'>
-          {getTime(props.subdivisions)}
-        </div>
         <div className='max-w-md grid grid-cols-4 text-center mx-auto relative my-2'>
           <div className='flow-root grid-cols-1 px-1 leading-none align-middle'>
             <label htmlFor="bpm" className="block text-sm font-medium leading-6 text-gray-400">
@@ -109,7 +106,10 @@ export default function Metronome(props: {
             </label>
           </div>
         </div>
+        <div className={enabled ? "items-center rounded-md py-12" : "items-center rounded-md py-12 hidden"}>
+          {getTime(props.subdivisions)}
+        </div>
       </div>
-    </>
+    </div>
   )
 }

@@ -71,8 +71,6 @@ export const draw = (
   stopPercentage: number,
   data: dataPoint[],
   canvas: HTMLCanvasElement,
-  barWidth: number,
-  gap: number,
   backgroundColor: string,
   barColor: string,
   barPlayedColor?: string,
@@ -107,9 +105,9 @@ export const draw = (
       ctx.fillStyle = unsetColor ? unsetColor : barColor;
     }
 
-    const x = i * (barWidth + gap);
+    const x = i;
     const y = amp + dp.min;
-    const w = barWidth;
+    const w = 3;
     const h = amp + dp.max - y;
 
     ctx.beginPath();
