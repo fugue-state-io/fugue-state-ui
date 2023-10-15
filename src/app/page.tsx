@@ -47,7 +47,7 @@ export default function Home() {
       <FileMenu fileTypes={["MP3", "WAV", "FLAC"]} fileChangedCallback={fileChanged}/>
       <Metronome playing={playing} playbackRate={playbackRate} bpm={bpm} phaseOffset={phaseOffset} setBpmCallback={setBpm} subdivisions={subdivisions} setSubdivisionsCallback={setSubdivisions} setPhaseOffsetCallback={setPhaseOffset}/>
       <PlaybackEngine playing={playing} setPlayingCallback={setPlaying} volume={volume} playbackRate={playbackRate} file={file} setDurationCallback={setDuration} setLoopPercentsCallback={setLoopPercents} >
-        <MetronomeVisualizer width={6000} height={400} bpm={bpm} phaseOffset={phaseOffset} 
+        <MetronomeVisualizer width={1000} height={80} bpm={bpm} phaseOffset={phaseOffset} 
         zoom={true} loopPercents={loopPercents} subDivisions={subdivisions} duration={duration} style={{width:"100%"}}/>
       </PlaybackEngine>
       <div className="bg-gray-900">

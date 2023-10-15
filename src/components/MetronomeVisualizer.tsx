@@ -18,17 +18,17 @@ export const draw = (
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.fillStyle = "#9CA3AF";
 
-      let totalBeats = duration * bpm / 120;
+      let totalBeats = duration * bpm / 60;
       let totalSubdivisions = totalBeats * subDivisions;
-      let pxBetweenSub = width / totalSubdivisions
-      let pxBetweenBeat = width / totalBeats
+      let pxBetweenSub = width * 3 / totalSubdivisions
+      let pxBetweenBeat = width * 3 / totalBeats
       let pxPhaseOffset =  pxBetweenBeat * phaseOffset / 100;
       for (let i = 0; i < totalSubdivisions; i++) {
-        ctx.fillRect(i * pxBetweenSub + pxPhaseOffset, 0, 1, 30);
+        ctx.fillRect((i * pxBetweenSub) -.125 + pxPhaseOffset, 0, 0.25, 15);
       }
 
       for (let i = 0; i < totalBeats; i++) {
-        ctx.fillRect(i * pxBetweenBeat - 1 + pxPhaseOffset, 0, 3, 60);
+        ctx.fillRect((i * pxBetweenBeat) - .375 + pxPhaseOffset, 0, .75, 30);
       }
 
       ctx.setTransform(1 / ((loopPercents[1] / 1000) - (loopPercents[0] / 1000)), 0, 0, 1, -width * (loopPercents[0] / 1000) / (loopPercents[1] /1000 - loopPercents[0] /1000), 0);
@@ -58,6 +58,16 @@ export default function MetronomeVisualizer(props: {
     draw(canvasRef.current, props.bpm, props.subDivisions, props.width, props.duration, props.loopPercents, props.phaseOffset);
   },[props.width, props.height, props.bpm, props.subDivisions, props.duration, props.loopPercents, props.phaseOffset])
   return (
-    <canvas ref={canvasRef} width={props.width} height={props.height} style={{...props.style}}></canvas>
+    <div>
+      <canvas ref={canvasRef} width={props.width} height={props.height} style={{...props.style}}></canvas>
+      {/* <div>
+        <div>
+          {"First Measure : " + Math.floor((props.loopPercents[0] / 1000) * props.bpm * props.duration / 10)}
+        </div>
+        <div>
+          {"Last Measure : " + Math.ceil((props.loopPercents[1] / 1000) * props.bpm * props.duration / 10)}
+        </div>
+      </div> */}
+    </div>
   )
 }

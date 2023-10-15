@@ -101,7 +101,7 @@ export default function PlaybackEngine(props: {
             <span className='text-base text-gray-400 float-left'>{Math.round(duration * 100) / 100}</span>
           </div>
         </div>
-        <div className={"bg-gray-900 max-w-lg mx-auto"}>
+        <div className={"bg-gray-900 max-w-sm mx-auto"}>
           <RangeSlider id="range-slider-waveform" min={0} max={1000} step={1} value={loopPercents} onInput={setLoopPercents} disabled={props.playing}>
           </RangeSlider>
           <AudioVisualizer
@@ -110,8 +110,8 @@ export default function PlaybackEngine(props: {
             stopPercentage={loopPercents[1] / 1000}
             style={{"width": "100%", "height":"100%"}}
             blob={props.file}
-            width={2000}
-            height={125}
+            width={1000}
+            height={80}
             currentTime={elapsed}
             barColor={'#16A34A'}
             barPlayedColor={'#f472b6'}/>
@@ -123,8 +123,8 @@ export default function PlaybackEngine(props: {
             stopPercentage={loopPercents[1] / 1000}
             style={{"width": "100%", "height":"100%"}}
             blob={props.file}
-            width={2000}
-            height={800}
+            width={1000}
+            height={400}
             currentTime={elapsed}
             barColor={'#16A34A'}
             barPlayedColor={'#f472b6'}/>

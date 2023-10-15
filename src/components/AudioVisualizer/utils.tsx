@@ -85,7 +85,7 @@ export const draw = (
   const ctx = canvas.getContext("2d") as CustomCanvasRenderingContext2D;
   if (!ctx) return;
   if (zoom) {
-    ctx.setTransform(1 / (stopPercentage - startPercentage), 0, 0, 1, -data.length * (startPercentage) / (stopPercentage - startPercentage), 0);
+    ctx.setTransform(1 / (stopPercentage - startPercentage), 0, 0, 1, -data.length * 3 * (startPercentage) / (stopPercentage - startPercentage), 0);
   }
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -107,19 +107,12 @@ export const draw = (
       ctx.fillStyle = unsetColor ? unsetColor : barColor;
     }
 
-    const x = i * (barWidth + gap);
+    const x = i * 3;
     const y = amp + dp.min;
-    const w = barWidth;
+    const w = 3;
     const h = amp + dp.max - y;
 
     ctx.beginPath();
-    if (ctx.roundRect) {
-      // making sure roundRect is supported by the browser
-      ctx.roundRect(x, y, w, h, 50);
-      ctx.fill();
-    } else {
-      // fallback for browsers that do not support roundRect
-      ctx.fillRect(x, y, w, h);
-    }
+    ctx.fillRect(x, y, w, h);
   });
 };
