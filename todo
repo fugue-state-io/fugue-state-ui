@@ -1,11 +1,5 @@
 make metronome programmable
-- no upbeat
 - start offset
-drone generator
-- select a drone C1-C8
 complete playback engine
-- seek
-- repeat segment
-- speed up
-- slow down
 - pitch shift
+syncronize metronome and playback
