@@ -1,8 +1,5 @@
 'use client';
-
-import Script from 'next/script';
 import React, { useState, useEffect, useRef } from 'react';
-import * as Tone from 'tone';
 
 export const draw = (
   canvas: HTMLCanvasElement | null,
