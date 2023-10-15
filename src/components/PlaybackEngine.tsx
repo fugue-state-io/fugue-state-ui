@@ -117,7 +117,6 @@ export default function PlaybackEngine(props: {
             barPlayedColor={'#f472b6'}/>
         </div>
         <div className="bg-gray-900 max-w-3xl mx-auto">
-        {props.children}
         <AudioVisualizer
             zoom={true}
             startPercentage={loopPercents[0] / 1000}
@@ -129,6 +128,8 @@ export default function PlaybackEngine(props: {
             currentTime={elapsed}
             barColor={'#16A34A'}
             barPlayedColor={'#f472b6'}/>
+            
+        {props.children}
         </div>
         <audio src={url} ref={audioElem} onTimeUpdate={updateTimes}/>
       </div>
