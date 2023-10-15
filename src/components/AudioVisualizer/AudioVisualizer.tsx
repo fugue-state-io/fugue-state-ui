@@ -112,6 +112,8 @@ const AudioVisualizer: ForwardRefExoticComponent<
             stopPercentage,
             barsData,
             canvasRef.current,
+            barWidth,
+            gap,
             backgroundColor,
             unsetColor,
             barColor,
@@ -128,7 +130,9 @@ const AudioVisualizer: ForwardRefExoticComponent<
           const barsData = calculateBarData(
             buffer,
             height,
-            width
+            width,
+            barWidth,
+            gap
           );
           setData(barsData);
           draw(
@@ -137,6 +141,8 @@ const AudioVisualizer: ForwardRefExoticComponent<
             stopPercentage,
             barsData,
             canvasRef.current,
+            barWidth,
+            gap,
             backgroundColor,
             unsetColor,
             barColor,
@@ -157,6 +163,8 @@ const AudioVisualizer: ForwardRefExoticComponent<
         stopPercentage,
         data,
         canvasRef.current,
+        barWidth,
+        gap,
         backgroundColor,
         barColor,
         barPlayedColor,

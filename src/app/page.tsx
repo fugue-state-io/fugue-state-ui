@@ -24,6 +24,16 @@ export default function Home() {
       setFile(file);
     }
   };
+  const reset = () => {
+    setFile(null);
+    setDuration(0);
+    setSubdivisions(4);
+    setBpm(60);
+    setAudioBuffer(null);
+    setPlaybackRate(1.00);
+    setVolume(1.00);
+    setPlaying(false);
+  }
   const onVolumeInput = (percents: Number []) => {
     setVolume(Number(percents[1]));
   };
@@ -75,11 +85,16 @@ export default function Home() {
             {playbackRate.toString()}x
           </label>
         </div>
-      </div>
-      <div className='items-center px-4 py-2 rounded-md'>
-        <span onClick={() => setPlaying(!playing)} className='relative mx-auto inline-flex items-center px-4 py-2 mx-2 rounded-md shadow-lg bg-pink-400 hover:bg-pink-700 shadow-lg'>
-          <span id="play" className='text-white font-bold'>{!playing ? "Play" : "Pause"}</span>
-        </span>
+        <div className='items-center px-4 py-2 rounded-md'>
+          <span onClick={() => setPlaying(!playing)} className='relative mx-auto inline-flex items-center px-4 py-2 mx-2 rounded-md shadow-lg bg-pink-400 hover:bg-pink-700 shadow-lg'>
+            <span id="play" className='text-white font-bold'>{!playing ? "Play" : "Pause"}</span>
+          </span>
+        </div>
+        <div className='items-center px-4 py-2 rounded-md'>
+          <span onClick={() => reset()} className='relative mx-auto inline-flex items-center px-4 py-2 mx-2 rounded-md shadow-lg bg-pink-400 hover:bg-pink-700 shadow-lg'>
+            <span id="play" className='text-white font-bold'>{"Reset"}</span>
+          </span>
+        </div>
       </div>
     </main>
   )

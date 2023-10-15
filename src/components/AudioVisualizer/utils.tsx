@@ -13,10 +13,12 @@ interface CustomCanvasRenderingContext2D extends CanvasRenderingContext2D {
 export const calculateBarData = (
   buffer: AudioBuffer,
   height: number,
+  width: number,
+  barWidth: number,
   gap: number
 ): dataPoint[] => {
   const bufferData = buffer.getChannelData(0);
-  const units = 1;
+  const units = width / (barWidth + gap);
   const step = Math.floor(bufferData.length / units);
   const amp = height / 2;
 
@@ -69,6 +71,8 @@ export const draw = (
   stopPercentage: number,
   data: dataPoint[],
   canvas: HTMLCanvasElement,
+  barWidth: number,
+  gap: number,
   backgroundColor: string,
   barColor: string,
   barPlayedColor?: string,
@@ -103,9 +107,9 @@ export const draw = (
       ctx.fillStyle = unsetColor ? unsetColor : barColor;
     }
 
-    const x = i;
+    const x = i * (barWidth + gap);
     const y = amp + dp.min;
-    const w = 3;
+    const w = barWidth;
     const h = amp + dp.max - y;
 
     ctx.beginPath();
