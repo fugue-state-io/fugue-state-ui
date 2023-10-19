@@ -46,9 +46,9 @@ export default function Home() {
       <Hero />
       <FileMenu fileTypes={["MP3", "WAV", "FLAC"]} fileChangedCallback={fileChanged}/>
       <Metronome playing={playing} playbackRate={playbackRate} bpm={bpm} phaseOffset={phaseOffset} setBpmCallback={setBpm} subdivisions={subdivisions} setSubdivisionsCallback={setSubdivisions} setPhaseOffsetCallback={setPhaseOffset}/>
-      <PlaybackEngine playing={playing} setPlayingCallback={setPlaying} volume={volume} playbackRate={playbackRate} file={file} setDurationCallback={setDuration} setLoopPercentsCallback={setLoopPercents} >
-        <MetronomeVisualizer width={1000} height={80} bpm={bpm} phaseOffset={phaseOffset} 
-        zoom={true} loopPercents={loopPercents} subDivisions={subdivisions} duration={duration} style={{width:"100%"}}/>
+      <PlaybackEngine playing={playing} setPlayingCallback={setPlaying} volume={volume} playbackRate={playbackRate} bpm={bpm} phaseOffset={phaseOffset} subDivisions={subdivisions} file={file} setDurationCallback={setDuration} setLoopPercentsCallback={setLoopPercents} >
+        {/* <MetronomeVisualizer width={1000} height={80} bpm={bpm} phaseOffset={phaseOffset} 
+        zoom={true} loopPercents={loopPercents} subDivisions={subdivisions} duration={duration} style={{width:"100%"}}/> */}
       </PlaybackEngine>
       <div className="bg-gray-900">
         <div className='max-w-md grid grid-cols-2 text-center mx-auto relative'>

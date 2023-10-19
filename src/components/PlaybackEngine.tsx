@@ -13,6 +13,9 @@ export default function PlaybackEngine(props: {
   setLoopPercentsCallback: Function,
   volume: number,
   playbackRate: number,
+  bpm: number,
+  subDivisions: number,
+  phaseOffset: number,
   children?: ReactNode
 }) {
   const [loopPercents, setLoopPercents] = useState([0,1000]);
@@ -106,6 +109,10 @@ export default function PlaybackEngine(props: {
           </RangeSlider>
           <AudioVisualizer
             zoom={false}
+            metronomeRuler={false}
+            bpm={props.bpm}
+            subDivisions={props.subDivisions}
+            phaseOffset={props.phaseOffset}
             startPercentage={loopPercents[0] / 1000}
             stopPercentage={loopPercents[1] / 1000}
             style={{"width": "100%", "height":"100%"}}
@@ -119,6 +126,10 @@ export default function PlaybackEngine(props: {
         <div className="bg-gray-900 max-w-3xl mx-auto">
         <AudioVisualizer
             zoom={true}
+            metronomeRuler={true}
+            bpm={props.bpm}
+            subDivisions={props.subDivisions}
+            phaseOffset={props.phaseOffset}
             startPercentage={loopPercents[0] / 1000}
             stopPercentage={loopPercents[1] / 1000}
             style={{"width": "100%", "height":"100%"}}

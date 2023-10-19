@@ -63,6 +63,11 @@ interface Props {
   ref?: React.ForwardedRef<HTMLCanvasElement | null>;
 
   zoom: boolean;
+  bpm: number;
+  subDivisions: number;
+  phaseOffset: number;
+  duration: number;
+  metronomeRuler: boolean;
 }
 
 const AudioVisualizer: ForwardRefExoticComponent<
@@ -75,8 +80,8 @@ const AudioVisualizer: ForwardRefExoticComponent<
       blob,
       width,
       height,
-      barWidth = 2,
-      gap = 1,
+      barWidth = 3,
+      gap = 0,
       currentTime,
       style,
       backgroundColor = "transparent",
@@ -84,6 +89,10 @@ const AudioVisualizer: ForwardRefExoticComponent<
       barPlayedColor = "rgb(160, 198, 255)",
       unsetColor = "rgb(107, 114, 128)",
       zoom = false,
+      metronomeRuler = true,
+      subDivisions,
+      phaseOffset,
+      bpm,
     }: Props,
     ref?: ForwardedRef<HTMLCanvasElement>
   ) => {
@@ -108,13 +117,17 @@ const AudioVisualizer: ForwardRefExoticComponent<
           }));
           draw(
             zoom,
+            metronomeRuler,
             startPercentage,
             stopPercentage,
             barsData,
             canvasRef.current,
-            barWidth,
-            gap,
             backgroundColor,
+            currentTime,
+            duration,
+            bpm,
+            subDivisions,
+            phaseOffset,
             unsetColor,
             barColor,
             barPlayedColor,
@@ -137,13 +150,17 @@ const AudioVisualizer: ForwardRefExoticComponent<
           setData(barsData);
           draw(
             zoom,
+            metronomeRuler,
             startPercentage,
             stopPercentage,
             barsData,
             canvasRef.current,
-            barWidth,
-            gap,
             backgroundColor,
+            currentTime,
+            duration,
+            bpm,
+            subDivisions,
+            phaseOffset,
             unsetColor,
             barColor,
             barPlayedColor,
@@ -159,20 +176,22 @@ const AudioVisualizer: ForwardRefExoticComponent<
 
       draw(
         zoom,
+        metronomeRuler,
         startPercentage,
         stopPercentage,
         data,
         canvasRef.current,
-        barWidth,
-        gap,
         backgroundColor,
-        barColor,
-        barPlayedColor,
-        unsetColor,
         currentTime,
         duration,
+        bpm,
+        subDivisions,
+        phaseOffset,
+        unsetColor,
+        barColor,
+        barPlayedColor,
       );
-    }, [currentTime, duration, stopPercentage]);
+    }, [currentTime, duration, startPercentage, stopPercentage, bpm, subDivisions, duration]);
 
     return (
       <canvas

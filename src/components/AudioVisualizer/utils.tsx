@@ -67,18 +67,20 @@ export const calculateBarData = (
 
 export const draw = (
   zoom: boolean = false,
+  metronomeRuler: boolean = false,
   startPercentage: number,
   stopPercentage: number,
   data: dataPoint[],
   canvas: HTMLCanvasElement,
-  barWidth: number,
-  gap: number,
   backgroundColor: string,
-  barColor: string,
-  barPlayedColor?: string,
-  unsetColor?: string,
   currentTime: number = 0,
   duration: number = 1,
+  bpm: number,
+  subDivisions: number,
+  phaseOffset: number,
+  unsetColor: string,
+  barColor: string,
+  barPlayedColor: string,
 ): void => {
   const amp = canvas.height / 2;
 
@@ -93,6 +95,24 @@ export const draw = (
     ctx.fillStyle = backgroundColor;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   }
+  ctx.fillStyle = "#111827";
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "#9CA3AF";
+  if (metronomeRuler) {
+    let totalBeats = duration * bpm / 60;
+    let totalSubdivisions = totalBeats * subDivisions;
+    let pxBetweenSub = data.length * 3 / totalSubdivisions
+    let pxBetweenBeat = data.length * 3 / totalBeats
+    let pxPhaseOffset =  pxBetweenBeat * phaseOffset / 100;
+    for (let i = 0; i < totalSubdivisions; i++) {
+      ctx.fillRect((i * pxBetweenSub) -.125 + pxPhaseOffset, 0, 0.25, 15);
+    }
+  
+    for (let i = 0; i < totalBeats; i++) {
+      ctx.fillRect((i * pxBetweenBeat) - .375 + pxPhaseOffset, 0, .75, 30);
+    }
+  }
+
 
   const playedPercent = (currentTime || 0) / duration;
 
