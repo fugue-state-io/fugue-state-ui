@@ -1,105 +1,67 @@
 "use client";
-import MetronomeVisualizer from "../components/MetronomeVisualizer"
 import Hero from "../components/Hero"
 import Metronome from "../components/Metronome"
 import PlaybackEngine from "../components/PlaybackEngine"
-import { ReactElement, createRef, useEffect, useRef, useState } from "react";
-import RangeSlider from 'react-range-slider-input';
-import 'react-range-slider-input/dist/style.css';
+import { useEffect, useState } from "react";
 import FileMenu from "../components/FileMenu";
+import PlaybackControls from "fugue-state-ui/components/PlaybackControls";
+import WaveformVisualizer from "fugue-state-ui/components/WaveformVisualizer";
+import axios from "axios";
+import { RangeSlider } from "range-slider-input";
+import WaveformMinimap from "fugue-state-ui/components/WaveformMinimap";
 
 
 export default function Home() {
   const [playing, setPlaying] = useState<boolean>(false);
   const [volume, setVolume] = useState<number>(1.0);
   const [playbackRate, setPlaybackRate] = useState<number>(1.0);
-  const [bpm, setBpm] = useState<number>(60);
-  const [subdivisions, setSubdivisions] = useState<number>(4);
-  const [loopPercents, setLoopPercents] = useState<number []>([]);
-  const [duration, setDuration] = useState<number>(0);
-  const [phaseOffset, setPhaseOffset] = useState<number>(0);
   const [file, setFile] = useState<Blob | null>(null);
-  const [audioBuffer, setAudioBuffer] = useState<AudioBuffer | null>(null);
+  const [image, setImage] = useState<string | null>(null);
   const fileChanged = (file: React.SetStateAction<Blob | null>) => {
     if (file) {
       setFile(file);
     }
   };
-  const reset = () => {
-    setFile(null);
-    setDuration(0);
-    setSubdivisions(4);
-    setBpm(60);
-    setAudioBuffer(null);
-    setPlaybackRate(1.00);
-    setVolume(1.00);
-    setPlaying(false);
-  }
   const onVolumeInput = (percents: Number []) => {
     setVolume(Number(percents[1]));
   };
   const onPlaybackRateInput = (percents: Number []) => { 
     setPlaybackRate(Number(percents[1]));
   };
+
+  useEffect(() => {
+    if (file) {
+      var formData = new FormData();
+      formData.append("file", file);
+      axios.post("http://localhost:5000/api/process_audio", formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(response => {
+        setImage(response.data);
+      }).catch((error) => {
+        console.log(error.message);
+      })
+    }
+   
+  }, [file])
   return (
-    <main className="">
+    <main className="bg-gray-900">
       <Hero />
-      <FileMenu fileTypes={["MP3", "WAV", "FLAC"]} fileChangedCallback={fileChanged}/>
-      <Metronome playing={playing} playbackRate={playbackRate} bpm={bpm} phaseOffset={phaseOffset} setBpmCallback={setBpm} subdivisions={subdivisions} setSubdivisionsCallback={setSubdivisions} setPhaseOffsetCallback={setPhaseOffset}/>
-      <PlaybackEngine playing={playing} setPlayingCallback={setPlaying} volume={volume} playbackRate={playbackRate} bpm={bpm} phaseOffset={phaseOffset} subDivisions={subdivisions} file={file} setDurationCallback={setDuration} setLoopPercentsCallback={setLoopPercents} >
-        {/* <MetronomeVisualizer width={1000} height={80} bpm={bpm} phaseOffset={phaseOffset} 
-        zoom={true} loopPercents={loopPercents} subDivisions={subdivisions} duration={duration} style={{width:"100%"}}/> */}
-      </PlaybackEngine>
-      <div className="bg-gray-900">
-        <div className='max-w-md grid grid-cols-2 text-center mx-auto relative'>
-          <div className='flow-root grid-cols-1 px-1 leading-none align-middle'>
-            <label htmlFor="volume" className="block text-sm font-medium leading-6 text-gray-400">
-              Volume
-            </label>
-            <RangeSlider
-              id="volume"
-              className="single-thumb"
-              defaultValue={[0, 1]}
-              min={0}
-              max={1}
-              step={0.01}
-              thumbsDisabled={[true, false]}
-              rangeSlideDisabled={true}
-              onInput={onVolumeInput}/>
-            <label htmlFor="playbackRate" className="block text-sm font-medium leading-6 text-gray-400">
-              {volume * 100}%
-            </label>
-          </div>
-          <div className='flow-root grid-cols-1 px-1 leading-none align-middle'>
-            <label htmlFor="playbackRate" className="block text-sm font-medium leading-6 text-gray-400">
-              Playback Speed
-            </label>
-            <RangeSlider
-              id="playbackRate"
-              className="single-thumb"
-              defaultValue={[0, 1]}
-              min={0.2}
-              max={2}
-              step={0.01}
-              thumbsDisabled={[true, false]}
-              rangeSlideDisabled={true}
-              onInput={onPlaybackRateInput}/>
-            <label htmlFor="playbackRate" className="block text-sm font-medium leading-6 text-gray-400">
-              {playbackRate.toString()}x
-            </label>
-          </div>
-          <div className='items-center px-4 py-2 rounded-md'>
-            <span onClick={() => setPlaying(!playing)} className='relative mx-auto inline-flex items-center px-4 py-2 mx-2 rounded-md shadow-lg bg-pink-400 hover:bg-pink-700 shadow-lg'>
-              <span id="play" className='text-white font-bold'>{!playing ? "Play" : "Pause"}</span>
-            </span>
-          </div>
-          <div className='items-center px-4 py-2 rounded-md'>
-            <span onClick={() => reset()} className='relative mx-auto inline-flex items-center px-4 py-2 mx-2 rounded-md shadow-lg bg-pink-400 hover:bg-pink-700 shadow-lg'>
-              <span id="play" className='text-white font-bold'>{"Reset"}</span>
-            </span>
-          </div>
+      <FileMenu fileTypes={["MP3", "WAV"]} fileChangedCallback={fileChanged}/>
+      {/* <Metronome playing={playing} playbackRate={playbackRate} bpm={bpm} phaseOffset={phaseOffset} setBpmCallback={setBpm} subdivisions={subdivisions} setSubdivisionsCallback={setSubdivisions} setPhaseOffsetCallback={setPhaseOffset}/> */}
+      <PlaybackEngine playing={playing} setPlayingCallback={setPlaying} volume={volume} playbackRate={playbackRate} file={file}>
+        <div className={"bg-gray-900 max-w-sm mx-auto"}>
+          {/* <RangeSlider id="range-slider-waveform" min={0} max={1000} step={1} value={loopPercents} onInput={setLoopPercents} disabled={props.playing}>
+          </RangeSlider> */}
+          <WaveformMinimap texture={image} style={{ height: "50px" }} height={50} width={400}></WaveformMinimap>
         </div>
-      </div>
+        <div className="bg-gray-900 max-w-3xl mx-auto">
+          <WaveformVisualizer texture={image} style={{ height: "300px" }} height={300} width={1500}></WaveformVisualizer>
+        </div>
+      </PlaybackEngine>
+      
+      <PlaybackControls playing={playing} setPlayingCallback={setPlaying} volume={volume} playbackRate={playbackRate} onPlaybackRateInput={onPlaybackRateInput} onVolumeInput={onVolumeInput}></PlaybackControls>
     </main>
   )
 }

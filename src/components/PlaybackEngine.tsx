@@ -1,46 +1,39 @@
 'use client';
-import React, { useState, useEffect, useRef, ReactNode} from 'react';
-import { AudioVisualizer } from './AudioVisualizer';
+import React, { useState, useEffect, useRef, ReactNode, createContext} from 'react';
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
+import WaveformVisualizer from './WaveformVisualizer';
 
 
 export default function PlaybackEngine(props: {
   playing: boolean,
   file: Blob | null,
   setPlayingCallback: Function,
-  setDurationCallback: Function,
-  setLoopPercentsCallback: Function,
   volume: number,
   playbackRate: number,
-  bpm: number,
-  subDivisions: number,
-  phaseOffset: number,
   children?: ReactNode
 }) {
+
+  const [startTime, setStartTime] = useState<number | null>(null);
+  const [stopTime, setStopTime] = useState<number | null>(null);
+  const [windowStartTime, setwindowStartTime] = useState<number | null>(null);
+  const [windowStopTime, setWindowStopTime] = useState<number | null>(null);
   const [loopPercents, setLoopPercents] = useState([0,1000]);
   const [url, setUrl] = useState("");
   const [repeat, setRepeat] = useState(true);
   const [duration, setDuration] = useState(0);
   const [elapsed, setElapsed] = useState(0);
   const audioElem = useRef<HTMLAudioElement>(null);
-
+  const AppContext = createContext({startTime: startTime,
+    stopTime: stopTime,
+    windowStartTime: windowStartTime,
+    windowStopTime: windowStopTime});
   useEffect(() => {
     return () => {
       window.URL.revokeObjectURL(url);
     }
   })
 
-  useEffect(() => {
-    props.setDurationCallback(duration);
-  }, [duration])
-
-  useEffect(() => {
-    if(props.file && audioElem.current && !Number.isNaN(duration)) {
-      audioElem.current.currentTime = duration * (loopPercents[0] / 1000);
-      props.setLoopPercentsCallback(loopPercents);
-    }
-  }, [loopPercents]);
   useEffect(() => {
     if(elapsed > duration * (loopPercents[1] / 1000) && !Number.isNaN(duration)) {
       if (audioElem.current) {
@@ -104,44 +97,7 @@ export default function PlaybackEngine(props: {
             <span className='text-base text-gray-400 float-left'>{Math.round(duration * 100) / 100}</span>
           </div>
         </div>
-        <div className={"bg-gray-900 max-w-sm mx-auto"}>
-          <RangeSlider id="range-slider-waveform" min={0} max={1000} step={1} value={loopPercents} onInput={setLoopPercents} disabled={props.playing}>
-          </RangeSlider>
-          <AudioVisualizer
-            zoom={false}
-            metronomeRuler={false}
-            bpm={props.bpm}
-            subDivisions={props.subDivisions}
-            phaseOffset={props.phaseOffset}
-            startPercentage={loopPercents[0] / 1000}
-            stopPercentage={loopPercents[1] / 1000}
-            style={{"width": "100%", "height":"100%"}}
-            blob={props.file}
-            width={1000}
-            height={80}
-            currentTime={elapsed}
-            barColor={'#16A34A'}
-            barPlayedColor={'#f472b6'}/>
-        </div>
-        <div className="bg-gray-900 max-w-3xl mx-auto">
-        <AudioVisualizer
-            zoom={true}
-            metronomeRuler={true}
-            bpm={props.bpm}
-            subDivisions={props.subDivisions}
-            phaseOffset={props.phaseOffset}
-            startPercentage={loopPercents[0] / 1000}
-            stopPercentage={loopPercents[1] / 1000}
-            style={{"width": "100%", "height":"100%"}}
-            blob={props.file}
-            width={1000}
-            height={400}
-            currentTime={elapsed}
-            barColor={'#16A34A'}
-            barPlayedColor={'#f472b6'}/>
-            
         {props.children}
-        </div>
         <audio src={url} ref={audioElem} onTimeUpdate={updateTimes}/>
       </div>
     </div>

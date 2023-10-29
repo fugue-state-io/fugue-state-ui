@@ -1,8 +1,8 @@
 import * as THREE from 'three'
-import React, { CSSProperties, Suspense, useEffect, useRef, useState } from 'react'
-import { Canvas, ReactThreeFiber } from '@react-three/fiber'
+import React, { CSSProperties, Suspense, createContext, useContext, useEffect, useRef, useState } from 'react'
+import { Canvas, ThreeElements } from '@react-three/fiber'
 import { TextureLoader } from 'three';
-import { OrthographicCamera } from '@react-three/drei';
+import { OrbitControls, OrthographicCamera, PerspectiveCamera } from '@react-three/drei';
 
 
 const Waveform = (props : {textureUrl: string,
@@ -11,7 +11,6 @@ const Waveform = (props : {textureUrl: string,
                            width: number}) => {
   const mesh = useRef<THREE.Mesh>(null);
   const material = useRef<THREE.MeshStandardMaterial>(null);
-  const cam = useRef<THREE.OrthographicCamera>(null);
   const color = new THREE.Color("rgb(17, 24, 39)");
   useEffect(() => {
     if (props.textureUrl) {
@@ -26,9 +25,9 @@ const Waveform = (props : {textureUrl: string,
   }, [props.textureUrl]);
   
   return (
-    <Canvas style={props.style} shadows={false} dpr={[8, 8]}>
+    <Canvas style={props.style} shadows={false} dpr={[4, 4]}>
       <ambientLight />
-      <OrthographicCamera ref={cam} makeDefault position={[-props.width / 2, 0, 1]} />
+      <OrthographicCamera makeDefault position={[0, 0, 1]} />
       <Suspense fallback={null}>
         <mesh ref={mesh}>
           <boxGeometry args={[props.width, props.height, 1]} />
@@ -39,7 +38,7 @@ const Waveform = (props : {textureUrl: string,
   );
 };
 
-export default function WaveformVisualizer(props: {texture: string | null,
+export default function WaveformMinimap(props: {texture: string | null,
                                                    style: CSSProperties
                                                    height: number,
                                                    width: number}) {
