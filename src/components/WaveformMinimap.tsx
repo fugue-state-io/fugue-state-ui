@@ -25,9 +25,9 @@ const Waveform = (props : {textureUrl: string,
   }, [props.textureUrl]);
   
   return (
-    <Canvas style={props.style} shadows={false} dpr={[4, 4]}>
+    <Canvas style={props.style} shadows={false} dpr={[4, 8]}>
       <ambientLight />
-      <OrthographicCamera makeDefault position={[0, 0, 1]} />
+      <OrthographicCamera makeDefault position={[0, 0, 1]} top={props.height/ 2} bottom={props.height/-2} />
       <Suspense fallback={null}>
         <mesh ref={mesh}>
           <boxGeometry args={[props.width, props.height, 1]} />

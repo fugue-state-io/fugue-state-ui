@@ -3,6 +3,8 @@ import React, { useState, useEffect, useRef, ReactNode, createContext} from 'rea
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 import WaveformVisualizer from './WaveformVisualizer';
+import WaveformMinimap from './WaveformMinimap';
+import axios from 'axios';
 
 
 export default function PlaybackEngine(props: {
@@ -13,21 +15,13 @@ export default function PlaybackEngine(props: {
   playbackRate: number,
   children?: ReactNode
 }) {
-
-  const [startTime, setStartTime] = useState<number | null>(null);
-  const [stopTime, setStopTime] = useState<number | null>(null);
-  const [windowStartTime, setwindowStartTime] = useState<number | null>(null);
-  const [windowStopTime, setWindowStopTime] = useState<number | null>(null);
   const [loopPercents, setLoopPercents] = useState([0,1000]);
+  const [image, setImage] = useState<string | null>(null);
   const [url, setUrl] = useState("");
   const [repeat, setRepeat] = useState(true);
   const [duration, setDuration] = useState(0);
   const [elapsed, setElapsed] = useState(0);
   const audioElem = useRef<HTMLAudioElement>(null);
-  const AppContext = createContext({startTime: startTime,
-    stopTime: stopTime,
-    windowStartTime: windowStartTime,
-    windowStopTime: windowStopTime});
   useEffect(() => {
     return () => {
       window.URL.revokeObjectURL(url);
@@ -75,9 +69,19 @@ export default function PlaybackEngine(props: {
   useEffect(() => {
     if(props.file) {
       setUrl(window.URL.createObjectURL(props.file));
+      var formData = new FormData();
+      formData.append("file", props.file);
+      axios.post("http://localhost:5000/api/process_audio", formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(response => {
+        setImage(response.data);
+      }).catch((error) => {
+        console.log(error.message);
+      })
     }
   }, [props.file]);
-
   const updateTimes = () => {
     if(audioElem.current) {
       setDuration(audioElem.current.duration);
@@ -97,7 +101,14 @@ export default function PlaybackEngine(props: {
             <span className='text-base text-gray-400 float-left'>{Math.round(duration * 100) / 100}</span>
           </div>
         </div>
-        {props.children}
+        <div className={"bg-gray-900 max-w-sm mx-auto"}>
+          <RangeSlider id="range-slider-waveform" min={0} max={1000} step={1} value={loopPercents} onInput={setLoopPercents} disabled={props.playing}>
+          </RangeSlider>
+          <WaveformMinimap texture={image} style={{ height: "50px" }} height={50} width={400}></WaveformMinimap>
+        </div>
+        <div className="bg-gray-900 max-w-3xl mx-auto">
+          <WaveformVisualizer texture={image} style={{ height: "300px"}} height={240} width={768} loopPercents={loopPercents} elapsed={elapsed / duration}></WaveformVisualizer>
+        </div>
         <audio src={url} ref={audioElem} onTimeUpdate={updateTimes}/>
       </div>
     </div>

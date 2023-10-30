@@ -3,13 +3,18 @@ import React, { CSSProperties, Suspense, useEffect, useRef, useState } from 'rea
 import { Canvas, ReactThreeFiber } from '@react-three/fiber'
 import { TextureLoader } from 'three';
 import { OrthographicCamera } from '@react-three/drei';
+import { cameraNormalMatrix } from 'three/examples/jsm/nodes/Nodes.js';
 
 
 const Waveform = (props : {textureUrl: string,
                            style: CSSProperties
                            height: number,
-                           width: number}) => {
-  const mesh = useRef<THREE.Mesh>(null);
+                           width: number,
+                           loopPercents: number [],
+                           elapsed: number}
+                          ) => {
+  const waveform_mesh = useRef<THREE.Mesh>(null);
+  const crosshair_mesh = useRef<THREE.Mesh>(null);
   const material = useRef<THREE.MeshStandardMaterial>(null);
   const cam = useRef<THREE.OrthographicCamera>(null);
   const color = new THREE.Color("rgb(17, 24, 39)");
@@ -24,15 +29,28 @@ const Waveform = (props : {textureUrl: string,
       });
     }
   }, [props.textureUrl]);
+  useEffect(() => {
+    if (cam.current) {
+      cam.current.left = (props.width * ((props.loopPercents[0]) / 1000)) ;
+      cam.current.right = (props.width * (props.loopPercents[1] / 1000));
+      cam.current.top = props.height / 2;
+      cam.current.bottom = -props.height / 2;
+      cam.current.updateProjectionMatrix();
+    }
+  }, [props.loopPercents, props.elapsed, props.textureUrl]);
   
   return (
-    <Canvas style={props.style} shadows={false} dpr={[8, 8]}>
+    <Canvas style={props.style} shadows={false} dpr={[4, 8]}>
       <ambientLight />
-      <OrthographicCamera ref={cam} makeDefault position={[-props.width / 2, 0, 1]} />
+      <OrthographicCamera ref={cam} makeDefault position={[0, 0, 3]}/>
       <Suspense fallback={null}>
-        <mesh ref={mesh}>
+        <mesh ref={waveform_mesh} position={[props.width / 2,0,1]}>
           <boxGeometry args={[props.width, props.height, 1]} />
           <meshStandardMaterial ref={material} transparent opacity={1}/>
+        </mesh>
+        <mesh ref={crosshair_mesh} position={[(props.width * props.elapsed), 0, 2]}>
+          <boxGeometry args={[1, props.height, 1]} />
+          <meshStandardMaterial transparent opacity={1}/>
         </mesh>
       </Suspense>
     </Canvas>
@@ -42,7 +60,9 @@ const Waveform = (props : {textureUrl: string,
 export default function WaveformVisualizer(props: {texture: string | null,
                                                    style: CSSProperties
                                                    height: number,
-                                                   width: number}) {
+                                                   width: number,
+                                                   loopPercents: number [],
+                                                   elapsed: number}) {
   const [textureUrl, setTextureUrl] = useState<string>("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIW2MoXDr9PwAF5QKtsumckAAAAABJRU5ErkJggg==")
   useEffect(() => {
     if (props.texture) {
@@ -50,6 +70,6 @@ export default function WaveformVisualizer(props: {texture: string | null,
     }
   }, [props.texture])
   return (
-    <Waveform style={props.style} height={props.height} width={props.width} textureUrl={textureUrl}></Waveform>
+    <Waveform style={props.style} height={props.height} width={props.width} textureUrl={textureUrl} loopPercents={props.loopPercents} elapsed={props.elapsed}></Waveform>
   )
 }

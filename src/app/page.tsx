@@ -16,7 +16,6 @@ export default function Home() {
   const [volume, setVolume] = useState<number>(1.0);
   const [playbackRate, setPlaybackRate] = useState<number>(1.0);
   const [file, setFile] = useState<Blob | null>(null);
-  const [image, setImage] = useState<string | null>(null);
   const fileChanged = (file: React.SetStateAction<Blob | null>) => {
     if (file) {
       setFile(file);
@@ -29,38 +28,12 @@ export default function Home() {
     setPlaybackRate(Number(percents[1]));
   };
 
-  useEffect(() => {
-    if (file) {
-      var formData = new FormData();
-      formData.append("file", file);
-      axios.post("http://localhost:5000/api/process_audio", formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }).then(response => {
-        setImage(response.data);
-      }).catch((error) => {
-        console.log(error.message);
-      })
-    }
-   
-  }, [file])
   return (
     <main className="bg-gray-900">
       <Hero />
       <FileMenu fileTypes={["MP3", "WAV"]} fileChangedCallback={fileChanged}/>
       {/* <Metronome playing={playing} playbackRate={playbackRate} bpm={bpm} phaseOffset={phaseOffset} setBpmCallback={setBpm} subdivisions={subdivisions} setSubdivisionsCallback={setSubdivisions} setPhaseOffsetCallback={setPhaseOffset}/> */}
-      <PlaybackEngine playing={playing} setPlayingCallback={setPlaying} volume={volume} playbackRate={playbackRate} file={file}>
-        <div className={"bg-gray-900 max-w-sm mx-auto"}>
-          {/* <RangeSlider id="range-slider-waveform" min={0} max={1000} step={1} value={loopPercents} onInput={setLoopPercents} disabled={props.playing}>
-          </RangeSlider> */}
-          <WaveformMinimap texture={image} style={{ height: "50px" }} height={50} width={400}></WaveformMinimap>
-        </div>
-        <div className="bg-gray-900 max-w-3xl mx-auto">
-          <WaveformVisualizer texture={image} style={{ height: "300px" }} height={300} width={1500}></WaveformVisualizer>
-        </div>
-      </PlaybackEngine>
-      
+      <PlaybackEngine playing={playing} setPlayingCallback={setPlaying} volume={volume} playbackRate={playbackRate} file={file}></PlaybackEngine>
       <PlaybackControls playing={playing} setPlayingCallback={setPlaying} volume={volume} playbackRate={playbackRate} onPlaybackRateInput={onPlaybackRateInput} onVolumeInput={onVolumeInput}></PlaybackControls>
     </main>
   )
