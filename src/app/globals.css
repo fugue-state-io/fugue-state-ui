@@ -23,7 +23,10 @@ html, body {
   padding: 0;
   border: 0;
 }
-
+canvas {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
 #range-slider-waveform {
   background: rgb(0, 0, 0, 0);
   opacity: 100%;

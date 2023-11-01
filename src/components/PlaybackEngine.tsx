@@ -29,8 +29,8 @@ export default function PlaybackEngine(props: {
   })
 
   useEffect(() => {
-    if(elapsed > duration * (loopPercents[1] / 1000) && !Number.isNaN(duration)) {
-      if (audioElem.current) {
+    if (audioElem.current) {
+      if(elapsed > duration * (loopPercents[1] / 1000) && !Number.isNaN(duration)) {
         if (!repeat) {
           audioElem.current.pause();
           props.setPlayingCallback(false);
@@ -39,6 +39,14 @@ export default function PlaybackEngine(props: {
       }
     }
   }, [elapsed]);
+  useEffect(() => {
+    if ((loopPercents[0]/ 1000) * duration> elapsed) {
+      if (audioElem.current) {
+        audioElem.current.currentTime = (loopPercents[0] / 1000) * duration;
+      }
+      setElapsed( duration * (loopPercents[0] / 1000))
+    }
+  }, [loopPercents])
   useEffect(() => {
     if (props.file && audioElem.current) {
       if (props.playing) {

@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import React, { CSSProperties, Suspense, useEffect, useRef, useState } from 'react'
-import { Canvas, ReactThreeFiber } from '@react-three/fiber'
+import { Canvas, ReactThreeFiber, useFrame } from '@react-three/fiber'
 import { TextureLoader } from 'three';
 import { OrthographicCamera } from '@react-three/drei';
 import { cameraNormalMatrix } from 'three/examples/jsm/nodes/Nodes.js';
@@ -17,7 +17,6 @@ const Waveform = (props : {textureUrl: string,
   const crosshair_mesh = useRef<THREE.Mesh>(null);
   const material = useRef<THREE.MeshStandardMaterial>(null);
   const cam = useRef<THREE.OrthographicCamera>(null);
-  const color = new THREE.Color("rgb(17, 24, 39)");
   useEffect(() => {
     if (props.textureUrl) {
       const textureLoader = new TextureLoader();
@@ -29,7 +28,9 @@ const Waveform = (props : {textureUrl: string,
       });
     }
   }, [props.textureUrl]);
-  useEffect(() => {
+
+  useFrame((state, delta, xrFrame) => {
+    
     if (cam.current) {
       cam.current.left = (props.width * ((props.loopPercents[0]) / 1000)) ;
       cam.current.right = (props.width * (props.loopPercents[1] / 1000));
@@ -37,14 +38,15 @@ const Waveform = (props : {textureUrl: string,
       cam.current.bottom = -props.height / 2;
       cam.current.updateProjectionMatrix();
     }
-  }, [props.loopPercents, props.elapsed, props.textureUrl]);
+  })
+
   
   return (
-    <Canvas style={props.style} shadows={false} dpr={[4, 8]}>
+    <>
       <ambientLight />
       <OrthographicCamera ref={cam} makeDefault position={[0, 0, 3]}/>
       <Suspense fallback={null}>
-        <mesh ref={waveform_mesh} position={[props.width / 2,0,1]}>
+        <mesh ref={waveform_mesh} position={[props.width / 2,3,1]}>
           <boxGeometry args={[props.width, props.height, 1]} />
           <meshStandardMaterial ref={material} transparent opacity={1}/>
         </mesh>
@@ -53,7 +55,7 @@ const Waveform = (props : {textureUrl: string,
           <meshStandardMaterial transparent opacity={1}/>
         </mesh>
       </Suspense>
-    </Canvas>
+    </>
   );
 };
 
@@ -70,6 +72,8 @@ export default function WaveformVisualizer(props: {texture: string | null,
     }
   }, [props.texture])
   return (
-    <Waveform style={props.style} height={props.height} width={props.width} textureUrl={textureUrl} loopPercents={props.loopPercents} elapsed={props.elapsed}></Waveform>
+    <Canvas style={props.style} shadows={false} dpr={[4, 8]}>
+      <Waveform style={props.style} height={props.height} width={props.width} textureUrl={textureUrl} loopPercents={props.loopPercents} elapsed={props.elapsed}></Waveform>
+    </Canvas>
   )
 }
