@@ -15,6 +15,9 @@ export default function Home() {
   const [playing, setPlaying] = useState<boolean>(false);
   const [volume, setVolume] = useState<number>(1.0);
   const [playbackRate, setPlaybackRate] = useState<number>(1.0);
+  const [mpm, setMpm] = useState<number>(80);
+  const [delay, setDelay] = useState<number>(0);
+  const [subdivisions, setSubdivisions] = useState<number>(4);
   const [file, setFile] = useState<Blob | null>(null);
   const fileChanged = (file: React.SetStateAction<Blob | null>) => {
     if (file) {
@@ -32,8 +35,8 @@ export default function Home() {
     <main className="bg-gray-900">
       <Hero />
       <FileMenu fileTypes={["MP3", "WAV"]} fileChangedCallback={fileChanged}/>
-      {/* <Metronome playing={playing} playbackRate={playbackRate} bpm={bpm} phaseOffset={phaseOffset} setBpmCallback={setBpm} subdivisions={subdivisions} setSubdivisionsCallback={setSubdivisions} setPhaseOffsetCallback={setPhaseOffset}/> */}
-      <PlaybackEngine playing={playing} setPlayingCallback={setPlaying} volume={volume} playbackRate={playbackRate} file={file}></PlaybackEngine>
+      <Metronome playing={playing} playbackRate={playbackRate} mpm={mpm} delay={delay} setMpm={setMpm} subdivisions={subdivisions} setSubdivisions={setSubdivisions} setDelay={setDelay}/>
+      <PlaybackEngine playing={playing} setPlayingCallback={setPlaying} volume={volume} playbackRate={playbackRate} file={file} mpm={mpm}></PlaybackEngine>
       <PlaybackControls playing={playing} setPlayingCallback={setPlaying} volume={volume} playbackRate={playbackRate} onPlaybackRateInput={onPlaybackRateInput} onVolumeInput={onVolumeInput}></PlaybackControls>
     </main>
   )

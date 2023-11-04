@@ -13,6 +13,7 @@ export default function PlaybackEngine(props: {
   setPlayingCallback: Function,
   volume: number,
   playbackRate: number,
+  mpm: number,
   children?: ReactNode
 }) {
   const [loopPercents, setLoopPercents] = useState([0,1000]);
@@ -115,7 +116,7 @@ export default function PlaybackEngine(props: {
           <WaveformMinimap texture={image} style={{ height: "50px" }} height={50} width={400}></WaveformMinimap>
         </div>
         <div className="bg-gray-900 max-w-3xl mx-auto">
-          <WaveformVisualizer texture={image} style={{ height: "300px"}} height={240} width={768} loopPercents={loopPercents} elapsed={elapsed / duration}></WaveformVisualizer>
+          <WaveformVisualizer texture={image} style={{ height: "300px"}} height={240} width={768} loopPercents={loopPercents} elapsed={elapsed / duration} duration={duration} mpm={props.mpm}></WaveformVisualizer>
         </div>
         <audio src={url} ref={audioElem} onTimeUpdate={updateTimes}/>
       </div>

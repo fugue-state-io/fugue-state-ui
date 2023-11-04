@@ -6,12 +6,12 @@ import * as Tone from 'tone';
 
 export default function Metronome(props: {
   playing: boolean,
-  bpm: number,
+  mpm: number,
   subdivisions: number,
-  phaseOffset: number,
-  setBpmCallback: Function,
-  setSubdivisionsCallback: Function,
-  setPhaseOffsetCallback: Function,
+  delay: number,
+  setMpm: Function,
+  setSubdivisions: Function,
+  setDelay: Function,
   playbackRate: Number
 }) {
   const [upBeat, setUpBeat] = useState(false);
@@ -25,7 +25,7 @@ export default function Metronome(props: {
     Tone.Transport.cancel();
     const loop = new Tone.Loop((time: number) => {
       console.log(time)
-      const nextStep = Math.round((time) / Tone.Time(props.subdivisions * 2 + "n").toSeconds());
+      const nextStep = Math.round((time) / Tone.Time(props.subdivisions * 4 + "n").toSeconds());
       if (synth && enabled) {
         if (nextStep % props.subdivisions == 0 && upBeat) {
           synth.triggerAttackRelease("C4", "32n", time);
@@ -34,7 +34,7 @@ export default function Metronome(props: {
         }
       }
       setStep(nextStep);
-    }, props.subdivisions * 2 + "n").start();
+    }, props.subdivisions * 4 + "n").start();
     Tone.Transport.start();
   }
 
@@ -61,10 +61,10 @@ export default function Metronome(props: {
     }
   }, [props.playing]);
   useEffect(() => {
-    if (props.bpm) {
-      Tone.Transport.bpm.value = props.bpm;
+    if (props.mpm) {
+      Tone.Transport.bpm.value = props.mpm;
     }
-  }, [props.bpm]);
+  }, [props.mpm]);
 
   useEffect(() => {
     if (props.playing) {
@@ -79,21 +79,21 @@ export default function Metronome(props: {
         <div className='max-w-md grid grid-cols-5 text-center mx-auto relative my-2'>
           <div className='flow-root grid-cols-1 px-1 leading-none align-middle'>
             <label htmlFor="bpm" className="block text-sm font-medium leading-6 text-gray-400">
-              BPM
+              Measures Per Minute
             </label>
-            <input name="bpm" id="bpm" onChange={event => props.setBpmCallback(parseInt(event?.target.value))} type="number" value={props.bpm} pattern='\d+' disabled={props.playing} className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-1"/>
+            <input name="bpm" id="bpm" onChange={event => props.setMpm(parseInt(event?.target.value))} type="number" value={props.mpm} pattern='\d+' disabled={props.playing} className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-1"/>
           </div>
           <div className='flow-root grid-cols-1 px-1 leading-none align-middle'>
             <label htmlFor="timeSignature" className="block text-sm font-medium leading-6 text-gray-400">
               Subdivisions
             </label>
-            <input name="timeSignature" id="timeSignature"  onChange={event => props.setSubdivisionsCallback(parseInt(event?.target.value))} type="number" value={props.subdivisions} pattern='\d+'  disabled={props.playing} className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-1"/>
+            <input name="timeSignature" id="timeSignature"  onChange={event => props.setSubdivisions(parseInt(event?.target.value))} type="number" value={props.subdivisions} pattern='\d+'  disabled={props.playing} className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-1"/>
           </div>
           <div className='flow-root grid-cols-1 px-1 leading-none align-middle'>
             <label htmlFor="phaseOffset" className="block text-sm font-medium leading-6 text-gray-400">
               Phase Offset
             </label>
-            <input name="phaseOffset" id="phaseOffset"  onChange={event => props.setPhaseOffsetCallback(parseInt(event?.target.value))} type="number" value={props.phaseOffset} pattern='\d+'  disabled={props.playing} className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-1"/>
+            <input name="phaseOffset" id="phaseOffset"  onChange={event => props.setDelay(parseInt(event?.target.value))} type="number" value={props.delay} pattern='\d+'  disabled={props.playing} className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-1"/>
           </div>
           <div className='flow-root grid-cols-1 px-1 leading-none align-middle'>
             <label htmlFor="checkbox" className="block text-sm font-medium leading-6 text-gray-400">
