@@ -2,9 +2,9 @@
 import React, { useState, useEffect, useRef, ReactNode, createContext} from 'react';
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
-import WaveformVisualizer from './WaveformVisualizer';
-import WaveformMinimap from './WaveformMinimap';
 import axios from 'axios';
+import Waveform from './Waveform';
+import WaveformSelection from './WaveformSelection';
 
 
 export default function PlaybackEngine(props: {
@@ -16,7 +16,7 @@ export default function PlaybackEngine(props: {
   mpm: number,
   children?: ReactNode
 }) {
-  const [loopPercents, setLoopPercents] = useState([0,1000]);
+  const [loopPercents, setLoopPercents] = useState([0,2048]);
   const [image, setImage] = useState<string | null>(null);
   const [url, setUrl] = useState("");
   const [repeat, setRepeat] = useState(true);
@@ -31,21 +31,21 @@ export default function PlaybackEngine(props: {
 
   useEffect(() => {
     if (audioElem.current) {
-      if(elapsed > duration * (loopPercents[1] / 1000) && !Number.isNaN(duration)) {
+      if(elapsed > duration * (loopPercents[1] / 2048) && !Number.isNaN(duration)) {
         if (!repeat) {
           audioElem.current.pause();
           props.setPlayingCallback(false);
         }
-        audioElem.current.currentTime = duration * (loopPercents[0] / 1000);
+        audioElem.current.currentTime = duration * (loopPercents[0] / 2048);
       }
     }
   }, [elapsed]);
   useEffect(() => {
-    if ((loopPercents[0]/ 1000) * duration> elapsed) {
+    if ((loopPercents[0]/ 2048) * duration > elapsed) {
       if (audioElem.current) {
-        audioElem.current.currentTime = (loopPercents[0] / 1000) * duration;
+        audioElem.current.currentTime = (loopPercents[0] / 2048) * duration;
       }
-      setElapsed( duration * (loopPercents[0] / 1000))
+      setElapsed( duration * (loopPercents[0] / 2048))
     }
   }, [loopPercents])
   useEffect(() => {
@@ -101,6 +101,7 @@ export default function PlaybackEngine(props: {
   }
   return (
     <div className='bg-gray-900 text-center py-4'>
+      <WaveformSelection bytes={image} height={64} width={256} style={{width: '100%', height: '100%'}}></WaveformSelection>
       <div className={props.file ? "" : "hidden"}>
         <div className='max-w-3xl grid grid-cols-2 text-center mx-auto relative my-2'>
           <div className='flow-root grid-cols-2 px-1 border-r leading-none align-middle'>
@@ -110,13 +111,8 @@ export default function PlaybackEngine(props: {
             <span className='text-base text-gray-400 float-left'>{Math.round(duration * 100) / 100}</span>
           </div>
         </div>
-        <div className={"bg-gray-900 max-w-sm mx-auto"}>
-          <RangeSlider id="range-slider-waveform" min={0} max={1000} step={1} value={loopPercents} onInput={setLoopPercents} disabled={props.playing}>
-          </RangeSlider>
-          <WaveformMinimap texture={image} style={{ height: "50px" }} height={50} width={400}></WaveformMinimap>
-        </div>
         <div className="bg-gray-900 max-w-3xl mx-auto">
-          <WaveformVisualizer texture={image} style={{ height: "300px"}} height={240} width={768} loopPercents={loopPercents} elapsed={elapsed / duration} duration={duration} mpm={props.mpm}></WaveformVisualizer>
+          <Waveform bytes={image} height={256} width={512} style={{width: '100%', height: '100%'}} channels={2}></Waveform>
         </div>
         <audio src={url} ref={audioElem} onTimeUpdate={updateTimes}/>
       </div>
