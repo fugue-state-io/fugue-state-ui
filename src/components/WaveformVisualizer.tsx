@@ -1,70 +1,78 @@
-import * as THREE from 'three'
-import { createRoot } from 'react-dom/client'
-import React, { useMemo, useRef, useState } from 'react'
-import { Canvas, useFrame, ThreeElements } from '@react-three/fiber'
-import { OrbitControls, OrthographicCamera } from "@react-three/drei";
-import { Color } from 'three';
+"use client";
+import { useEffect, useRef, useState } from "react";
 
-const vertexShader = `
-uniform float u_time;
+export default function WaveformVisualizer(props: { file: Blob | null }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [summaryWorker, setSummaryWorker] = useState(new Worker("worker.js"));
+  const [numberOfChannels, setNumberOfChannels] = useState<number>(1);
+  const [summaries, setSummaries] = useState<Array<{low: number, high: number}>[]  | null[]>([
+    null,
+    null,
+  ]);
 
-varying float vZ;
+  summaryWorker.onmessage = (e) => {
+    if (numberOfChannels == 2) {
+      if (e.data.channel == 0) {
+        setSummaries([e.data.summary, summaries[1]]);
+      }
+      if (e.data.channel == 1) {
+        setSummaries([summaries[0], e.data.summary]);
+      }
+    }
+    if (numberOfChannels == 1) {
+      setSummaries([e.data.summary]);
+    }
+  };
 
-void main() {
-  vec4 modelPosition = modelMatrix * vec4(position, 1.0);
-  
-  vZ = modelPosition.y;
+  useEffect(() => {
+    const processFile = async (): Promise<void> => {
+      if (props.file) {
+        const arrayBuffer = await props.file.arrayBuffer();
+        const audioContext = new AudioContext();
+        await audioContext.decodeAudioData(arrayBuffer, (buffer) => {
+          setNumberOfChannels(buffer.numberOfChannels);
+          summaryWorker.postMessage({
+            channel: 0,
+            buffer: buffer.getChannelData(0),
+          });
+          if (buffer.numberOfChannels > 1) {
+            summaryWorker.postMessage({
+              channel: 1,
+              buffer: buffer.getChannelData(1),
+            });
+          }
+        });
+      }
+    };
+    processFile();
+  }, [props.file]);
 
-  vec4 viewPosition = viewMatrix * modelPosition;
-  vec4 projectedPosition = projectionMatrix * viewPosition;
+  useEffect(() => {
+    if (canvasRef.current) {
+      const context = canvasRef.current.getContext("2d");
+      if (context) {
+        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+        context.beginPath();
+        context.strokeStyle = "#FFFFFF";
+        if (numberOfChannels == 1 && summaries[0]) {
+          for (let x = 0; x < summaries[0].length; x++) {
+            context.moveTo((x / summaries[0].length) * context.canvas.width, (summaries[0][x]["low"] * context.canvas.height) + context.canvas.height / 2);
+            context.lineTo((x / summaries[0].length) * context.canvas.width, (summaries[0][x]["high"] * context.canvas.height) + context.canvas.height / 2);
+          }
+        } else if (numberOfChannels == 2 && summaries[0] && summaries[1]) {
+          for (let x = 0; x < summaries[0].length; x++) {
+            context.moveTo((x / summaries[0].length) * context.canvas.width, (summaries[0][x]["low"] * context.canvas.height / 4) + context.canvas.height / 4);
+            context.lineTo((x / summaries[0].length) * context.canvas.width, (summaries[0][x]["high"] * context.canvas.height / 4) + context.canvas.height / 4);
+          }
+          for (let x = 0; x < summaries[1].length; x++) {
+            context.moveTo((x / summaries[1].length) * context.canvas.width, (summaries[1][x]["low"] * context.canvas.height / 4) + context.canvas.height * 3 / 4);
+            context.lineTo((x / summaries[1].length) * context.canvas.width, (summaries[1][x]["high"] * context.canvas.height / 4) + context.canvas.height * 3 / 4);
+          }
+        }
+        context.stroke()
+      }
+    }
+  }, [summaries]);
 
-  gl_Position = projectedPosition;
-}
-`
-
-const fragmentShader = `
-uniform vec3 u_colorA;
-uniform vec3 u_colorB;
-varying float vZ;
-
-
-void main() {
-  vec3 color = mix(u_colorA, u_colorB, vZ * 2.0 + 0.5); 
-  gl_FragColor = vec4(color, 1.0);
-}
-`
-
-function Waveform(props: ThreeElements['mesh']) {
-  const uniforms = useMemo(
-    () => ({
-      u_time: {
-        value: 0.0,
-      },
-      u_duration: {
-        value: 0.0,
-      },
-      u_colorA: { value: new Color("#FFFFFF") },
-      u_colorB: { value: new Color("#000000") },
-    }), []
-  );
-  const ref = useRef<THREE.Mesh>(null!)
-  return (
-    <mesh {...props} ref={ref}  scale={1.0}>
-      <planeGeometry args={[-32, -4, 32, 4]} />
-      <shaderMaterial
-        fragmentShader={fragmentShader}
-        vertexShader={vertexShader}
-        uniforms={uniforms}
-      />
-    </mesh>
-  )
-}
-
-
-export default function WaveformVisualizer() {
-  return (
-    <Canvas>
-      <Waveform position={[0, 0, 0]} />
-    </Canvas>
-  )
+  return <canvas ref={canvasRef} width="2048px" height="250px" style={{width: "100%", height: "250px"}}></canvas>;
 }
