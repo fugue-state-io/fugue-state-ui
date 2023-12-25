@@ -7,10 +7,10 @@ export default function FileMenu(props: {
   fileTypes: string[];
   fileChangedCallback: Function;
 }) {
-  const [files, setFiles] = useState<Blob[]>([]);
+  const [file, setFile] = useState<Blob>();
   const fileChanged = (file: Blob) => {
     if (file) {
-      setFiles([file, ...files]);
+      setFile(file);
       props.fileChangedCallback(file);
     }
   };
@@ -22,11 +22,7 @@ export default function FileMenu(props: {
           name="file"
           types={props.fileTypes}
         />
-        <ul className="text-md text-gray-400">
-          {files.map((item: Blob, index: number) => (
-            <li key={index}>{item.name}</li>
-          ))}
-        </ul>
+        {file ? <div>{file.name}</div> : <div></div>}
       </div>
     </div>
   );

@@ -6,6 +6,8 @@ export default function WaveformVisualizer(props: {
   elapsed: number;
   height: number;
   loopPercents: number[];
+  zoom?: boolean;
+  setElapsedConversion?: Function;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [summaryWorker, setSummaryWorker] = useState(new Worker("worker.js"));
@@ -28,6 +30,25 @@ export default function WaveformVisualizer(props: {
     }
   };
 
+  const clickEvent = (event: MouseEvent) => {
+    if (canvasRef.current && props.setElapsedConversion) {
+      let { width, height } = canvasRef.current.getBoundingClientRect();
+      console.log(event.target);
+      props.setElapsedConversion(event.offsetX / width, props.loopPercents);
+    }
+  };
+
+  useEffect(() => {
+    if (canvasRef.current && props.setElapsedConversion) {
+      console.log("setting click event");
+      canvasRef.current.addEventListener("click", clickEvent);
+      return () => {
+        console.log("unsetting click event");
+        canvasRef.current?.removeEventListener("click", clickEvent);
+      };
+    }
+  }, []);
+
   useEffect(() => {
     const processFile = async (): Promise<void> => {
       if (props.file) {
@@ -35,7 +56,6 @@ export default function WaveformVisualizer(props: {
         const audioContext = new AudioContext();
         await audioContext.decodeAudioData(arrayBuffer, (buffer) => {
           setNumberOfChannels(buffer.numberOfChannels);
-          //setNumberOfChannels(1);
           summaryWorker.postMessage({
             channel: 0,
             buffer: buffer.getChannelData(0),
@@ -56,8 +76,12 @@ export default function WaveformVisualizer(props: {
     if (canvasRef.current) {
       const context = canvasRef.current.getContext("2d");
       if (context) {
+        context.resetTransform();
         context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-
+        if (props.zoom) {
+          context.scale(1 / (props.loopPercents[1] - props.loopPercents[0]), 1);
+          context.translate(context.canvas.width * -props.loopPercents[0], 0);
+        }
         // waveforms
         if (numberOfChannels == 1 && summaries[0]) {
           // First

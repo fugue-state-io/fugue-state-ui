@@ -1,20 +1,23 @@
 "use client";
 import React, { useState, useEffect, useRef, ReactNode } from "react";
-import RangeSlider from 'react-range-slider-input';
-import 'react-range-slider-input/dist/style.css';
+import RangeSlider from "react-range-slider-input";
+import "react-range-slider-input/dist/style.css";
 import WaveformVisualizer from "./WaveformVisualizer";
+
+var count = 1;
 
 export default function PlaybackEngine(props: {
   playing: boolean;
   file: Blob | null;
+  elapsed: number;
   setPlayingCallback: Function;
   setDurationCallback: Function;
+  loopPercents: number[];
   setLoopPercentsCallback: Function;
   volume: number;
   playbackRate: number;
   children?: ReactNode;
 }) {
-  const [loopPercents, setLoopPercents] = useState([0, 1]);
   const [url, setUrl] = useState("");
   const [repeat, setRepeat] = useState(true);
   const [duration, setDuration] = useState(0);
@@ -33,19 +36,23 @@ export default function PlaybackEngine(props: {
 
   useEffect(() => {
     if (props.file && audioElem.current && !Number.isNaN(duration)) {
-      audioElem.current.currentTime = duration * loopPercents[0];
-      props.setLoopPercentsCallback(loopPercents);
+      if (audioElem.current.currentTime < duration * props.loopPercents[0]) {
+        audioElem.current.currentTime = duration * props.loopPercents[0];
+      }
+      if (audioElem.current.currentTime > duration * props.loopPercents[1]) {
+        audioElem.current.currentTime = duration * props.loopPercents[1];
+      }
     }
-  }, [loopPercents]);
+  }, [props.loopPercents]);
 
   useEffect(() => {
-    if (elapsed > duration * loopPercents[1] && !Number.isNaN(duration)) {
+    if (elapsed > duration * props.loopPercents[1] && !Number.isNaN(duration)) {
       if (audioElem.current) {
         if (!repeat) {
           audioElem.current.pause();
           props.setPlayingCallback(false);
         }
-        audioElem.current.currentTime = duration * loopPercents[0];
+        audioElem.current.currentTime = duration * props.loopPercents[0];
       }
     }
   }, [elapsed]);
@@ -90,6 +97,16 @@ export default function PlaybackEngine(props: {
       console.log("This should be disabled!");
     }
   };
+  const myCount = count;
+  count += 1;
+  const setElapsedConversion = (relativePercent: number, loopPercents: number[]) => {
+    console.log(props.loopPercents[0], props.loopPercents[1]);
+    console.log(loopPercents[0], loopPercents[1])
+    console.log(count);
+    console.log(myCount);
+    console.log(relativePercent);
+  };
+  console.log([...props.loopPercents]);
   return (
     <div className="bg-gray-900 text-center py-4">
       <div className={props.file ? "" : "hidden"}>
@@ -107,12 +124,18 @@ export default function PlaybackEngine(props: {
         </div>
         <div className={"bg-gray-900 max-w-4xl mx-auto"}>
           <div className={"bg-gray-900 max-w-md mx-auto"}>
-            <RangeSlider id="range-slider-waveform" min={0} max={1} step={0.0001} value={loopPercents} onInput={setLoopPercents}>
-            </RangeSlider>
+            <RangeSlider
+              id="range-slider-waveform"
+              min={0}
+              max={1}
+              step={0.0001}
+              value={props.loopPercents}
+              onInput={props.setLoopPercentsCallback}
+            ></RangeSlider>
             <WaveformVisualizer
               file={props.file}
               elapsed={elapsed / duration}
-              loopPercents={loopPercents}
+              loopPercents={props.loopPercents}
               height={32}
             ></WaveformVisualizer>
           </div>
@@ -120,8 +143,10 @@ export default function PlaybackEngine(props: {
           <WaveformVisualizer
             file={props.file}
             elapsed={elapsed / duration}
-            loopPercents={loopPercents}
+            loopPercents={props.loopPercents}
             height={256}
+            zoom={true}
+            setElapsedConversion={setElapsedConversion}
           ></WaveformVisualizer>
         </div>
         <audio src={url} ref={audioElem} onTimeUpdate={updateTimes} />

@@ -11,8 +11,9 @@ export default function Home() {
   const [playing, setPlaying] = useState<boolean>(false);
   const [volume, setVolume] = useState<number>(1.0);
   const [playbackRate, setPlaybackRate] = useState<number>(1.0);
-  const [loopPercents, setLoopPercents] = useState<number[]>([]);
+  const [loopPercents, setLoopPercents] = useState<number[]>([0,1]);
   const [duration, setDuration] = useState<number>(0);
+  const [elapsed, setElapsed] = useState<number>(0);
   const [file, setFile] = useState<Blob | null>(null);
   const [audioBuffer, setAudioBuffer] = useState<AudioBuffer | null>(null);
 
@@ -22,11 +23,6 @@ export default function Home() {
     }
   };
   const reset = () => {
-    setFile(null);
-    setDuration(0);
-    setAudioBuffer(null);
-    setPlaybackRate(1.0);
-    setVolume(1.0);
     setPlaying(false);
   };
   const onVolumeInput = (percents: Number[]) => {
@@ -42,14 +38,15 @@ export default function Home() {
         fileTypes={["MP3", "WAV", "FLAC"]}
         fileChangedCallback={fileChanged}
       />
-      {/* <Metronome playing={playing} playbackRate={playbackRate} bpm={bpm} phaseOffset={phaseOffset} setBpmCallback={setBpm} subdivisions={subdivisions} setSubdivisionsCallback={setSubdivisions} setPhaseOffsetCallback={setPhaseOffset}/> */}
       <PlaybackEngine
         playing={playing}
         setPlayingCallback={setPlaying}
         volume={volume}
         playbackRate={playbackRate}
         file={file}
+        elapsed={elapsed}
         setDurationCallback={setDuration}
+        loopPercents={loopPercents}
         setLoopPercentsCallback={setLoopPercents}
       ></PlaybackEngine>
       <div className="bg-gray-900">
