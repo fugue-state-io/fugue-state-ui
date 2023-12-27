@@ -10,7 +10,6 @@ export default function PlaybackEngine(props: {
   file: Blob | null;
   elapsed: number;
   setPlayingCallback: Function;
-  setDurationCallback: Function;
   loopPercents: number[];
   setLoopPercentsCallback: Function;
   volume: number;
@@ -43,7 +42,9 @@ export default function PlaybackEngine(props: {
   }, [analyser]);
   useEffect(() => {
     if (audioSource && audioContext) {
-      setAnalyser(audioContext.createAnalyser());
+      let temp = audioContext.createAnalyser();
+      temp.smoothingTimeConstant = 0;
+      setAnalyser(temp);
     }
   }, [audioSource, audioContext]);
 
@@ -52,10 +53,6 @@ export default function PlaybackEngine(props: {
       setAudioSource(audioContext.createMediaElementSource(audioElem.current));
     }
   }, [audioElem, audioContext]);
-
-  useEffect(() => {
-    props.setDurationCallback(duration);
-  }, [duration]);
 
   useEffect(() => {
     if (props.file && audioElem.current && !Number.isNaN(duration)) {

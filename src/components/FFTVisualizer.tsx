@@ -47,7 +47,6 @@ export default function GraphicEqualizer(props: {
     if (props.analyser) {
       let ffd = new Float32Array(props.analyser.frequencyBinCount);
       props.analyser.getFloatFrequencyData(ffd);
-      console.log(ffd);
       setFloatFrequencyData(ffd);
     }
   }, [props.elapsed]);

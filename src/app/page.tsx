@@ -11,10 +11,8 @@ export default function Home() {
   const [volume, setVolume] = useState<number>(1.0);
   const [playbackRate, setPlaybackRate] = useState<number>(1.0);
   const [loopPercents, setLoopPercents] = useState<number[]>([0, 1]);
-  const [duration, setDuration] = useState<number>(0);
   const [elapsed, setElapsed] = useState<number>(0);
   const [file, setFile] = useState<Blob | null>(null);
-  const [audioBuffer, setAudioBuffer] = useState<AudioBuffer | null>(null);
 
   const fileChanged = async (file: React.SetStateAction<Blob | null>) => {
     if (file) {
@@ -44,7 +42,6 @@ export default function Home() {
         playbackRate={playbackRate}
         file={file}
         elapsed={elapsed}
-        setDurationCallback={setDuration}
         loopPercents={loopPercents}
         setLoopPercentsCallback={setLoopPercents}
       ></PlaybackEngine>
