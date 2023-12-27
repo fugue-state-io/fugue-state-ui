@@ -1,6 +1,5 @@
 "use client";
-import React, { ReactNode, useEffect, useRef, useState } from "react";
-import { fileURLToPath } from "url";
+import React, { useEffect, useRef, useState } from "react";
 import GraphicEqualizer from "./GraphicEqualizer";
 
 export default function WaveformVisualizer(props: {

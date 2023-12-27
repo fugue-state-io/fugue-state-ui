@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef, ReactNode } from "react";
 import RangeSlider from "react-range-slider-input";
 import "react-range-slider-input/dist/style.css";
 import WaveformVisualizer from "./WaveformVisualizer";
+import FFTVisualizer from "./FFTVisualizer";
 
 export default function PlaybackEngine(props: {
   playing: boolean;
@@ -20,9 +21,9 @@ export default function PlaybackEngine(props: {
   const [duration, setDuration] = useState(0);
   const [elapsed, setElapsed] = useState(0);
   const audioElem = useRef<HTMLAudioElement>(null);
-  const [audioContext, setAudioContext] = useState<AudioContext>(
-    new AudioContext()
-  );
+  const [audioSource, setAudioSource] = useState<AudioNode | null>(null);
+  const [analyser, setAnalyser] = useState<AnalyserNode | null>(null);
+  const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
   const videoElem = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -30,6 +31,27 @@ export default function PlaybackEngine(props: {
       window.URL.revokeObjectURL(url);
     };
   });
+
+  useEffect(() => {
+    setAudioContext(new AudioContext());
+  }, []);
+  useEffect(() => {
+    if (audioSource && analyser && audioContext) {
+      audioSource.connect(analyser);
+      analyser.connect(audioContext?.destination);
+    }
+  }, [analyser]);
+  useEffect(() => {
+    if (audioSource && audioContext) {
+      setAnalyser(audioContext.createAnalyser());
+    }
+  }, [audioSource, audioContext]);
+
+  useEffect(() => {
+    if (audioElem.current && audioContext) {
+      setAudioSource(audioContext.createMediaElementSource(audioElem.current));
+    }
+  }, [audioElem, audioContext]);
 
   useEffect(() => {
     props.setDurationCallback(duration);
@@ -124,7 +146,7 @@ export default function PlaybackEngine(props: {
   }, [props.file]);
 
   const updateTimes = () => {
-    if (audioElem.current)  {
+    if (audioElem.current) {
       setDuration(audioElem.current.duration);
       setElapsed(audioElem.current.currentTime);
     } else {
@@ -180,6 +202,7 @@ export default function PlaybackEngine(props: {
             muted={true}
             loop={repeat}
             playsInline
+            hidden={!props.file?.name.endsWith(".mp4")}
           />
           <WaveformVisualizer
             file={props.file}
@@ -191,7 +214,12 @@ export default function PlaybackEngine(props: {
             setElapsedConversion={setElapsedConversion}
           ></WaveformVisualizer>
         </div>
-        <audio src={url} ref={audioElem} loop={repeat}/>
+        <FFTVisualizer
+          analyser={analyser}
+          elapsed={elapsed / duration}
+          height={128}
+        ></FFTVisualizer>
+        <audio src={url} ref={audioElem} loop={repeat} />
       </div>
     </div>
   );
