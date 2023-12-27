@@ -1,8 +1,11 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import React, { ReactNode, useEffect, useRef, useState } from "react";
+import { fileURLToPath } from "url";
+import GraphicEqualizer from "./GraphicEqualizer";
 
 export default function WaveformVisualizer(props: {
   file: Blob | null;
+  audioContext: AudioContext | null;
   elapsed: number;
   height: number;
   loopPercents: number[];
@@ -33,28 +36,28 @@ export default function WaveformVisualizer(props: {
   const clickEvent = (event: MouseEvent) => {
     if (canvasRef.current && props.setElapsedConversion) {
       let { width, height } = canvasRef.current.getBoundingClientRect();
-      console.log(event.target);
-      props.setElapsedConversion(event.offsetX / width, props.loopPercents);
+      props.setElapsedConversion(
+        (event.offsetX / width) *
+          (props.loopPercents[1] - props.loopPercents[0]) +
+          props.loopPercents[0]
+      );
     }
   };
 
   useEffect(() => {
     if (canvasRef.current && props.setElapsedConversion) {
-      console.log("setting click event");
       canvasRef.current.addEventListener("click", clickEvent);
       return () => {
-        console.log("unsetting click event");
         canvasRef.current?.removeEventListener("click", clickEvent);
       };
     }
-  }, []);
+  });
 
   useEffect(() => {
     const processFile = async (): Promise<void> => {
-      if (props.file) {
+      if (props.file && props.audioContext) {
         const arrayBuffer = await props.file.arrayBuffer();
-        const audioContext = new AudioContext();
-        await audioContext.decodeAudioData(arrayBuffer, (buffer) => {
+        await props.audioContext.decodeAudioData(arrayBuffer, (buffer) => {
           setNumberOfChannels(buffer.numberOfChannels);
           summaryWorker.postMessage({
             channel: 0,
@@ -70,7 +73,7 @@ export default function WaveformVisualizer(props: {
       }
     };
     processFile();
-  }, [props.file]);
+  }, [props.file, props.audioContext]);
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -302,14 +305,16 @@ export default function WaveformVisualizer(props: {
         context.stroke();
       }
     }
-  }, [summaries, props.elapsed, props.loopPercents]);
+  }, [summaries, props.elapsed, props.loopPercents, props.file]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      width="2048px"
-      height={props.height}
-      style={{ width: "100%", height: props.height.toString() + "px" }}
-    ></canvas>
+    <>
+      <canvas
+        ref={canvasRef}
+        width="2048px"
+        height={props.height}
+        style={{ width: "100%", height: props.height.toString() + "px" }}
+      ></canvas>
+    </>
   );
 }

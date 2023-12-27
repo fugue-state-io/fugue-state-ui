@@ -5,13 +5,12 @@ import { ReactElement, createRef, useEffect, useRef, useState } from "react";
 import RangeSlider from "react-range-slider-input";
 import "react-range-slider-input/dist/style.css";
 import FileMenu from "../components/FileMenu";
-import WaveSurfer from "wavesurfer.js";
 
 export default function Home() {
   const [playing, setPlaying] = useState<boolean>(false);
   const [volume, setVolume] = useState<number>(1.0);
   const [playbackRate, setPlaybackRate] = useState<number>(1.0);
-  const [loopPercents, setLoopPercents] = useState<number[]>([0,1]);
+  const [loopPercents, setLoopPercents] = useState<number[]>([0, 1]);
   const [duration, setDuration] = useState<number>(0);
   const [elapsed, setElapsed] = useState<number>(0);
   const [file, setFile] = useState<Blob | null>(null);
@@ -35,7 +34,7 @@ export default function Home() {
     <main className="">
       <Hero />
       <FileMenu
-        fileTypes={["MP3", "WAV", "FLAC"]}
+        fileTypes={["MP3", "MP4", "WAV", "FLAC"]}
         fileChangedCallback={fileChanged}
       />
       <PlaybackEngine

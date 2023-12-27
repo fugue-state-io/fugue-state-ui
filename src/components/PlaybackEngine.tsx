@@ -4,8 +4,6 @@ import RangeSlider from "react-range-slider-input";
 import "react-range-slider-input/dist/style.css";
 import WaveformVisualizer from "./WaveformVisualizer";
 
-var count = 1;
-
 export default function PlaybackEngine(props: {
   playing: boolean;
   file: Blob | null;
@@ -16,13 +14,16 @@ export default function PlaybackEngine(props: {
   setLoopPercentsCallback: Function;
   volume: number;
   playbackRate: number;
-  children?: ReactNode;
 }) {
   const [url, setUrl] = useState("");
   const [repeat, setRepeat] = useState(true);
   const [duration, setDuration] = useState(0);
   const [elapsed, setElapsed] = useState(0);
   const audioElem = useRef<HTMLAudioElement>(null);
+  const [audioContext, setAudioContext] = useState<AudioContext>(
+    new AudioContext()
+  );
+  const videoElem = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     return () => {
@@ -38,35 +39,65 @@ export default function PlaybackEngine(props: {
     if (props.file && audioElem.current && !Number.isNaN(duration)) {
       if (audioElem.current.currentTime < duration * props.loopPercents[0]) {
         audioElem.current.currentTime = duration * props.loopPercents[0];
+        audioElem.current.currentTime = duration * props.loopPercents[0];
       }
       if (audioElem.current.currentTime > duration * props.loopPercents[1]) {
         audioElem.current.currentTime = duration * props.loopPercents[1];
       }
     }
+    if (props.file && videoElem.current && !Number.isNaN(duration)) {
+      if (videoElem.current.currentTime < duration * props.loopPercents[0]) {
+        videoElem.current.currentTime = duration * props.loopPercents[0];
+        videoElem.current.currentTime = duration * props.loopPercents[0];
+      }
+      if (videoElem.current.currentTime > duration * props.loopPercents[1]) {
+        videoElem.current.currentTime = duration * props.loopPercents[1];
+      }
+    }
   }, [props.loopPercents]);
 
   useEffect(() => {
-    if (elapsed > duration * props.loopPercents[1] && !Number.isNaN(duration)) {
+    if (
+      elapsed >= duration * props.loopPercents[1] &&
+      !Number.isNaN(duration)
+    ) {
       if (audioElem.current) {
         if (!repeat) {
-          audioElem.current.pause();
           props.setPlayingCallback(false);
+          audioElem.current.pause();
         }
         audioElem.current.currentTime = duration * props.loopPercents[0];
+      }
+      if (videoElem.current) {
+        if (!repeat) {
+          videoElem.current.pause();
+        }
+        videoElem.current.currentTime = duration * props.loopPercents[0];
       }
     }
   }, [elapsed]);
 
   useEffect(() => {
-    if (props.file && audioElem.current) {
+    if (props.file && audioContext && audioElem.current) {
       if (props.playing) {
         audioElem.current.play();
       } else {
         audioElem.current.pause();
       }
     }
+    if (props.file && audioContext && videoElem.current) {
+      if (props.playing) {
+        videoElem.current.play();
+      } else {
+        videoElem.current.pause();
+      }
+    }
   }, [props.playing, url]);
-
+  useEffect(() => {
+    if (audioElem.current) {
+      setDuration(audioElem.current.duration);
+    }
+  }, [url]);
   useEffect(() => {
     if (props.volume) {
       if (audioElem.current) {
@@ -80,6 +111,9 @@ export default function PlaybackEngine(props: {
       if (audioElem.current) {
         audioElem.current.playbackRate = props.playbackRate;
       }
+      if (videoElem.current) {
+        videoElem.current.playbackRate = props.playbackRate;
+      }
     }
   }, [props.playbackRate]);
 
@@ -90,23 +124,22 @@ export default function PlaybackEngine(props: {
   }, [props.file]);
 
   const updateTimes = () => {
-    if (audioElem.current) {
+    if (audioElem.current)  {
       setDuration(audioElem.current.duration);
       setElapsed(audioElem.current.currentTime);
     } else {
       console.log("This should be disabled!");
     }
   };
-  const myCount = count;
-  count += 1;
-  const setElapsedConversion = (relativePercent: number, loopPercents: number[]) => {
-    console.log(props.loopPercents[0], props.loopPercents[1]);
-    console.log(loopPercents[0], loopPercents[1])
-    console.log(count);
-    console.log(myCount);
-    console.log(relativePercent);
+  const setElapsedConversion = (relativePercent: number) => {
+    setElapsed(relativePercent * duration);
+    if (audioElem.current) {
+      audioElem.current.currentTime = relativePercent * duration;
+    }
+    if (videoElem.current) {
+      videoElem.current.currentTime = relativePercent * duration;
+    }
   };
-  console.log([...props.loopPercents]);
   return (
     <div className="bg-gray-900 text-center py-4">
       <div className={props.file ? "" : "hidden"}>
@@ -134,14 +167,23 @@ export default function PlaybackEngine(props: {
             ></RangeSlider>
             <WaveformVisualizer
               file={props.file}
+              audioContext={audioContext}
               elapsed={elapsed / duration}
               loopPercents={props.loopPercents}
               height={32}
             ></WaveformVisualizer>
           </div>
-          {props.children}
+          <video
+            src={url}
+            ref={videoElem}
+            onTimeUpdate={updateTimes}
+            muted={true}
+            loop={repeat}
+            playsInline
+          />
           <WaveformVisualizer
             file={props.file}
+            audioContext={audioContext}
             elapsed={elapsed / duration}
             loopPercents={props.loopPercents}
             height={256}
@@ -149,7 +191,7 @@ export default function PlaybackEngine(props: {
             setElapsedConversion={setElapsedConversion}
           ></WaveformVisualizer>
         </div>
-        <audio src={url} ref={audioElem} onTimeUpdate={updateTimes} />
+        <audio src={url} ref={audioElem} loop={repeat}/>
       </div>
     </div>
   );
