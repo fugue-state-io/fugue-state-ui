@@ -138,7 +138,7 @@ export default function PlaybackEngine(props: {
 
   useEffect(() => {
     if (props.file) {
-      setUrl(window.URL.createObjectURL(props.file));
+      setUrl((URL || webkitURL).createObjectURL(props.file));
     }
   }, [props.file]);
 
