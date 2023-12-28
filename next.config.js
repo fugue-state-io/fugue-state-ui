@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ['three'],
-}
+  i18n: {
+    locales: ["en"],
+    defaultLocale: "en",
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
