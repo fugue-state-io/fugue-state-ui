@@ -40,7 +40,6 @@ export default function GraphicEqualizer(props: {
         }
       }
     }
-    console.log(floatFrequencyData);
   }, [floatFrequencyData]);
 
   useEffect(() => {
