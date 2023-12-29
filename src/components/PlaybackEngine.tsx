@@ -140,11 +140,11 @@ export default function PlaybackEngine(props: {
     if (props.file) {
       // setUrl(window.URL.createObjectURL(props.file));
       var reader = new FileReader();
-      reader.readAsDataURL(props.file)
-      reader.onloadend = function() {
+      reader.readAsDataURL(props.file);
+      reader.onloadend = function () {
         setUrl(String(reader.result));
         console.log(reader.result);
-      }
+      };
     }
   }, [props.file]);
 
@@ -152,7 +152,10 @@ export default function PlaybackEngine(props: {
     if (audioElem.current) {
       setDuration(audioElem.current.duration);
       setElapsed(audioElem.current.currentTime);
-    } else {
+    } else if (videoElem.current) {
+      setDuration(videoElem.current.duration);
+      setElapsed(videoElem.current.currentTime);
+    }else {
       console.log("This should be disabled!");
     }
   };
@@ -198,15 +201,17 @@ export default function PlaybackEngine(props: {
               height={32}
             ></WaveformVisualizer>
           </div>
-          <video
-            src={url}
-            ref={videoElem}
-            onTimeUpdate={updateTimes}
-            muted={true}
-            loop={repeat}
-            playsInline
-            hidden={!props.file?.name.endsWith(".mp4")}
-          />
+          {props.file?.name.endsWith(".mp4") ? (
+            <video
+              src={url}
+              ref={videoElem}
+              onTimeUpdate={updateTimes}
+              loop={repeat}
+              playsInline
+            />
+          ) : (
+            <audio src={url} ref={audioElem} loop={repeat} />
+          )}
           <WaveformVisualizer
             file={props.file}
             audioContext={audioContext}
@@ -222,7 +227,6 @@ export default function PlaybackEngine(props: {
           elapsed={elapsed / duration}
           height={128}
         ></FFTVisualizer>
-        <audio src={url} ref={audioElem} loop={repeat} />
       </div>
     </div>
   );
