@@ -138,7 +138,13 @@ export default function PlaybackEngine(props: {
 
   useEffect(() => {
     if (props.file) {
-      setUrl((URL || webkitURL).createObjectURL(props.file));
+      // setUrl(window.URL.createObjectURL(props.file));
+      var reader = new FileReader();
+      reader.readAsDataURL(props.file)
+      reader.onloadend = function() {
+        setUrl(String(reader.result));
+        console.log(reader.result);
+      }
     }
   }, [props.file]);
 
