@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "react-range-slider-input/dist/style.css";
 
-export default function GraphicEqualizer(props: {
+export default function FFTVisualizer(props: {
   analyser: AnalyserNode | null;
   elapsed: number;
   height: number;
@@ -43,6 +43,7 @@ export default function GraphicEqualizer(props: {
   }, [floatFrequencyData]);
 
   useEffect(() => {
+    console.log(props.analyser)
     if (props.analyser) {
       let ffd = new Float32Array(props.analyser.frequencyBinCount);
       props.analyser.getFloatFrequencyData(ffd);

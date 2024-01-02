@@ -19,6 +19,7 @@
     "@types/three": "^0.157.0",
     "@uidotdev/usehooks": "^2.3.1",
     "autoprefixer": "10.4.14",
+    "axios": "^1.6.3",
     "eslint": "8.46.0",
     "eslint-config-next": "^14.0.4",
     "gl-react": "^5.2.0",

@@ -5,10 +5,12 @@ export default function WaveformVisualizer(props: {
   file: Blob | null;
   audioContext: AudioContext | null;
   elapsed: number;
+  duration: number;
   height: number;
   loopPercents: number[];
   zoom?: boolean;
-  setElapsedConversion?: Function;
+  setElapsedCallback?: Function;
+  setDuration?: Function;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -53,18 +55,19 @@ export default function WaveformVisualizer(props: {
   }, []);
 
   const clickEvent = (event: MouseEvent) => {
-    if (canvasRef.current && props.setElapsedConversion) {
+    if (canvasRef.current && props.setElapsedCallback) {
       let { width, height } = canvasRef.current.getBoundingClientRect();
-      props.setElapsedConversion(
-        (event.offsetX / width) *
+      props.setElapsedCallback(
+        ((event.offsetX / width) *
           (props.loopPercents[1] - props.loopPercents[0]) +
-          props.loopPercents[0]
+          props.loopPercents[0]) *
+          props.duration
       );
     }
   };
 
   useEffect(() => {
-    if (canvasRef.current && props.setElapsedConversion) {
+    if (canvasRef.current && props.setElapsedCallback) {
       canvasRef.current.addEventListener("click", clickEvent);
       return () => {
         canvasRef.current?.removeEventListener("click", clickEvent);
@@ -77,6 +80,9 @@ export default function WaveformVisualizer(props: {
       if (props.file && props.audioContext) {
         const arrayBuffer = await props.file.arrayBuffer();
         await props.audioContext.decodeAudioData(arrayBuffer, (buffer) => {
+          if (props.setDuration) {
+            props.setDuration(buffer.duration);
+          }
           setNumberOfChannels(buffer.numberOfChannels);
           workerRef.current?.postMessage({
             channel: 0,

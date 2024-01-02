@@ -25,13 +25,9 @@ export default function Navigation() {
       <nav className="mx-auto flex max-w-7xl items-center justify-between gap-x-6 p-6 lg:px-8">
         <Home />
         <div className="hidden ml-10 space-x-8 lg:block">
-          <NavLink href="#raison">Raison D&apos;etre</NavLink>
-          <NavLink href="#modus">Modus Operandi</NavLink>
           <NavLink href="#features">Features</NavLink>
         </div>
         <div className="py-4 flex flex-wrap justify-center space-x-6 lg:hidden">
-          <NavLink href="#raison">Raison D&apos;etre</NavLink>
-          <NavLink href="#modus">Modus Operandi</NavLink>
           <NavLink href="#features">Features</NavLink>
         </div>
       </nav>

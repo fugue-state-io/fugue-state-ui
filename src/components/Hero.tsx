@@ -1,21 +1,5 @@
 import React from "react";
 
-function Modus() {
-  return (
-    <div
-      id="modus"
-      className="text-center py-24 relative mx-auto px-4 sm:px-6 bg-gray-900"
-    >
-      <h1 className="text-lg font-semibold tracking-wider text-green-400">
-        <span className="block">Modus Operandi</span>
-      </h1>
-      <p className="text-gray-400 tracking-tight">
-        Free, Open Source, Community Driven.
-      </p>
-    </div>
-  );
-}
-
 function Feature(props: {
   title: React.ReactNode;
   description: React.ReactNode;
@@ -55,21 +39,6 @@ function Features({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Raison() {
-  return (
-    <div
-      id="raison"
-      className="text-center py-24 relative mx-auto px-4 sm:px-6 bg-gray-900"
-    >
-      <h1 className="text-lg font-semibold tracking-wider text-green-400">
-        <span className="block">Raison D&apos;etre</span>
-      </h1>
-      <p className="text-gray-400 tracking-tight">
-        Make learning music intuitive and easy
-      </p>
-    </div>
-  );
-}
 
 export default function Hero() {
   return (
@@ -87,7 +56,6 @@ export default function Hero() {
           </div>
         </div>
       </div>
-      <Raison />
       <Features>
         <Feature
           svg={
@@ -156,7 +124,6 @@ export default function Hero() {
           description="Take Notes and review them later!"
         />
       </Features>
-      <Modus />
     </>
   );
 }
