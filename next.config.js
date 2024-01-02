@@ -4,6 +4,9 @@ const nextConfig = {
     locales: ["en"],
     defaultLocale: "en",
   },
+  env : {
+    NEXT_PUBLIC_FUGUE_STATE_API_URL: process.env.NEXT_PUBLIC_FUGUE_STATE_API_URL
+  }
 };
 
 module.exports = nextConfig;
