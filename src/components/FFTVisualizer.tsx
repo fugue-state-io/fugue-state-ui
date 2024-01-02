@@ -43,7 +43,7 @@ export default function FFTVisualizer(props: {
   }, [floatFrequencyData]);
 
   useEffect(() => {
-    console.log(props.analyser)
+    console.log(props.analyser);
     if (props.analyser) {
       let ffd = new Float32Array(props.analyser.frequencyBinCount);
       props.analyser.getFloatFrequencyData(ffd);

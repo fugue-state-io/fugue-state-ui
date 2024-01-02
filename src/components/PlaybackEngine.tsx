@@ -32,7 +32,7 @@ export default function PlaybackEngine() {
       setFile(file);
       setDuration(file.size);
       axios
-        .post(process.env.NEXT_PUBLIC_FUGUE_STATE_URL + "/process_file", file, {
+        .post(process.env.NEXT_PUBLIC_FUGUE_STATE_API_URL + "/process_file", file, {
           headers: { "content-type": file.type },
         })
         .then((response: any) => {
