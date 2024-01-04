@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import GraphicEqualizer from "./GraphicEqualizer";
 export default function WaveformVisualizer(props: {
   file: Blob | null;
   audioContext: AudioContext | null;

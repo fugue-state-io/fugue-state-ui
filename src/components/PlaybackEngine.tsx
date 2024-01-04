@@ -324,7 +324,7 @@ export default function PlaybackEngine() {
                         step={0.01}
                         defaultValue={0}
                         onInput={(e) => {
-                          if (lowFilter) lowFilter.gain.value = e.target.value;
+                          if (lowFilter) lowFilter.gain.value = Number((e.target as HTMLInputElement).value);
                         }}
                       ></input>
                     </div>
@@ -338,7 +338,7 @@ export default function PlaybackEngine() {
                         defaultValue={0}
                         onInput={(e) => {
                           if (midLowFilter)
-                            midLowFilter.gain.value = e.target.value;
+                            midLowFilter.gain.value = Number((e.target as HTMLInputElement).value);
                         }}
                       ></input>
                     </div>
@@ -351,7 +351,7 @@ export default function PlaybackEngine() {
                         step={0.01}
                         defaultValue={0}
                         onInput={(e) => {
-                          if (midFilter) midFilter.gain.value = e.target.value;
+                          if (midFilter) midFilter.gain.value = Number((e.target as HTMLInputElement).value);
                         }}
                       ></input>
                     </div>
@@ -365,7 +365,7 @@ export default function PlaybackEngine() {
                         defaultValue={0}
                         onInput={(e) => {
                           if (midHighFilter)
-                            midHighFilter.gain.value = e.target.value;
+                            midHighFilter.gain.value = Number((e.target as HTMLInputElement).value);
                         }}
                       ></input>
                     </div>
@@ -379,7 +379,7 @@ export default function PlaybackEngine() {
                         defaultValue={0}
                         onInput={(e) => {
                           if (highFilter)
-                            highFilter.gain.value = e.target.value;
+                            highFilter.gain.value = Number((e.target as HTMLInputElement).value);
                         }}
                       ></input>
                     </div>
@@ -393,7 +393,7 @@ export default function PlaybackEngine() {
                         defaultValue={0}
                         onInput={(e) => {
                           if (higherFilter)
-                            higherFilter.gain.value = e.target.value;
+                            higherFilter.gain.value = Number((e.target as HTMLInputElement).value);
                         }}
                       ></input>
                     </div>
@@ -407,7 +407,7 @@ export default function PlaybackEngine() {
                         defaultValue={0}
                         onInput={(e) => {
                           if (highererFilter)
-                            highererFilter.gain.value = e.target.value;
+                            highererFilter.gain.value = Number((e.target as HTMLInputElement).value);
                         }}
                       ></input>
                     </div>
@@ -421,7 +421,7 @@ export default function PlaybackEngine() {
                         defaultValue={0}
                         onInput={(e) => {
                           if (highestFilter)
-                            highestFilter.gain.value = e.target.value;
+                            highestFilter.gain.value = Number((e.target as HTMLInputElement).value);
                         }}
                       ></input>
                     </div>
@@ -435,7 +435,7 @@ export default function PlaybackEngine() {
                         defaultValue={0}
                         onInput={(e) => {
                           if (higherestFilter)
-                            higherestFilter.gain.value = e.target.value;
+                            higherestFilter.gain.value = Number((e.target as HTMLInputElement).value);
                         }}
                       ></input>
                     </div>
