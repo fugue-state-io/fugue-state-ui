@@ -13,6 +13,7 @@ export default function PlaybackEngine() {
   const [url, setUrl] = useState("");
   const [file, setFile] = useState<Blob | null>(null);
   const [loading, setLoading] = useState(false);
+  const [clientSide, setClientSide] = useState(false);
 
   const [repeat, setRepeat] = useState(true);
   const [duration, setDuration] = useState(0);
@@ -52,23 +53,34 @@ export default function PlaybackEngine() {
       setLoading(true);
       setFile(file);
       setDuration(file.size);
-      console.log(
-        "axios post to ",
-        process.env.NEXT_PUBLIC_FUGUE_STATE_API_URL
-      );
-      axios
-        .post(
-          process.env.NEXT_PUBLIC_FUGUE_STATE_API_URL + "/process_file",
-          file,
-          {
-            headers: { "content-type": file.type },
-          }
-        )
-        .then((response: any) => {
-          setUrl(response.data.url);
+      if (clientSide) {
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = function () {
+          setUrl(String(reader.result));
+          console.log(reader.result);
           setAudioContext(new AudioContext());
           setLoading(false);
-        });
+        };
+      } else {
+        console.log(
+          "axios post to ",
+          process.env.NEXT_PUBLIC_FUGUE_STATE_API_URL
+        );
+        axios
+          .post(
+            process.env.NEXT_PUBLIC_FUGUE_STATE_API_URL + "/process_file",
+            file,
+            {
+              headers: { "content-type": file.type },
+            }
+          )
+          .then((response: any) => {
+            setUrl(response.data.url);
+            setAudioContext(new AudioContext());
+            setLoading(false);
+          });
+      }
     }
   };
   useEffect(() => {
@@ -232,6 +244,24 @@ export default function PlaybackEngine() {
     <div className="bg-gray-900">
       <div className="max-w-4xl mx-auto">
         <div className="mx-auto max-w-md" style={{ paddingTop: 128 }}>
+          <div className="flow-root grid grid-cols-2 px-1 leading-none ">
+            <label
+              htmlFor="checkbox"
+              className="block text-sm font-medium leading-6 text-right text-gray-400 grid-cols-1 m-1.5"
+            >
+              Client Side Rendering
+            </label>
+            <label className="relative inline-flex items-center cursor-pointer my-2  grid-cols-1">
+              <input
+                type="checkbox"
+                checked={clientSide}
+                className="sr-only peer"
+                onChange={() => setClientSide(!clientSide)}
+                disabled={playing || loading}
+              />
+              <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+            </label>
+          </div>
           <FileUploader
             handleChange={fileChanged}
             name="file"
@@ -324,7 +354,10 @@ export default function PlaybackEngine() {
                         step={0.01}
                         defaultValue={0}
                         onInput={(e) => {
-                          if (lowFilter) lowFilter.gain.value = Number((e.target as HTMLInputElement).value);
+                          if (lowFilter)
+                            lowFilter.gain.value = Number(
+                              (e.target as HTMLInputElement).value
+                            );
                         }}
                       ></input>
                     </div>
@@ -338,7 +371,9 @@ export default function PlaybackEngine() {
                         defaultValue={0}
                         onInput={(e) => {
                           if (midLowFilter)
-                            midLowFilter.gain.value = Number((e.target as HTMLInputElement).value);
+                            midLowFilter.gain.value = Number(
+                              (e.target as HTMLInputElement).value
+                            );
                         }}
                       ></input>
                     </div>
@@ -351,7 +386,10 @@ export default function PlaybackEngine() {
                         step={0.01}
                         defaultValue={0}
                         onInput={(e) => {
-                          if (midFilter) midFilter.gain.value = Number((e.target as HTMLInputElement).value);
+                          if (midFilter)
+                            midFilter.gain.value = Number(
+                              (e.target as HTMLInputElement).value
+                            );
                         }}
                       ></input>
                     </div>
@@ -365,7 +403,9 @@ export default function PlaybackEngine() {
                         defaultValue={0}
                         onInput={(e) => {
                           if (midHighFilter)
-                            midHighFilter.gain.value = Number((e.target as HTMLInputElement).value);
+                            midHighFilter.gain.value = Number(
+                              (e.target as HTMLInputElement).value
+                            );
                         }}
                       ></input>
                     </div>
@@ -379,7 +419,9 @@ export default function PlaybackEngine() {
                         defaultValue={0}
                         onInput={(e) => {
                           if (highFilter)
-                            highFilter.gain.value = Number((e.target as HTMLInputElement).value);
+                            highFilter.gain.value = Number(
+                              (e.target as HTMLInputElement).value
+                            );
                         }}
                       ></input>
                     </div>
@@ -393,7 +435,9 @@ export default function PlaybackEngine() {
                         defaultValue={0}
                         onInput={(e) => {
                           if (higherFilter)
-                            higherFilter.gain.value = Number((e.target as HTMLInputElement).value);
+                            higherFilter.gain.value = Number(
+                              (e.target as HTMLInputElement).value
+                            );
                         }}
                       ></input>
                     </div>
@@ -407,7 +451,9 @@ export default function PlaybackEngine() {
                         defaultValue={0}
                         onInput={(e) => {
                           if (highererFilter)
-                            highererFilter.gain.value = Number((e.target as HTMLInputElement).value);
+                            highererFilter.gain.value = Number(
+                              (e.target as HTMLInputElement).value
+                            );
                         }}
                       ></input>
                     </div>
@@ -421,7 +467,9 @@ export default function PlaybackEngine() {
                         defaultValue={0}
                         onInput={(e) => {
                           if (highestFilter)
-                            highestFilter.gain.value = Number((e.target as HTMLInputElement).value);
+                            highestFilter.gain.value = Number(
+                              (e.target as HTMLInputElement).value
+                            );
                         }}
                       ></input>
                     </div>
@@ -435,7 +483,9 @@ export default function PlaybackEngine() {
                         defaultValue={0}
                         onInput={(e) => {
                           if (higherestFilter)
-                            higherestFilter.gain.value = Number((e.target as HTMLInputElement).value);
+                            higherestFilter.gain.value = Number(
+                              (e.target as HTMLInputElement).value
+                            );
                         }}
                       ></input>
                     </div>
