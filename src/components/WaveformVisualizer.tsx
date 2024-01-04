@@ -38,6 +38,7 @@ export default function WaveformVisualizer(props: {
     ) => {
       console.log("setting summary", event.data.channel, event.data.summary);
       if (numberOfChannels == 2) {
+        console.log("stereoSummary");
         if (event.data.channel == 0) {
           setLeftSummary(event.data.summary);
         }
@@ -46,7 +47,8 @@ export default function WaveformVisualizer(props: {
         }
       }
       if (numberOfChannels == 1) {
-        setMonoSummary(event.data.summary);
+        console.log("monoSummary");
+        setLeftSummary(event.data.summary);
       }
       return () => {
         workerRef.current?.terminate();
@@ -111,23 +113,23 @@ export default function WaveformVisualizer(props: {
           context.translate(context.canvas.width * -props.loopPercents[0], 0);
         }
         // waveforms
-        if (numberOfChannels == 1 && monoSummary) {
+        if (numberOfChannels == 1 && leftSummary) {
           // First
           context.beginPath();
           context.strokeStyle = "#444444";
           for (
             let x = 0;
-            x < Math.round(monoSummary.length * props.loopPercents[0]);
+            x < Math.round(leftSummary.length * props.loopPercents[0]);
             x++
           ) {
             context.moveTo(
-              (x / monoSummary.length) * context.canvas.width,
-              (monoSummary[x]["low"] * context.canvas.height) / 2 +
+              (x / leftSummary.length) * context.canvas.width,
+              (leftSummary[x]["low"] * context.canvas.height) / 2 +
                 context.canvas.height / 2
             );
             context.lineTo(
-              (x / monoSummary.length) * context.canvas.width,
-              (monoSummary[x]["high"] * context.canvas.height) / 2 +
+              (x / leftSummary.length) * context.canvas.width,
+              (leftSummary[x]["high"] * context.canvas.height) / 2 +
                 context.canvas.height / 2
             );
           }
@@ -136,18 +138,18 @@ export default function WaveformVisualizer(props: {
           context.beginPath();
           context.strokeStyle = "rgb(244, 114, 182)";
           for (
-            let x = Math.round(monoSummary.length * props.loopPercents[0]);
-            x < Math.round(monoSummary.length * props.elapsed);
+            let x = Math.round(leftSummary.length * props.loopPercents[0]);
+            x < Math.round(leftSummary.length * props.elapsed);
             x++
           ) {
             context.moveTo(
-              (x / monoSummary.length) * context.canvas.width,
-              (monoSummary[x]["low"] * context.canvas.height) / 2 +
+              (x / leftSummary.length) * context.canvas.width,
+              (leftSummary[x]["low"] * context.canvas.height) / 2 +
                 context.canvas.height / 2
             );
             context.lineTo(
-              (x / monoSummary.length) * context.canvas.width,
-              (monoSummary[x]["high"] * context.canvas.height) / 2 +
+              (x / leftSummary.length) * context.canvas.width,
+              (leftSummary[x]["high"] * context.canvas.height) / 2 +
                 context.canvas.height / 2
             );
           }
@@ -156,18 +158,18 @@ export default function WaveformVisualizer(props: {
           context.beginPath();
           context.strokeStyle = "rgb(74, 222, 128)";
           for (
-            let x = Math.round(monoSummary.length * props.elapsed);
-            x < Math.round(monoSummary.length * props.loopPercents[1]);
+            let x = Math.round(leftSummary.length * props.elapsed);
+            x < Math.round(leftSummary.length * props.loopPercents[1]);
             x++
           ) {
             context.moveTo(
-              (x / monoSummary.length) * context.canvas.width,
-              (monoSummary[x]["low"] * context.canvas.height) / 2 +
+              (x / leftSummary.length) * context.canvas.width,
+              (leftSummary[x]["low"] * context.canvas.height) / 2 +
                 context.canvas.height / 2
             );
             context.lineTo(
-              (x / monoSummary.length) * context.canvas.width,
-              (monoSummary[x]["high"] * context.canvas.height) / 2 +
+              (x / leftSummary.length) * context.canvas.width,
+              (leftSummary[x]["high"] * context.canvas.height) / 2 +
                 context.canvas.height / 2
             );
           }
@@ -176,18 +178,18 @@ export default function WaveformVisualizer(props: {
           context.beginPath();
           context.strokeStyle = "#444444";
           for (
-            let x = Math.round(monoSummary.length * props.loopPercents[1]);
-            x < Math.round(monoSummary.length);
+            let x = Math.round(leftSummary.length * props.loopPercents[1]);
+            x < Math.round(leftSummary.length);
             x++
           ) {
             context.moveTo(
-              (x / monoSummary.length) * context.canvas.width,
-              (monoSummary[x]["low"] * context.canvas.height) / 2 +
+              (x / leftSummary.length) * context.canvas.width,
+              (leftSummary[x]["low"] * context.canvas.height) / 2 +
                 context.canvas.height / 2
             );
             context.lineTo(
-              (x / monoSummary.length) * context.canvas.width,
-              (monoSummary[x]["high"] * context.canvas.height) / 2 +
+              (x / leftSummary.length) * context.canvas.width,
+              (leftSummary[x]["high"] * context.canvas.height) / 2 +
                 context.canvas.height / 2
             );
           }

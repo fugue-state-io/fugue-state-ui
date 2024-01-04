@@ -39,7 +39,6 @@ function Features({ children }: { children: React.ReactNode }) {
   );
 }
 
-
 export default function Hero() {
   return (
     <>

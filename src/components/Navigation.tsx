@@ -24,11 +24,9 @@ export default function Navigation() {
     <header id="header" className="bg-green-700 text-white font-bold">
       <nav className="mx-auto flex max-w-7xl items-center justify-between gap-x-6 p-6 lg:px-8">
         <Home />
-        <div className="hidden ml-10 space-x-8 lg:block">
-          <NavLink href="#features">Features</NavLink>
-        </div>
-        <div className="py-4 flex flex-wrap justify-center space-x-6 lg:hidden">
-          <NavLink href="#features">Features</NavLink>
+        <div className="mr-28 space-x-8">
+          <NavLink href="/app">App</NavLink>
+          <NavLink href="/how">How To Use</NavLink>
         </div>
       </nav>
     </header>

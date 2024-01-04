@@ -22,6 +22,27 @@ export default function PlaybackEngine() {
   const [playbackRate, setPlaybackRate] = useState<number>(1.0);
   const [loopPercents, setLoopPercents] = useState<number[]>([0, 1]);
 
+  const [lowFilter, setLowFilter] = useState<BiquadFilterNode | null>(null);
+  const [midLowFilter, setMidLowFilter] = useState<BiquadFilterNode | null>(
+    null
+  );
+  const [midFilter, setMidFilter] = useState<BiquadFilterNode | null>(null);
+  const [midHighFilter, setMidHighFilter] = useState<BiquadFilterNode | null>(
+    null
+  );
+  const [highFilter, setHighFilter] = useState<BiquadFilterNode | null>(null);
+  const [higherFilter, setHigherFilter] = useState<BiquadFilterNode | null>(
+    null
+  );
+  const [highererFilter, setHighererFilter] = useState<BiquadFilterNode | null>(
+    null
+  );
+  const [highestFilter, setHighestFilter] = useState<BiquadFilterNode | null>(
+    null
+  );
+  const [higherestFilter, setHigherestFilter] =
+    useState<BiquadFilterNode | null>(null);
+
   const [audioSource, setAudioSource] = useState<AudioNode | null>(null);
   const [analyser, setAnalyser] = useState<AnalyserNode | null>(null);
   const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
@@ -56,10 +77,75 @@ export default function PlaybackEngine() {
       let tempAudioSource = audioContext.createMediaElementSource(
         videoElem.current
       );
-      tempAudioSource.connect(audioContext.destination);
       let tempAnalyser = audioContext.createAnalyser();
+      let tempLowFilter = new BiquadFilterNode(audioContext, {
+        type: "lowshelf",
+        frequency: 100,
+      });
+      let tempMidLowFilter = new BiquadFilterNode(audioContext, {
+        type: "peaking",
+        frequency: 200,
+        Q: 3,
+      });
+      let tempMidFilter = new BiquadFilterNode(audioContext, {
+        type: "peaking",
+        frequency: 400,
+        Q: 3,
+      });
+      let tempMidHighFilter = new BiquadFilterNode(audioContext, {
+        type: "peaking",
+        frequency: 800,
+        Q: 3,
+      });
+      let tempHighFilter = new BiquadFilterNode(audioContext, {
+        type: "peaking",
+        frequency: 1600,
+
+        Q: 3,
+      });
+      let tempHigherFilter = new BiquadFilterNode(audioContext, {
+        type: "peaking",
+        frequency: 3200,
+
+        Q: 3,
+      });
+      let tempHighererFilter = new BiquadFilterNode(audioContext, {
+        type: "peaking",
+        frequency: 4800,
+
+        Q: 3,
+      });
+      let tempHighestFilter = new BiquadFilterNode(audioContext, {
+        type: "peaking",
+        frequency: 6400,
+        Q: 3,
+      });
+      let tempHigherestFilter = new BiquadFilterNode(audioContext, {
+        type: "highshelf",
+        frequency: 12800,
+      });
       tempAnalyser.smoothingTimeConstant = 0;
-      tempAudioSource.connect(tempAnalyser);
+      //tempAudioSource.connect(audioContext.destination);
+      tempAudioSource.connect(tempLowFilter);
+      tempLowFilter.connect(tempMidLowFilter);
+      tempMidLowFilter.connect(tempMidFilter);
+      tempMidFilter.connect(tempMidHighFilter);
+      tempMidHighFilter.connect(tempHighFilter);
+      tempHighFilter.connect(tempHigherFilter);
+      tempHigherFilter.connect(tempHighererFilter);
+      tempHighererFilter.connect(tempHighestFilter);
+      tempHighestFilter.connect(tempHigherestFilter);
+      tempHigherestFilter.connect(tempAnalyser);
+      tempHigherestFilter.connect(audioContext.destination);
+      setLowFilter(tempLowFilter);
+      setMidLowFilter(tempMidLowFilter);
+      setMidFilter(tempMidFilter);
+      setMidHighFilter(tempMidHighFilter);
+      setHighFilter(tempHighFilter);
+      setHigherFilter(tempHigherFilter);
+      setHighererFilter(tempHighererFilter);
+      setHighestFilter(tempHighestFilter);
+      setHigherestFilter(tempHigherestFilter);
       setAudioSource(tempAudioSource);
       setAnalyser(tempAnalyser);
     }
@@ -189,7 +275,7 @@ export default function PlaybackEngine() {
                   </span>
                 </div>
               </div>
-              <div className={"bg-gray-900 max-w-md mx-auto"}>
+              <div className={"bg-gray-900 max-w-sm mx-auto"}>
                 <RangeSlider
                   id="range-slider-waveform"
                   min={0}
@@ -226,11 +312,143 @@ export default function PlaybackEngine() {
                 setDuration={setDuration}
                 zoom={true}
               ></WaveformVisualizer>
-              <FFTVisualizer
-                analyser={analyser}
-                elapsed={elapsed}
-                height={128}
-              />
+              <div className="max-w-3xl grid grid-cols-2 text-center mx-auto relative">
+                <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
+                  <div className="flow-root grid grid-cols-9">
+                    <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
+                      <input
+                        type="range"
+                        className="vranger"
+                        min={-40}
+                        max={30}
+                        step={0.01}
+                        defaultValue={0}
+                        onInput={(e) => {
+                          if (lowFilter) lowFilter.gain.value = e.target.value;
+                        }}
+                      ></input>
+                    </div>
+                    <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
+                      <input
+                        type="range"
+                        className="vranger"
+                        min={-40}
+                        max={30}
+                        step={0.01}
+                        defaultValue={0}
+                        onInput={(e) => {
+                          if (midLowFilter)
+                            midLowFilter.gain.value = e.target.value;
+                        }}
+                      ></input>
+                    </div>
+                    <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
+                      <input
+                        type="range"
+                        className="vranger"
+                        min={-40}
+                        max={30}
+                        step={0.01}
+                        defaultValue={0}
+                        onInput={(e) => {
+                          if (midFilter) midFilter.gain.value = e.target.value;
+                        }}
+                      ></input>
+                    </div>
+                    <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
+                      <input
+                        type="range"
+                        className="vranger"
+                        min={-40}
+                        max={30}
+                        step={0.01}
+                        defaultValue={0}
+                        onInput={(e) => {
+                          if (midHighFilter)
+                            midHighFilter.gain.value = e.target.value;
+                        }}
+                      ></input>
+                    </div>
+                    <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
+                      <input
+                        type="range"
+                        className="vranger"
+                        min={-40}
+                        max={30}
+                        step={0.01}
+                        defaultValue={0}
+                        onInput={(e) => {
+                          if (highFilter)
+                            highFilter.gain.value = e.target.value;
+                        }}
+                      ></input>
+                    </div>
+                    <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
+                      <input
+                        type="range"
+                        className="vranger"
+                        min={-40}
+                        max={30}
+                        step={0.01}
+                        defaultValue={0}
+                        onInput={(e) => {
+                          if (higherFilter)
+                            higherFilter.gain.value = e.target.value;
+                        }}
+                      ></input>
+                    </div>
+                    <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
+                      <input
+                        type="range"
+                        className="vranger"
+                        min={-40}
+                        max={30}
+                        step={0.01}
+                        defaultValue={0}
+                        onInput={(e) => {
+                          if (highererFilter)
+                            highererFilter.gain.value = e.target.value;
+                        }}
+                      ></input>
+                    </div>
+                    <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
+                      <input
+                        type="range"
+                        className="vranger"
+                        min={-40}
+                        max={30}
+                        step={0.01}
+                        defaultValue={0}
+                        onInput={(e) => {
+                          if (highestFilter)
+                            highestFilter.gain.value = e.target.value;
+                        }}
+                      ></input>
+                    </div>
+                    <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
+                      <input
+                        type="range"
+                        className="vranger"
+                        min={-40}
+                        max={30}
+                        step={0.01}
+                        defaultValue={0}
+                        onInput={(e) => {
+                          if (higherestFilter)
+                            higherestFilter.gain.value = e.target.value;
+                        }}
+                      ></input>
+                    </div>
+                  </div>
+                </div>
+                <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
+                  <FFTVisualizer
+                    analyser={analyser}
+                    elapsed={elapsed}
+                    height={128}
+                  />
+                </div>
+              </div>
             </div>
             <div className="max-w-md grid grid-cols-2 text-center mx-auto relative">
               <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
