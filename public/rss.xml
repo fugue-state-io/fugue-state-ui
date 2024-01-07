@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title><![CDATA[Fugue-state.io blog posts / rss feed]]></title>
+        <description><![CDATA[Welcome to this blog posts!]]></description>
+        <link>https://fugue-state.io</link>
+        <image>
+            <url>https://fugue-state.io/logo.jpeg</url>
+            <title>Fugue-state.io blog posts / rss feed</title>
+            <link>https://fugue-state.io</link>
+        </image>
+        <generator>RSS for Node</generator>
+        <lastBuildDate>Sun, 07 Jan 2024 15:10:41 GMT</lastBuildDate>
+        <atom:link href="https://fugue-state.io/rss.xml" rel="self" type="application/rss+xml"/>
+        <pubDate>Sun, 07 Jan 2024 15:10:41 GMT</pubDate>
+        <copyright><![CDATA[All rights reserved 2024]]></copyright>
+        <item>
+            <title><![CDATA[The path forward]]></title>
+            <description><![CDATA[The roadmap and way forward]]></description>
+            <link>https://fugue-state.io/blog/posts/2024-01-07-roadmap</link>
+            <guid isPermaLink="true">https://fugue-state.io/blog/posts/2024-01-07-roadmap</guid>
+            <pubDate>Sun, 07 Jan 2024 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[What is fugue-state?]]></title>
+            <description><![CDATA[It's a song learning engine]]></description>
+            <link>https://fugue-state.io/blog/posts/2024-01-06-what-is-fugue-state</link>
+            <guid isPermaLink="true">https://fugue-state.io/blog/posts/2024-01-06-what-is-fugue-state</guid>
+            <pubDate>Sat, 06 Jan 2024 00:00:00 GMT</pubDate>
+        </item>
+    </channel>
+</rss>

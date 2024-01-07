@@ -8,25 +8,19 @@ function NavLink(props: {
     </a>
   );
 }
-
-function Home() {
-  return (
-    <div className="flex lg:flex-1">
-      <a href="#" className="flex items-center hover:text-green-300">
-        <h2>fugue-state.io</h2>
-      </a>
-    </div>
-  );
-}
-
 export default function Navigation() {
   return (
     <header id="header" className="bg-green-700 text-white font-bold">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between gap-x-6 p-6 lg:px-8">
-        <Home />
-        <div className="mr-28 space-x-8">
+      <div className="py-2 mx-auto">
+        <a href="/" className="hover:text-green-300">
+          <h1 className="text-center">fugue-state.io</h1>
+        </a>
+      </div>
+      <nav className="mx-auto flex max-w-4xl items-center justify-between p-6">
+        <div className="space-x-8">
           <NavLink href="/app">App</NavLink>
           <NavLink href="/how">How To Use</NavLink>
+          <NavLink href="/blog">Blog</NavLink>
         </div>
       </nav>
     </header>
