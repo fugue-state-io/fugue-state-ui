@@ -351,7 +351,7 @@ export default function PlaybackEngine() {
                       height={128}
                     />
                   </div>
-                  {lowFilter ? (
+                  {lowFilter && midLowFilter && midFilter && midHighFilter && highFilter && higherFilter && highererFilter && highestFilter && higherestFilter ? (
                     <div className="flow-root grid grid-cols-10">
                       <div className="grid-cols-1 my-auto text-base text-gray-400"></div>
                       <div className="grid-cols-1 my-auto text-base text-gray-400">
