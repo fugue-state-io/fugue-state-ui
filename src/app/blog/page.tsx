@@ -1,7 +1,7 @@
 import getPostMetadata from "../../lib/getPostMetadata";
 import PostPreview from "../../components/PostPreview";
 import { PostMetadata } from "../../models/PostMetadata";
-
+import "./local.css";
 export default function BlogPage() {
   const postMetadata = getPostMetadata();
   const postPreviews = postMetadata.map((post) => (
@@ -9,6 +9,8 @@ export default function BlogPage() {
   ));
 
   return (
-    <div className="grid grid-cols-1 gap-4 max-w-4xl mx-auto">{postPreviews}</div>
+    <div className="grid grid-cols-1 gap-4 max-w-3xl mx-auto mt-6">
+      {postPreviews}
+    </div>
   );
 }

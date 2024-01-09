@@ -18,11 +18,6 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Navigation />
-        <GitHubForkRibbon
-          href="https://github.com/fugue-state-io/fugue-state-ui"
-          position="right"
-          color="black"
-        >Fork me on Github!</GitHubForkRibbon>
         {children}
       </body>
     </html>

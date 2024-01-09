@@ -18,7 +18,7 @@
 
 html, body {
   height: 100%;
-  background-color: rgb(251, 207, 232);
+  background-color: rgb(17, 24, 39);
   margin: 0;
   padding: 0;
   border: 0;
@@ -82,6 +82,7 @@ html, body {
 
 .vranger {
   margin-top: 128px;
+  margin-left:50%;
   width:128px;
    transform: rotate(270deg);
   -moz-transform: rotate(270deg); /*do same for other browsers if required*/

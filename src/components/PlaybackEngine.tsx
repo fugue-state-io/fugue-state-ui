@@ -342,161 +342,234 @@ export default function PlaybackEngine() {
                 setDuration={setDuration}
                 zoom={true}
               ></WaveformVisualizer>
-              <div className="max-w-3xl grid grid-cols-2 text-center mx-auto relative">
-                <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
-                  <div className="flow-root grid grid-cols-9">
-                    <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
-                      <input
-                        type="range"
-                        className="vranger"
-                        min={-40}
-                        max={30}
-                        step={0.01}
-                        defaultValue={0}
-                        onInput={(e) => {
-                          if (lowFilter)
-                            lowFilter.gain.value = Number(
-                              (e.target as HTMLInputElement).value
-                            );
-                        }}
-                      ></input>
-                    </div>
-                    <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
-                      <input
-                        type="range"
-                        className="vranger"
-                        min={-40}
-                        max={30}
-                        step={0.01}
-                        defaultValue={0}
-                        onInput={(e) => {
-                          if (midLowFilter)
-                            midLowFilter.gain.value = Number(
-                              (e.target as HTMLInputElement).value
-                            );
-                        }}
-                      ></input>
-                    </div>
-                    <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
-                      <input
-                        type="range"
-                        className="vranger"
-                        min={-40}
-                        max={30}
-                        step={0.01}
-                        defaultValue={0}
-                        onInput={(e) => {
-                          if (midFilter)
-                            midFilter.gain.value = Number(
-                              (e.target as HTMLInputElement).value
-                            );
-                        }}
-                      ></input>
-                    </div>
-                    <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
-                      <input
-                        type="range"
-                        className="vranger"
-                        min={-40}
-                        max={30}
-                        step={0.01}
-                        defaultValue={0}
-                        onInput={(e) => {
-                          if (midHighFilter)
-                            midHighFilter.gain.value = Number(
-                              (e.target as HTMLInputElement).value
-                            );
-                        }}
-                      ></input>
-                    </div>
-                    <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
-                      <input
-                        type="range"
-                        className="vranger"
-                        min={-40}
-                        max={30}
-                        step={0.01}
-                        defaultValue={0}
-                        onInput={(e) => {
-                          if (highFilter)
-                            highFilter.gain.value = Number(
-                              (e.target as HTMLInputElement).value
-                            );
-                        }}
-                      ></input>
-                    </div>
-                    <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
-                      <input
-                        type="range"
-                        className="vranger"
-                        min={-40}
-                        max={30}
-                        step={0.01}
-                        defaultValue={0}
-                        onInput={(e) => {
-                          if (higherFilter)
-                            higherFilter.gain.value = Number(
-                              (e.target as HTMLInputElement).value
-                            );
-                        }}
-                      ></input>
-                    </div>
-                    <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
-                      <input
-                        type="range"
-                        className="vranger"
-                        min={-40}
-                        max={30}
-                        step={0.01}
-                        defaultValue={0}
-                        onInput={(e) => {
-                          if (highererFilter)
-                            highererFilter.gain.value = Number(
-                              (e.target as HTMLInputElement).value
-                            );
-                        }}
-                      ></input>
-                    </div>
-                    <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
-                      <input
-                        type="range"
-                        className="vranger"
-                        min={-40}
-                        max={30}
-                        step={0.01}
-                        defaultValue={0}
-                        onInput={(e) => {
-                          if (highestFilter)
-                            highestFilter.gain.value = Number(
-                              (e.target as HTMLInputElement).value
-                            );
-                        }}
-                      ></input>
-                    </div>
-                    <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
-                      <input
-                        type="range"
-                        className="vranger"
-                        min={-40}
-                        max={30}
-                        step={0.01}
-                        defaultValue={0}
-                        onInput={(e) => {
-                          if (higherestFilter)
-                            higherestFilter.gain.value = Number(
-                              (e.target as HTMLInputElement).value
-                            );
-                        }}
-                      ></input>
-                    </div>
+              <div className="max-w-3xl grid grid-cols-1 text-center mx-auto relative">
+                <div className="flow-root grid-cols-1 px-1 leading-none align-middle lg:grid-cols-2">
+                  <div className="flow-root px-1 leading-none align-middle grid-cols-2">
+                    <FFTVisualizer
+                      analyser={analyser}
+                      elapsed={elapsed}
+                      height={128}
+                    />
                   </div>
-                </div>
-                <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
-                  <FFTVisualizer
-                    analyser={analyser}
-                    elapsed={elapsed}
-                    height={128}
-                  />
+                  {lowFilter ? (
+                    <div className="flow-root grid grid-cols-10">
+                      <div className="grid-cols-1 my-auto text-base text-gray-400"></div>
+                      <div className="grid-cols-1 my-auto text-base text-gray-400">
+                        {lowFilter.gain.value}db
+                      </div>
+                      <div className="grid-cols-1 my-auto text-base text-gray-400">
+                        {midLowFilter.gain.value}db
+                      </div>
+                      <div className="grid-cols-1 my-auto text-base text-gray-400">
+                        {midFilter.gain.value}db
+                      </div>
+                      <div className="grid-cols-1 my-auto text-base text-gray-400">
+                        {midHighFilter.gain.value}db
+                      </div>
+                      <div className="grid-cols-1 my-auto text-base text-gray-400">
+                        {highFilter.gain.value}db
+                      </div>
+                      <div className="grid-cols-1 my-auto text-base text-gray-400">
+                        {higherFilter.gain.value}db
+                      </div>
+                      <div className="grid-cols-1 my-auto text-base text-gray-400">
+                        {highererFilter.gain.value}db
+                      </div>
+                      <div className="grid-cols-1 my-auto text-base text-gray-400">
+                        {highestFilter.gain.value}db
+                      </div>
+                      <div className="grid-cols-1 my-auto text-base text-gray-400">
+                        {higherestFilter.gain.value}db
+                      </div>
+                      <div className="flow-root grid grid-cols-1 px-1 leading-none align-middle">
+                        <label className="grid-cols-1 my-auto text-base text-gray-400">
+                          +25db
+                        </label>
+                        <label className="grid-cols-1 my-auto text-base text-gray-400">
+                          0db
+                        </label>
+                        <label className="grid-cols-1 my-auto text-base text-gray-400">
+                          -25db
+                        </label>
+                      </div>
+                      <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
+                        <input
+                          type="range"
+                          className="vranger"
+                          min={-25}
+                          max={25}
+                          step={1}
+                          defaultValue={0}
+                          onInput={(e) => {
+                            if (lowFilter)
+                              lowFilter.gain.value = Number(
+                                (e.target as HTMLInputElement).value
+                              );
+                          }}
+                        ></input>
+                      </div>
+                      <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
+                        <input
+                          type="range"
+                          className="vranger"
+                          min={-25}
+                          max={25}
+                          step={1}
+                          defaultValue={0}
+                          onInput={(e) => {
+                            if (midLowFilter)
+                              midLowFilter.gain.value = Number(
+                                (e.target as HTMLInputElement).value
+                              );
+                          }}
+                        ></input>
+                      </div>
+                      <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
+                        <input
+                          type="range"
+                          className="vranger"
+                          min={-25}
+                          max={25}
+                          step={1}
+                          defaultValue={0}
+                          onInput={(e) => {
+                            if (midFilter)
+                              midFilter.gain.value = Number(
+                                (e.target as HTMLInputElement).value
+                              );
+                          }}
+                        ></input>
+                      </div>
+                      <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
+                        <input
+                          type="range"
+                          className="vranger"
+                          min={-25}
+                          max={25}
+                          step={1}
+                          defaultValue={0}
+                          onInput={(e) => {
+                            if (midHighFilter)
+                              midHighFilter.gain.value = Number(
+                                (e.target as HTMLInputElement).value
+                              );
+                          }}
+                        ></input>
+                      </div>
+                      <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
+                        <input
+                          type="range"
+                          className="vranger"
+                          min={-25}
+                          max={25}
+                          step={1}
+                          defaultValue={0}
+                          onInput={(e) => {
+                            if (highFilter)
+                              highFilter.gain.value = Number(
+                                (e.target as HTMLInputElement).value
+                              );
+                          }}
+                        ></input>
+                      </div>
+                      <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
+                        <input
+                          type="range"
+                          className="vranger"
+                          min={-25}
+                          max={25}
+                          step={1}
+                          defaultValue={0}
+                          onInput={(e) => {
+                            if (higherFilter)
+                              higherFilter.gain.value = Number(
+                                (e.target as HTMLInputElement).value
+                              );
+                          }}
+                        ></input>
+                      </div>
+                      <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
+                        <input
+                          type="range"
+                          className="vranger"
+                          min={-25}
+                          max={25}
+                          step={1}
+                          defaultValue={0}
+                          onInput={(e) => {
+                            if (highererFilter)
+                              highererFilter.gain.value = Number(
+                                (e.target as HTMLInputElement).value
+                              );
+                          }}
+                        ></input>
+                      </div>
+                      <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
+                        <input
+                          type="range"
+                          className="vranger"
+                          min={-25}
+                          max={25}
+                          step={1}
+                          defaultValue={0}
+                          onInput={(e) => {
+                            if (highestFilter)
+                              highestFilter.gain.value = Number(
+                                (e.target as HTMLInputElement).value
+                              );
+                          }}
+                        ></input>
+                      </div>
+                      <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
+                        <input
+                          type="range"
+                          className="vranger"
+                          min={-25}
+                          max={25}
+                          step={1}
+                          defaultValue={0}
+                          onInput={(e) => {
+                            if (higherestFilter)
+                              higherestFilter.gain.value = Number(
+                                (e.target as HTMLInputElement).value
+                              );
+                          }}
+                        ></input>
+                      </div>
+                      <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
+                        <p className="my-auto text-base text-gray-400">Hz</p>
+                      </div>
+                      <div className="my-auto flow-root grid-cols-1 px-1 leading-none align-middle text-base text-gray-400 ">
+                        100
+                      </div>
+                      <div className="my-auto flow-root grid-cols-1 px-1 leading-none align-middle text-base text-gray-400 ">
+                        200
+                      </div>
+                      <div className="my-auto flow-root grid-cols-1 px-1 leading-none align-middle text-base text-gray-400 ">
+                        400
+                      </div>
+                      <div className="my-auto flow-root grid-cols-1 px-1 leading-none align-middle text-base text-gray-400 ">
+                        800
+                      </div>
+                      <div className="my-auto flow-root grid-cols-1 px-1 leading-none align-middle text-base text-gray-400 ">
+                        1600
+                      </div>
+                      <div className="my-auto flow-root grid-cols-1 px-1 leading-none align-middle text-base text-gray-400 ">
+                        3200
+                      </div>
+                      <div className="my-auto flow-root grid-cols-1 px-1 leading-none align-middle text-base text-gray-400 ">
+                        4800
+                      </div>
+                      <div className="my-auto flow-root grid-cols-1 px-1 leading-none align-middle text-base text-gray-400 ">
+                        6400
+                      </div>
+                      <div className="my-auto flow-root grid-cols-1 px-1 leading-none align-middle text-base text-gray-400 ">
+                        12800
+                      </div>
+                    </div>
+                  ) : (
+                    <div></div>
+                  )}
                 </div>
               </div>
             </div>

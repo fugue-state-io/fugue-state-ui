@@ -24,7 +24,7 @@ export default function PostPage(props: any) {
   return (
     <div className="mx-auto max-w-4xl text-base text-gray-700 bg-white">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+        <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl pt-6">
           {post.data.title}
         </h1>
         <p className="mt-2">{post.data.date}</p>
@@ -56,6 +56,11 @@ export default function PostPage(props: any) {
             table: {
               props: {
                 className: 'min-w-full divide-y divide-gray-700'
+              }
+            },
+            img: {
+              props: {
+                className: 'w-full mt-3'
               }
             }
           }
