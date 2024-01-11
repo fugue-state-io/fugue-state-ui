@@ -51,10 +51,10 @@ export default function FFTVisualizer(props: {
     }
   }, [props.elapsed]);
   return (
-    <div className="bg-gray-900 max-w-4xl mx-auto">
+    <div className="w-fit mx-auto">
       <canvas
         ref={canvasRef}
-        width="1024px"
+        width="2048px"
         height={props.height}
         style={{ width: "100%", height: props.height.toString() + "px" }}
       ></canvas>

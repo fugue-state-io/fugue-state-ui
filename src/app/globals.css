@@ -47,8 +47,8 @@ html, body {
   opacity: 75%;
 } */
 #range-slider-waveform {
-  height: 32px;
-  margin-bottom: -32px;
+  height: 64px;
+  margin-bottom: -64px;
   background: rgb(0, 0, 0, 0);
   opacity: 75%;
   cursor:ew-resize;
@@ -80,13 +80,11 @@ html, body {
   border-radius: 6px;
 }
 
-.vranger {
-  margin-top: 128px;
-  margin-left:50%;
-  width:128px;
-   transform: rotate(270deg);
-  -moz-transform: rotate(270deg); /*do same for other browsers if required*/
-  transform-origin: center left;
-  border-radius: 50%;
-  background: #2196f3;
-}
+
+input[orient=vertical] {
+  -webkit-appearance: slider-vertical;
+  height: 128px;
+  padding: 0 20px;
+  width: 20px;
+  writing-mode: bt-lr;
+}  

@@ -11,7 +11,6 @@ const PostPreview = (props: PostMetadata) => {
       </Link>
       <p className="text-sm text-slate-500 mb-3">Posted on {props.date} by {props.author}</p>
       <p className="text-slate-700">{props.subtitle}</p>
-      
     </div>
   );
 };

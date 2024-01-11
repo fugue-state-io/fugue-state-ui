@@ -1,7 +1,4 @@
-import Navigation from "fugue-state-ui/components/Navigation";
-import GitHubForkRibbon from "react-github-fork-ribbon";
 import "../globals.css";
-import "./local.css";
 export default function How() {
   return (
     <main className="dark">

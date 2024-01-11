@@ -1,7 +1,5 @@
 import getPostMetadata from "../../lib/getPostMetadata";
 import PostPreview from "../../components/PostPreview";
-import { PostMetadata } from "../../models/PostMetadata";
-import "./local.css";
 export default function BlogPage() {
   const postMetadata = getPostMetadata();
   const postPreviews = postMetadata.map((post) => (

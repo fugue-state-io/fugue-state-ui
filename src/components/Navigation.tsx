@@ -21,6 +21,7 @@ export default function Navigation() {
           <NavLink href="/app">App</NavLink>
           <NavLink href="/how">How To Use</NavLink>
           <NavLink href="/blog">Blog</NavLink>
+          <NavLink href="/changelog">Changes</NavLink>
         </div>
       </nav>
     </header>

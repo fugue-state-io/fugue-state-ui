@@ -341,13 +341,11 @@ export default function WaveformVisualizer(props: {
   ]);
 
   return (
-    <>
-      <canvas
-        ref={canvasRef}
-        width="2048px"
-        height={props.height}
-        style={{ width: "100%", height: props.height.toString() + "px" }}
-      ></canvas>
-    </>
+    <canvas
+      ref={canvasRef}
+      width="2048px"
+      height={props.height}
+      style={{ width: "100%", height: props.height.toString() + "px" }}
+    ></canvas>
   );
 }

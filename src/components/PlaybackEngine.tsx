@@ -1,12 +1,14 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import "react-range-slider-input/dist/style.css";
 import FFTVisualizer from "./FFTVisualizer";
 import { FileUploader } from "react-drag-drop-files";
 import axios from "axios";
 import WaveformVisualizer from "./WaveformVisualizer";
 import RangeSlider from "react-range-slider-input";
 import "react-range-slider-input/dist/style.css";
+import LoadingSpinner from "./LoadingSpinner";
+import Minimap from "./Minimap";
+import GraphicEqualizer from "./GraphicEqualizer";
 
 export default function PlaybackEngine() {
   const videoElem = useRef<HTMLVideoElement>(null);
@@ -242,335 +244,97 @@ export default function PlaybackEngine() {
   };
   return (
     <div className="bg-gray-900">
-      <div className="max-w-4xl mx-auto">
-        <div className="mx-auto max-w-md" style={{ paddingTop: 128 }}>
-          <div className="flow-root grid grid-cols-2 px-1 leading-none ">
-            <label
-              htmlFor="checkbox"
-              className="block text-sm font-medium leading-6 text-right text-gray-400 grid-cols-1 m-1.5"
-            >
-              Client Side Rendering
-            </label>
-            <label className="relative inline-flex items-center cursor-pointer my-2  grid-cols-1">
-              <input
-                type="checkbox"
-                checked={clientSide}
-                className="sr-only peer"
-                onChange={() => setClientSide(!clientSide)}
-                disabled={playing || loading}
-              />
-              <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-            </label>
+      <div className="" style={{ paddingTop: 128 }}>
+        <div className="mx-auto max-w-md">
+          <div className="flex items-center">
+            <div className="mx-auto">
+              <div className="items-center">
+                <div className="inline-flex text-lg font-medium text-gray-400 grid-cols-1 pb-2 ">
+                  Client Side Rendering (avoid in Firefox)
+                </div>
+              <label className="relative inline-flex items-center cursor-pointer mx-1 grid-cols-1">
+                <input
+                  type="checkbox"
+                  checked={clientSide}
+                  className="sr-only peer"
+                  onChange={() => setClientSide(!clientSide)}
+                  disabled={playing || loading}
+                />
+                <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+              </label>
+              </div>
+            </div>
           </div>
           <FileUploader
+            className={"mx-auto"}
             handleChange={fileChanged}
             name="file"
-            types={["mp4", "mp3"]}
+            types={["mp4", "mp3", "mov"]}
           />
         </div>
         {loading ? (
-          <div className="text-center" style={{ padding: 128 }}>
-            <div role="status">
-              <svg
-                aria-hidden="true"
-                className="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
-                viewBox="0 0 100 101"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                  fill="currentColor"
-                />
-                <path
-                  d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                  fill="currentFill"
-                />
-              </svg>
-              <span className="sr-only">Loading...</span>
-            </div>
-          </div>
+          <LoadingSpinner />
         ) : url ? (
-          <div>
-            <div>
-              <div className="max-w-3xl grid grid-cols-2 text-center mx-auto relative my-2">
-                <div className="flow-root grid-cols-2 px-1 border-r leading-none align-middle">
-                  <span className="text-base text-gray-400 float-right">
-                    {Math.round(elapsed * 100) / 100}
-                  </span>
-                </div>
-                <div className="flow-root grid-cols-2 px-1 border-l leading-none align-middle">
-                  <span className="text-base text-gray-400 float-left">
-                    {Math.round(duration * 100) / 100}
-                  </span>
-                </div>
-              </div>
-              <div className={"bg-gray-900 max-w-sm mx-auto"}>
-                <RangeSlider
-                  id="range-slider-waveform"
-                  min={0}
-                  max={1}
-                  step={0.0001}
-                  value={loopPercents}
-                  onInput={setLoopPercents}
-                ></RangeSlider>
-                <WaveformVisualizer
-                  file={file}
-                  audioContext={audioContext}
-                  duration={duration}
-                  elapsed={elapsed / duration}
-                  loopPercents={loopPercents}
-                  height={32}
-                ></WaveformVisualizer>
-              </div>
-              <video
-                src={url}
-                ref={videoElem}
-                preload="auto"
-                crossOrigin="anonymous"
-                loop={repeat}
-                hidden={file?.type == "video/mp4" ? false : true}
-              ></video>
-              <WaveformVisualizer
-                file={file}
-                audioContext={audioContext}
-                elapsed={elapsed / duration}
-                setElapsedCallback={setElapsedCallback}
-                height={256}
-                loopPercents={loopPercents}
-                duration={duration}
-                setDuration={setDuration}
-                zoom={true}
-              ></WaveformVisualizer>
-              <div className="max-w-3xl grid grid-cols-1 text-center mx-auto relative">
-                <div className="flow-root grid-cols-1 px-1 leading-none align-middle lg:grid-cols-2">
-                  <div className="flow-root px-1 leading-none align-middle grid-cols-2">
-                    <FFTVisualizer
-                      analyser={analyser}
-                      elapsed={elapsed}
-                      height={128}
-                    />
-                  </div>
-                  {lowFilter && midLowFilter && midFilter && midHighFilter && highFilter && higherFilter && highererFilter && highestFilter && higherestFilter ? (
-                    <div className="flow-root grid grid-cols-10">
-                      <div className="grid-cols-1 my-auto text-base text-gray-400"></div>
-                      <div className="grid-cols-1 my-auto text-base text-gray-400">
-                        {lowFilter.gain.value}db
-                      </div>
-                      <div className="grid-cols-1 my-auto text-base text-gray-400">
-                        {midLowFilter.gain.value}db
-                      </div>
-                      <div className="grid-cols-1 my-auto text-base text-gray-400">
-                        {midFilter.gain.value}db
-                      </div>
-                      <div className="grid-cols-1 my-auto text-base text-gray-400">
-                        {midHighFilter.gain.value}db
-                      </div>
-                      <div className="grid-cols-1 my-auto text-base text-gray-400">
-                        {highFilter.gain.value}db
-                      </div>
-                      <div className="grid-cols-1 my-auto text-base text-gray-400">
-                        {higherFilter.gain.value}db
-                      </div>
-                      <div className="grid-cols-1 my-auto text-base text-gray-400">
-                        {highererFilter.gain.value}db
-                      </div>
-                      <div className="grid-cols-1 my-auto text-base text-gray-400">
-                        {highestFilter.gain.value}db
-                      </div>
-                      <div className="grid-cols-1 my-auto text-base text-gray-400">
-                        {higherestFilter.gain.value}db
-                      </div>
-                      <div className="flow-root grid grid-cols-1 px-1 leading-none align-middle">
-                        <label className="grid-cols-1 my-auto text-base text-gray-400">
-                          +25db
-                        </label>
-                        <label className="grid-cols-1 my-auto text-base text-gray-400">
-                          0db
-                        </label>
-                        <label className="grid-cols-1 my-auto text-base text-gray-400">
-                          -25db
-                        </label>
-                      </div>
-                      <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
-                        <input
-                          type="range"
-                          className="vranger"
-                          min={-25}
-                          max={25}
-                          step={1}
-                          defaultValue={0}
-                          onInput={(e) => {
-                            if (lowFilter)
-                              lowFilter.gain.value = Number(
-                                (e.target as HTMLInputElement).value
-                              );
-                          }}
-                        ></input>
-                      </div>
-                      <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
-                        <input
-                          type="range"
-                          className="vranger"
-                          min={-25}
-                          max={25}
-                          step={1}
-                          defaultValue={0}
-                          onInput={(e) => {
-                            if (midLowFilter)
-                              midLowFilter.gain.value = Number(
-                                (e.target as HTMLInputElement).value
-                              );
-                          }}
-                        ></input>
-                      </div>
-                      <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
-                        <input
-                          type="range"
-                          className="vranger"
-                          min={-25}
-                          max={25}
-                          step={1}
-                          defaultValue={0}
-                          onInput={(e) => {
-                            if (midFilter)
-                              midFilter.gain.value = Number(
-                                (e.target as HTMLInputElement).value
-                              );
-                          }}
-                        ></input>
-                      </div>
-                      <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
-                        <input
-                          type="range"
-                          className="vranger"
-                          min={-25}
-                          max={25}
-                          step={1}
-                          defaultValue={0}
-                          onInput={(e) => {
-                            if (midHighFilter)
-                              midHighFilter.gain.value = Number(
-                                (e.target as HTMLInputElement).value
-                              );
-                          }}
-                        ></input>
-                      </div>
-                      <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
-                        <input
-                          type="range"
-                          className="vranger"
-                          min={-25}
-                          max={25}
-                          step={1}
-                          defaultValue={0}
-                          onInput={(e) => {
-                            if (highFilter)
-                              highFilter.gain.value = Number(
-                                (e.target as HTMLInputElement).value
-                              );
-                          }}
-                        ></input>
-                      </div>
-                      <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
-                        <input
-                          type="range"
-                          className="vranger"
-                          min={-25}
-                          max={25}
-                          step={1}
-                          defaultValue={0}
-                          onInput={(e) => {
-                            if (higherFilter)
-                              higherFilter.gain.value = Number(
-                                (e.target as HTMLInputElement).value
-                              );
-                          }}
-                        ></input>
-                      </div>
-                      <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
-                        <input
-                          type="range"
-                          className="vranger"
-                          min={-25}
-                          max={25}
-                          step={1}
-                          defaultValue={0}
-                          onInput={(e) => {
-                            if (highererFilter)
-                              highererFilter.gain.value = Number(
-                                (e.target as HTMLInputElement).value
-                              );
-                          }}
-                        ></input>
-                      </div>
-                      <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
-                        <input
-                          type="range"
-                          className="vranger"
-                          min={-25}
-                          max={25}
-                          step={1}
-                          defaultValue={0}
-                          onInput={(e) => {
-                            if (highestFilter)
-                              highestFilter.gain.value = Number(
-                                (e.target as HTMLInputElement).value
-                              );
-                          }}
-                        ></input>
-                      </div>
-                      <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
-                        <input
-                          type="range"
-                          className="vranger"
-                          min={-25}
-                          max={25}
-                          step={1}
-                          defaultValue={0}
-                          onInput={(e) => {
-                            if (higherestFilter)
-                              higherestFilter.gain.value = Number(
-                                (e.target as HTMLInputElement).value
-                              );
-                          }}
-                        ></input>
-                      </div>
-                      <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
-                        <p className="my-auto text-base text-gray-400">Hz</p>
-                      </div>
-                      <div className="my-auto flow-root grid-cols-1 px-1 leading-none align-middle text-base text-gray-400 ">
-                        100
-                      </div>
-                      <div className="my-auto flow-root grid-cols-1 px-1 leading-none align-middle text-base text-gray-400 ">
-                        200
-                      </div>
-                      <div className="my-auto flow-root grid-cols-1 px-1 leading-none align-middle text-base text-gray-400 ">
-                        400
-                      </div>
-                      <div className="my-auto flow-root grid-cols-1 px-1 leading-none align-middle text-base text-gray-400 ">
-                        800
-                      </div>
-                      <div className="my-auto flow-root grid-cols-1 px-1 leading-none align-middle text-base text-gray-400 ">
-                        1600
-                      </div>
-                      <div className="my-auto flow-root grid-cols-1 px-1 leading-none align-middle text-base text-gray-400 ">
-                        3200
-                      </div>
-                      <div className="my-auto flow-root grid-cols-1 px-1 leading-none align-middle text-base text-gray-400 ">
-                        4800
-                      </div>
-                      <div className="my-auto flow-root grid-cols-1 px-1 leading-none align-middle text-base text-gray-400 ">
-                        6400
-                      </div>
-                      <div className="my-auto flow-root grid-cols-1 px-1 leading-none align-middle text-base text-gray-400 ">
-                        12800
-                      </div>
-                    </div>
-                  ) : (
-                    <div></div>
-                  )}
-                </div>
+          <>
+            <Minimap
+              elapsed={elapsed}
+              duration={duration}
+              loopPercents={loopPercents}
+              audioContext={audioContext}
+              file={file}
+              setLoopPercents={setLoopPercents}
+            />
+            <video
+              className="mx-auto w-full sm:w-3/4 lg:w-1/2"
+              src={url}
+              ref={videoElem}
+              preload="auto"
+              crossOrigin="anonymous"
+              playsInline={true}
+              loop={repeat}
+              hidden={
+                file?.type == "video/mp4" || file?.type == "video/mov"
+                  ? false
+                  : true
+              }
+            ></video>
+            <WaveformVisualizer
+              file={file}
+              audioContext={audioContext}
+              elapsed={elapsed / duration}
+              setElapsedCallback={setElapsedCallback}
+              height={256}
+              loopPercents={loopPercents}
+              duration={duration}
+              setDuration={setDuration}
+              zoom={true}
+            ></WaveformVisualizer>
+            <FFTVisualizer analyser={analyser} elapsed={elapsed} height={128} />
+            <div className="">
+              <div className="">
+                {lowFilter &&
+                midLowFilter &&
+                midFilter &&
+                midHighFilter &&
+                highFilter &&
+                higherFilter &&
+                highererFilter &&
+                highestFilter &&
+                higherestFilter ? (
+                  <GraphicEqualizer
+                    lowFilter={lowFilter}
+                    midLowFilter={midLowFilter}
+                    midFilter={midFilter}
+                    midHighFilter={midHighFilter}
+                    highFilter={highFilter}
+                    higherFilter={higherFilter}
+                    highererFilter={highererFilter}
+                    highestFilter={highestFilter}
+                    higherestFilter={higherestFilter}
+                  ></GraphicEqualizer>
+                ) : (
+                  <div></div>
+                )}
               </div>
             </div>
             <div className="max-w-md grid grid-cols-2 text-center mx-auto relative">
@@ -645,9 +409,9 @@ export default function PlaybackEngine() {
                 </span>
               </div>
             </div>
-          </div>
+          </>
         ) : (
-          <div className="text-center text-gray-200 " style={{ padding: 128 }}>
+          <div className="text-center text-gray-200" style={{ padding: 128 }}>
             <div>load a file with the menu above</div>
           </div>
         )}
