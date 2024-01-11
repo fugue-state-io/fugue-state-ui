@@ -6,7 +6,7 @@ export default function Changelog() {
         <ul role="list" className="divide-y divide-gray-200 mx-8">
           <li>
             <h1 className="text-lg">Release : 0.2.0</h1>
-            <ul class="list-disc mx-8">
+            <ul className="list-disc mx-8">
               <li>Updated UI to be full screen.</li>
               <li>Added Mobile Support for Iphone playback.</li>
               <li>Adjusted UI Scaling</li>
@@ -16,7 +16,7 @@ export default function Changelog() {
           </li>
           <li>
           <h1 className="text-lg">Release : 0.1.0</h1>
-            <ul class="list-disc mx-8">
+            <ul className="list-disc mx-8">
               <li>Initial Release</li>
             </ul>
           </li>

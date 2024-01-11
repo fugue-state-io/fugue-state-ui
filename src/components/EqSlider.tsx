@@ -17,7 +17,7 @@ export default function EqSlider(props: {
       </div>
       <input
         type="range"
-        orient="vertical"
+        data-orient="vertical"
         min={-25}
         max={25}
         step={1}

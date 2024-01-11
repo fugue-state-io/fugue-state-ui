@@ -81,7 +81,7 @@ html, body {
 }
 
 
-input[orient=vertical] {
+input[data-orient=vertical] {
   -webkit-appearance: slider-vertical;
   height: 128px;
   padding: 0 20px;
