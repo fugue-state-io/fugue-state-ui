@@ -1,7 +1,6 @@
 addEventListener(
   "message",
   (event: MessageEvent<{ channel: number; buffer: Float32Array }>) => {
-    console.log("Message received from main script");
     let buffer = event.data.buffer;
     let summaryLength = 2048;
     let summary = Array(summaryLength);
@@ -19,7 +18,6 @@ addEventListener(
         summary[summaryFrame]["high"] = frame;
       }
     }
-    console.log("Posting message back to main script");
     postMessage({ channel: event.data.channel, summary: summary });
   }
 );

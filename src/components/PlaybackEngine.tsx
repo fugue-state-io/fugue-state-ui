@@ -1,8 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import FFTVisualizer from "./FFTVisualizer";
-import { FileUploader } from "react-drag-drop-files";
-import axios from "axios";
 import WaveformVisualizer from "./WaveformVisualizer";
 import RangeSlider from "react-range-slider-input";
 import "react-range-slider-input/dist/style.css";
@@ -24,6 +22,7 @@ export default function PlaybackEngine() {
   const [volume, setVolume] = useState<number>(1.0);
   const [playbackRate, setPlaybackRate] = useState<number>(1.0);
   const [loopPercents, setLoopPercents] = useState<number[]>([0, 1]);
+  const [transponseCents, setTransposeCents] = useState<number>(0);
 
   const [lowFilter, setLowFilter] = useState<BiquadFilterNode | null>(null);
   const [midLowFilter, setMidLowFilter] = useState<BiquadFilterNode | null>(
@@ -126,7 +125,6 @@ export default function PlaybackEngine() {
       let tempHighererFilter = new BiquadFilterNode(audioContext, {
         type: "peaking",
         frequency: 4800,
-
         Q: 3,
       });
       let tempHighestFilter = new BiquadFilterNode(audioContext, {
@@ -246,31 +244,6 @@ export default function PlaybackEngine() {
     <div className="bg-gray-900">
       <div className="" style={{ paddingTop: 128 }}>
         <div className="mx-auto max-w-md">
-          <div className="flex items-center">
-            <div className="mx-auto">
-              <div className="items-center">
-                <div className="inline-flex text-lg font-medium text-gray-400 grid-cols-1 pb-2 ">
-                  Client Side Rendering (avoid in Firefox)
-                </div>
-              <label className="relative inline-flex items-center cursor-pointer mx-1 grid-cols-1">
-                <input
-                  type="checkbox"
-                  checked={clientSide}
-                  className="sr-only peer"
-                  onChange={() => setClientSide(!clientSide)}
-                  disabled={playing || loading}
-                />
-                <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-              </label>
-              </div>
-            </div>
-          </div>
-          <FileUploader
-            className={"mx-auto"}
-            handleChange={fileChanged}
-            name="file"
-            types={["mp4", "mp3", "mov"]}
-          />
         </div>
         {loading ? (
           <LoadingSpinner />

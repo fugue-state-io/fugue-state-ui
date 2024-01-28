@@ -10,6 +10,7 @@ export default function EqSlider(props: {
       props.filter.gain.value = filterDb;
     }
   }, [filterDb]);
+  
   return (
     <div className="flow-root grid-cols-1  leading-none align-middle">
       <div className="grid-cols-1 text-center text-base text-gray-400">
@@ -17,7 +18,8 @@ export default function EqSlider(props: {
       </div>
       <input
         type="range"
-        data-orient="vertical"
+        // @ts-expect-error
+        orient="vertical"
         min={-25}
         max={25}
         step={1}

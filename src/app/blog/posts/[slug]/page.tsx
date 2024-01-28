@@ -22,49 +22,69 @@ export default function PostPage(props: any) {
   const slug = props.params.slug;
   const post = getPostContent(slug);
   return (
-    <div className="mx-auto max-w-4xl text-base text-gray-700 bg-white">
+    <div className="mx-auto max-w-4xl text-base text-white">
+      <a href="/blog">
+        <svg
+          viewBox="0 -9 3 24"
+          className="overflow-visible mr-3 text-slate-400 w-auto h-6 group-hover:text-slate-600"
+        >
+          <path
+            d="M3 0L0 3L3 6"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          ></path>
+        </svg>
+        Go Back
+      </a>
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl pt-6">
+        <p className="mt-2">{post.data.date}</p>
+        <h1 className="text-2xl font-extrabold tracking-tight text-white md:text-3xl ">
           {post.data.title}
         </h1>
-        <p className="mt-2">{post.data.date}</p>
       </div>
 
       <article className="prose max-w-3xl mx-auto">
-        <Markdown options={{
-          overrides: {
-            h1: {
-              props: {
-                className: 'text-4xl'
-              }
+        <Markdown
+          options={{
+            overrides: {
+              h1: {
+                props: {
+                  className: "text-4xl",
+                },
+              },
+              h2: {
+                props: {
+                  className: "text-3xl mt-8",
+                },
+              },
+              h3: {
+                props: {
+                  className: "text-2xl mt-8",
+                },
+              },
+              p: {
+                props: {
+                  className: "text-lg mt-4",
+                },
+              },
+              table: {
+                props: {
+                  className: "min-w-full divide-y divide-gray-700",
+                },
+              },
+              img: {
+                props: {
+                  className: "w-full mt-3",
+                },
+              },
             },
-            h2: {
-              props: {
-                className: 'text-3xl mt-8'
-              }
-            },
-            h3: {
-              props: {
-                className: 'text-2xl mt-8'
-              }
-            },
-            p: {
-              props: {
-                className: 'text-lg mt-4'
-              }
-            },
-            table: {
-              props: {
-                className: 'min-w-full divide-y divide-gray-700'
-              }
-            },
-            img: {
-              props: {
-                className: 'w-full mt-3'
-              }
-            }
-          }
-        }}>{post.content}</Markdown>
+          }}
+        >
+          {post.content}
+        </Markdown>
       </article>
     </div>
   );
