@@ -8,12 +8,12 @@ import LoadingSpinner from "./LoadingSpinner";
 import Minimap from "./Minimap";
 import GraphicEqualizer from "./GraphicEqualizer";
 
-export default function PlaybackEngine() {
+export default function PlaybackEngine(props: { uuid: String }) {
+
   const videoElem = useRef<HTMLVideoElement>(null);
   const [url, setUrl] = useState("");
   const [file, setFile] = useState<Blob | null>(null);
   const [loading, setLoading] = useState(false);
-  const [clientSide, setClientSide] = useState(false);
 
   const [repeat, setRepeat] = useState(true);
   const [duration, setDuration] = useState(0);
@@ -22,7 +22,6 @@ export default function PlaybackEngine() {
   const [volume, setVolume] = useState<number>(1.0);
   const [playbackRate, setPlaybackRate] = useState<number>(1.0);
   const [loopPercents, setLoopPercents] = useState<number[]>([0, 1]);
-  const [transponseCents, setTransposeCents] = useState<number>(0);
 
   const [lowFilter, setLowFilter] = useState<BiquadFilterNode | null>(null);
   const [midLowFilter, setMidLowFilter] = useState<BiquadFilterNode | null>(
@@ -49,41 +48,6 @@ export default function PlaybackEngine() {
   const [analyser, setAnalyser] = useState<AnalyserNode | null>(null);
   const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
 
-  const fileChanged = (file: Blob) => {
-    if (file) {
-      setLoading(true);
-      setFile(file);
-      setDuration(file.size);
-      if (clientSide) {
-        var reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onloadend = function () {
-          setUrl(String(reader.result));
-          console.log(reader.result);
-          setAudioContext(new AudioContext());
-          setLoading(false);
-        };
-      } else {
-        console.log(
-          "axios post to ",
-          process.env.NEXT_PUBLIC_FUGUE_STATE_API_URL
-        );
-        axios
-          .post(
-            process.env.NEXT_PUBLIC_FUGUE_STATE_API_URL + "/process_file",
-            file,
-            {
-              headers: { "content-type": file.type },
-            }
-          )
-          .then((response: any) => {
-            setUrl(response.data.url);
-            setAudioContext(new AudioContext());
-            setLoading(false);
-          });
-      }
-    }
-  };
   useEffect(() => {
     if (audioContext && videoElem.current) {
       console.log("setting audio source");
@@ -137,7 +101,6 @@ export default function PlaybackEngine() {
         frequency: 12800,
       });
       tempAnalyser.smoothingTimeConstant = 0;
-      //tempAudioSource.connect(audioContext.destination);
       tempAudioSource.connect(tempLowFilter);
       tempLowFilter.connect(tempMidLowFilter);
       tempMidLowFilter.connect(tempMidFilter);
@@ -207,11 +170,13 @@ export default function PlaybackEngine() {
       }
     }
   }, [elapsed]);
+
   useEffect(() => {
     if (videoElem.current) {
       videoElem.current.volume = volume;
     }
   }, [volume]);
+
   useEffect(() => {
     //Implementing the setInterval method
     const interval = setInterval(() => {
@@ -222,6 +187,7 @@ export default function PlaybackEngine() {
     //Clearing the interval
     return () => clearInterval(interval);
   }, []);
+
   const setElapsedCallback = (time: number) => {
     setElapsed(time);
     if (videoElem.current) {
@@ -243,8 +209,7 @@ export default function PlaybackEngine() {
   return (
     <div className="bg-gray-900">
       <div className="" style={{ paddingTop: 128 }}>
-        <div className="mx-auto max-w-md">
-        </div>
+        <div className="mx-auto max-w-md"></div>
         {loading ? (
           <LoadingSpinner />
         ) : url ? (

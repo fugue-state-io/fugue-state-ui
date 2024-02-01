@@ -7,10 +7,9 @@ import {
   S3Client,
   ListObjectsCommand,
   PutObjectCommand,
+  GetObjectCommand,
 } from "@aws-sdk/client-s3";
-
-// @ts-expect-error
-import { authOptions } from "../auth/[...nextauth]/route.ts";
+import { authOptions } from "fugue-state-ui/constants/authOptions";
 import { time } from "console";
 
 const Bucket = process.env.FUGUE_STATE_BUCKET;
@@ -27,33 +26,61 @@ const client = new S3Client({
 // return all project ids for user
 export async function GET() {
   const session = await getServerSession(authOptions);
-  if (session) {
+  if (session && session.user && session.user.email) {
+    let results = [];
     let user_uuid = getUuid(session.user.email, 5);
     const response = await client.send(
-      new ListObjectsCommand({ Bucket: Bucket, Prefix: user_uuid })
+      new ListObjectsCommand({
+        Bucket: Bucket,
+        Prefix: user_uuid + "/metadata_",
+      })
     );
-    return Response.json(response?.Contents ?? []);
+
+    for (let item in response.Contents) {
+      let result = await client.send(
+        new GetObjectCommand({
+          Bucket: Bucket,
+          Key: response.Contents[item].Key,
+        })
+      );
+      let body = JSON.parse(await result.Body.transformToString());
+      results[results.length] = body;
+    }
+    return NextResponse.json(results ?? []);
   } else {
-    return Response.json(null, { status: 401, statusText: "No Session" });
+    return NextResponse.json(null, { status: 401, statusText: "No Session" });
   }
 }
 
 export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions);
-  if (session) {
+  if (session && session.user && session.user.email) {
     let user_uuid = getUuid(session.user.email, 5);
     let proj_uuid = getUuid(session.user.email + Date.now(), 5);
-    let Body = (await request.arrayBuffer())
+    let Body = await request.arrayBuffer();
+    let meta = JSON.stringify({
+      created: Date.now(),
+      media: user_uuid + "/" + proj_uuid,
+      name: "Unnamed Project",
+    });
+    client.send(
+      new PutObjectCommand({
+        Bucket,
+        Key: user_uuid + "/metadata_" + proj_uuid,
+        Body: meta,
+        ContentLength: meta.length,
+      })
+    );
     let response = client.send(
       new PutObjectCommand({
         Bucket,
-        Key: user_uuid + "/" + proj_uuid + "/" + getUuid(Date.now().toString(), 5),
+        Key: user_uuid + "/" + proj_uuid,
         Body: Body,
-        ContentLength: Body.byteLength
+        ContentLength: Body.byteLength,
       })
     );
-    return Response.json(response);
+    return NextResponse.json(response);
   } else {
-    return Response.json(null, { status: 401, statusText: "No Session" });
+    return NextResponse.json(null, { status: 401, statusText: "No Session" });
   }
 }
