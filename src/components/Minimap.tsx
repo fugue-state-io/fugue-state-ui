@@ -6,8 +6,8 @@ export default function Minimap(props: {
   duration: number;
   loopPercents: number[];
   setLoopPercents: Function;
-  audioContext: AudioContext | null;
-  file: Blob | null;
+  audioContext: AudioContext;
+  audioBuffer: AudioBuffer | null;
 }) {
   return (
     <>
@@ -33,7 +33,7 @@ export default function Minimap(props: {
           onInput={props.setLoopPercents}
         ></RangeSlider>
         <WaveformVisualizer
-          file={props.file}
+          audioBuffer={props.audioBuffer}
           audioContext={props.audioContext}
           duration={props.duration}
           elapsed={props.elapsed / props.duration}

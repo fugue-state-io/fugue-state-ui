@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 export default function WaveformVisualizer(props: {
-  file: Blob | null;
-  audioContext: AudioContext | null;
+  audioBuffer: AudioBuffer | null;
+  audioContext: AudioContext;
   elapsed: number;
   duration: number;
   height: number;
@@ -78,28 +78,22 @@ export default function WaveformVisualizer(props: {
 
   useEffect(() => {
     const processFile = async (): Promise<void> => {
-      if (props.file && props.audioContext) {
-        const arrayBuffer = await props.file.arrayBuffer();
-        await props.audioContext.decodeAudioData(arrayBuffer, (buffer) => {
-          if (props.setDuration) {
-            props.setDuration(buffer.duration);
-          }
-          setNumberOfChannels(buffer.numberOfChannels);
-          workerRef.current?.postMessage({
-            channel: 0,
-            buffer: buffer.getChannelData(0),
-          });
-          if (buffer.numberOfChannels > 1) {
-            workerRef.current?.postMessage({
-              channel: 1,
-              buffer: buffer.getChannelData(1),
-            });
-          }
+      if (props.audioBuffer && props.audioContext) {
+        setNumberOfChannels(props.audioBuffer.numberOfChannels);
+        workerRef.current?.postMessage({
+          channel: 0,
+          buffer: props.audioBuffer.getChannelData(0),
         });
+        if (props.audioBuffer.numberOfChannels > 1) {
+          workerRef.current?.postMessage({
+            channel: 1,
+            buffer: props.audioBuffer.getChannelData(1),
+          });
+        }
       }
     };
     processFile();
-  }, [props.file, props.audioContext]);
+  }, [props.audioBuffer, props.audioContext]);
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -337,7 +331,7 @@ export default function WaveformVisualizer(props: {
     monoSummary,
     props.elapsed,
     props.loopPercents,
-    props.file,
+    props.audioBuffer,
   ]);
 
   return (

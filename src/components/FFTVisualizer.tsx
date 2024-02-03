@@ -22,8 +22,6 @@ export default function FFTVisualizer(props: {
           canvasCtx.canvas.width,
           canvasCtx.canvas.height
         );
-
-        //Draw spectrum
         const barWidth =
           (canvasRef.current.width / props.analyser.frequencyBinCount) * 2.5;
         let posX = 0;
@@ -43,7 +41,6 @@ export default function FFTVisualizer(props: {
   }, [floatFrequencyData]);
 
   useEffect(() => {
-    console.log(props.analyser);
     if (props.analyser) {
       let ffd = new Float32Array(props.analyser.frequencyBinCount);
       props.analyser.getFloatFrequencyData(ffd);

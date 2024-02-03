@@ -7,14 +7,10 @@ import "react-range-slider-input/dist/style.css";
 import LoadingSpinner from "./LoadingSpinner";
 import Minimap from "./Minimap";
 import GraphicEqualizer from "./GraphicEqualizer";
+import axios from "axios";
 
-export default function PlaybackEngine(props: { uuid: String }) {
-
+export default function PlaybackEngine(props: { url: string }) {
   const videoElem = useRef<HTMLVideoElement>(null);
-  const [url, setUrl] = useState("");
-  const [file, setFile] = useState<Blob | null>(null);
-  const [loading, setLoading] = useState(false);
-
   const [repeat, setRepeat] = useState(true);
   const [duration, setDuration] = useState(0);
   const [elapsed, setElapsed] = useState(0);
@@ -45,8 +41,26 @@ export default function PlaybackEngine(props: { uuid: String }) {
     useState<BiquadFilterNode | null>(null);
 
   const [audioSource, setAudioSource] = useState<AudioNode | null>(null);
+
+  const [audioBuffer, setAudioBuffer] = useState<AudioBuffer | null>(null);
   const [analyser, setAnalyser] = useState<AnalyserNode | null>(null);
   const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
+  useEffect(() => {
+    if (audioBuffer) {
+      setDuration(audioBuffer.duration);
+    }
+  }, [audioBuffer]);
+  useEffect(() => {
+    const tempAudioContext = new AudioContext();
+    fetch(props.url)
+      .then((response) => response.arrayBuffer())
+      .then(async (buffer) => {
+        if (buffer) {
+          setAudioBuffer(await tempAudioContext.decodeAudioData(buffer));
+        }
+      });
+    setAudioContext(tempAudioContext);
+  }, [props.url]);
 
   useEffect(() => {
     if (audioContext && videoElem.current) {
@@ -125,6 +139,7 @@ export default function PlaybackEngine(props: { uuid: String }) {
       setAnalyser(tempAnalyser);
     }
   }, [videoElem, audioContext]);
+
   useEffect(() => {
     if (playbackRate) {
       if (videoElem.current) {
@@ -150,7 +165,7 @@ export default function PlaybackEngine(props: { uuid: String }) {
   }, [playing]);
   useEffect(() => {
     console.log("playing updated ", playing);
-    if (file && videoElem.current && !Number.isNaN(duration)) {
+    if (videoElem.current && !Number.isNaN(duration)) {
       if (videoElem.current.currentTime < duration * loopPercents[0]) {
         videoElem.current.currentTime = duration * loopPercents[0];
         videoElem.current.currentTime = duration * loopPercents[0];
@@ -206,154 +221,143 @@ export default function PlaybackEngine(props: { uuid: String }) {
   const onPlaybackRateInput = (percents: Number[]) => {
     setPlaybackRate(Number(percents[1]));
   };
-  return (
-    <div className="bg-gray-900">
-      <div className="" style={{ paddingTop: 128 }}>
-        <div className="mx-auto max-w-md"></div>
-        {loading ? (
-          <LoadingSpinner />
-        ) : url ? (
-          <>
-            <Minimap
-              elapsed={elapsed}
-              duration={duration}
-              loopPercents={loopPercents}
-              audioContext={audioContext}
-              file={file}
-              setLoopPercents={setLoopPercents}
-            />
-            <video
-              className="mx-auto w-full sm:w-3/4 lg:w-1/2"
-              src={url}
-              ref={videoElem}
-              preload="auto"
-              crossOrigin="anonymous"
-              playsInline={true}
-              loop={repeat}
-              hidden={
-                file?.type == "video/mp4" || file?.type == "video/mov"
-                  ? false
-                  : true
-              }
-            ></video>
-            <WaveformVisualizer
-              file={file}
-              audioContext={audioContext}
-              elapsed={elapsed / duration}
-              setElapsedCallback={setElapsedCallback}
-              height={256}
-              loopPercents={loopPercents}
-              duration={duration}
-              setDuration={setDuration}
-              zoom={true}
-            ></WaveformVisualizer>
-            <FFTVisualizer analyser={analyser} elapsed={elapsed} height={128} />
+  if (audioContext) {
+    return (
+      <div className="bg-gray-900">
+        <div className="" style={{ paddingTop: 128 }}>
+          <div className="mx-auto max-w-md"></div>
+          <Minimap
+            audioBuffer={audioBuffer}
+            elapsed={elapsed}
+            duration={duration}
+            loopPercents={loopPercents}
+            audioContext={audioContext}
+            setLoopPercents={setLoopPercents}
+          />
+          <video
+            className="mx-auto w-full sm:w-3/4 lg:w-1/2"
+            src={props.url}
+            ref={videoElem}
+            preload="auto"
+            crossOrigin="anonymous"
+            playsInline={true}
+            loop={repeat}
+          ></video>
+          <WaveformVisualizer
+            audioContext={audioContext}
+            audioBuffer={audioBuffer}
+            elapsed={elapsed / duration}
+            setElapsedCallback={setElapsedCallback}
+            height={256}
+            loopPercents={loopPercents}
+            duration={duration}
+            setDuration={setDuration}
+            zoom={true}
+          ></WaveformVisualizer>
+          <FFTVisualizer analyser={analyser} elapsed={elapsed} height={128} />
+          <div className="">
             <div className="">
-              <div className="">
-                {lowFilter &&
-                midLowFilter &&
-                midFilter &&
-                midHighFilter &&
-                highFilter &&
-                higherFilter &&
-                highererFilter &&
-                highestFilter &&
-                higherestFilter ? (
-                  <GraphicEqualizer
-                    lowFilter={lowFilter}
-                    midLowFilter={midLowFilter}
-                    midFilter={midFilter}
-                    midHighFilter={midHighFilter}
-                    highFilter={highFilter}
-                    higherFilter={higherFilter}
-                    highererFilter={highererFilter}
-                    highestFilter={highestFilter}
-                    higherestFilter={higherestFilter}
-                  ></GraphicEqualizer>
-                ) : (
-                  <div></div>
-                )}
-              </div>
+              {lowFilter &&
+              midLowFilter &&
+              midFilter &&
+              midHighFilter &&
+              highFilter &&
+              higherFilter &&
+              highererFilter &&
+              highestFilter &&
+              higherestFilter ? (
+                <GraphicEqualizer
+                  lowFilter={lowFilter}
+                  midLowFilter={midLowFilter}
+                  midFilter={midFilter}
+                  midHighFilter={midHighFilter}
+                  highFilter={highFilter}
+                  higherFilter={higherFilter}
+                  highererFilter={highererFilter}
+                  highestFilter={highestFilter}
+                  higherestFilter={higherestFilter}
+                ></GraphicEqualizer>
+              ) : (
+                <div></div>
+              )}
             </div>
-            <div className="max-w-md grid grid-cols-2 text-center mx-auto relative">
-              <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
-                <label
-                  htmlFor="volume"
-                  className="block text-sm font-medium leading-6 text-gray-400"
-                >
-                  Volume
-                </label>
-                <RangeSlider
-                  id="volume"
-                  className="single-thumb"
-                  defaultValue={[0, 1]}
-                  min={0}
-                  max={1}
-                  step={0.01}
-                  thumbsDisabled={[true, false]}
-                  rangeSlideDisabled={true}
-                  onInput={onVolumeInput}
-                />
-                <label
-                  htmlFor="playbackRate"
-                  className="block text-sm font-medium leading-6 text-gray-400"
-                >
-                  {volume * 100}%
-                </label>
-              </div>
-              <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
-                <label
-                  htmlFor="playbackRate"
-                  className="block text-sm font-medium leading-6 text-gray-400"
-                >
-                  Playback Speed
-                </label>
-                <RangeSlider
-                  id="playbackRate"
-                  className="single-thumb"
-                  defaultValue={[0, 1]}
-                  min={0.2}
-                  max={2}
-                  step={0.01}
-                  thumbsDisabled={[true, false]}
-                  rangeSlideDisabled={true}
-                  onInput={onPlaybackRateInput}
-                />
-                <label
-                  htmlFor="playbackRate"
-                  className="block text-sm font-medium leading-6 text-gray-400"
-                >
-                  {playbackRate.toString()}x
-                </label>
-              </div>
-              <div className="items-center px-4 py-2 rounded-md">
-                <span
-                  onClick={() => setPlaying(!playing)}
-                  className="relative mx-auto inline-flex items-center px-4 py-2 mx-2 rounded-md shadow-lg bg-pink-400 hover:bg-pink-700 shadow-lg"
-                >
-                  <span id="play" className="text-white font-bold">
-                    {!playing ? "Play" : "Pause"}
-                  </span>
-                </span>
-              </div>
-              <div className="items-center px-4 py-2 rounded-md">
-                <span
-                  onClick={() => reset()}
-                  className="relative mx-auto inline-flex items-center px-4 py-2 mx-2 rounded-md shadow-lg bg-pink-400 hover:bg-pink-700 shadow-lg"
-                >
-                  <span id="play" className="text-white font-bold">
-                    {"Reset"}
-                  </span>
-                </span>
-              </div>
-            </div>
-          </>
-        ) : (
-          <div className="text-center text-gray-200" style={{ padding: 128 }}>
-            <div>load a file with the menu above</div>
           </div>
-        )}
+          <div className="max-w-md grid grid-cols-2 text-center mx-auto relative">
+            <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
+              <label
+                htmlFor="volume"
+                className="block text-sm font-medium leading-6 text-gray-400"
+              >
+                Volume
+              </label>
+              <RangeSlider
+                id="volume"
+                className="single-thumb"
+                defaultValue={[0, 1]}
+                min={0}
+                max={1}
+                step={0.01}
+                thumbsDisabled={[true, false]}
+                rangeSlideDisabled={true}
+                onInput={onVolumeInput}
+              />
+              <label
+                htmlFor="playbackRate"
+                className="block text-sm font-medium leading-6 text-gray-400"
+              >
+                {volume * 100}%
+              </label>
+            </div>
+            <div className="flow-root grid-cols-1 px-1 leading-none align-middle">
+              <label
+                htmlFor="playbackRate"
+                className="block text-sm font-medium leading-6 text-gray-400"
+              >
+                Playback Speed
+              </label>
+              <RangeSlider
+                id="playbackRate"
+                className="single-thumb"
+                defaultValue={[0, 1]}
+                min={0.2}
+                max={2}
+                step={0.01}
+                thumbsDisabled={[true, false]}
+                rangeSlideDisabled={true}
+                onInput={onPlaybackRateInput}
+              />
+              <label
+                htmlFor="playbackRate"
+                className="block text-sm font-medium leading-6 text-gray-400"
+              >
+                {playbackRate.toString()}x
+              </label>
+            </div>
+            <div className="items-center px-4 py-2 rounded-md">
+              <span
+                onClick={() => setPlaying(!playing)}
+                className="relative mx-auto inline-flex items-center px-4 py-2 mx-2 rounded-md shadow-lg bg-pink-400 hover:bg-pink-700 shadow-lg"
+              >
+                <span id="play" className="text-white font-bold">
+                  {!playing ? "Play" : "Pause"}
+                </span>
+              </span>
+            </div>
+            <div className="items-center px-4 py-2 rounded-md">
+              <span
+                onClick={() => reset()}
+                className="relative mx-auto inline-flex items-center px-4 py-2 mx-2 rounded-md shadow-lg bg-pink-400 hover:bg-pink-700 shadow-lg"
+              >
+                <span id="play" className="text-white font-bold">
+                  {"Reset"}
+                </span>
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return <LoadingSpinner></LoadingSpinner>;
+  }
 }

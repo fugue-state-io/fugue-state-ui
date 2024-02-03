@@ -12,12 +12,12 @@ async function fetcher<JSON = any>(
 }
 export default function Project(props: any) {
   const uuid = props.params.uuid;
-  const { data, error, isLoading } = useSWR("/api/project/" + uuid, fetcher);
+  const { data, error, isLoading } = useSWR<any>("/api/project/" + uuid, fetcher);
   if (isLoading) {
     return <LoadingSpinner></LoadingSpinner>;
   } else if (error) {
     return <div>An Error Occured {JSON.stringify(error)}</div>;
   } else {
-    return <PlaybackEngine uuid={uuid} ></PlaybackEngine>
+    return <PlaybackEngine url={data.media} ></PlaybackEngine>
   }
 }

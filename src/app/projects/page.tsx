@@ -13,6 +13,7 @@ async function fetcher<JSON = any>(
   return res.json();
 }
 export default function Projects() {
+  const { data, error, isLoading } = useSWR<any, any>("/api/project", fetcher);
   const fileChanged = (file: Blob) => {
     if (file) {
       console.log(
@@ -23,10 +24,11 @@ export default function Projects() {
         .post("/api/project", file, {
           headers: { "content-type": file.type },
         })
-        .then((response: any) => {});
+        .then((response: any) => {
+          console.log(response);
+        });
     }
   };
-  const { data, error, isLoading } = useSWR<any,any>("/api/project", fetcher);
   if (isLoading) {
     return <LoadingSpinner></LoadingSpinner>;
   } else if (error) {
