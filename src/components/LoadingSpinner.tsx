@@ -1,4 +1,4 @@
-export default function LoadingSpinner() {
+export default function LoadingSpinner(props: { children: any }) {
   return (
     <div className="text-center" style={{ padding: 128 }}>
       <div role="status">
@@ -20,6 +20,7 @@ export default function LoadingSpinner() {
         </svg>
         <span className="sr-only">Loading...</span>
       </div>
+      {props.children}
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { FileUploader } from "react-drag-drop-files";
 
 import "./local.css";
 import LoadingSpinner from "fugue-state-ui/components/LoadingSpinner";
+import EditField from "fugue-state-ui/components/EditField";
 async function fetcher<JSON = any>(
   input: RequestInfo,
   init?: RequestInit
@@ -13,7 +14,10 @@ async function fetcher<JSON = any>(
   return res.json();
 }
 export default function Projects() {
-  const { data, error, isLoading } = useSWR<any, any>("/api/project", fetcher);
+  const { data, error, isLoading } = useSWR<any, any>(
+    "/api/project_meta/",
+    fetcher
+  );
   const fileChanged = (file: Blob) => {
     if (file) {
       console.log(
@@ -52,22 +56,25 @@ export default function Projects() {
             return (
               <div
                 key={index}
-                className="relative flex items-center space-x-3 rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400"
+                className="relative flex items-center space-x-3 rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm  focus-within:ring-offset-2 hover:border-gray-400"
               >
-                <div className="flex-shrink-0"></div>
                 <div className="min-w-0 flex-1">
-                  <a
-                    href={"/projects/" + value.media.split("/")[1]}
-                    className="focus:outline-none"
-                  >
-                    <span className="absolute inset-0" aria-hidden="true" />
-                    <p className="text-sm font-medium text-gray-900">
-                      {value.name}
-                    </p>
-                    <p className="truncate text-sm text-gray-500">
+                  <div className="focus:outline-none">
+                    <EditField
+                      endpoint={
+                        "/api/project_meta/" + value.media.split("/")[1]
+                      }
+                      key="name"
+                      value={value.name}
+                      className=""
+                    />
+                    <a
+                      href={"/projects/" + value.media.split("/")[1]}
+                      className="text-sm text-black"
+                    >
                       {"/projects/" + value.media.split("/")[1]}
-                    </p>
-                  </a>
+                    </a>
+                  </div>
                 </div>
               </div>
             );

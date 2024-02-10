@@ -7,7 +7,6 @@ import "react-range-slider-input/dist/style.css";
 import LoadingSpinner from "./LoadingSpinner";
 import Minimap from "./Minimap";
 import GraphicEqualizer from "./GraphicEqualizer";
-import axios from "axios";
 
 export default function PlaybackEngine(props: { url: string }) {
   const videoElem = useRef<HTMLVideoElement>(null);
@@ -138,7 +137,7 @@ export default function PlaybackEngine(props: { url: string }) {
       setAudioSource(tempAudioSource);
       setAnalyser(tempAnalyser);
     }
-  }, [videoElem, audioContext]);
+  }, [audioContext]);
 
   useEffect(() => {
     if (playbackRate) {
@@ -358,6 +357,6 @@ export default function PlaybackEngine(props: { url: string }) {
       </div>
     );
   } else {
-    return <LoadingSpinner></LoadingSpinner>;
+    return <LoadingSpinner>Loading...</LoadingSpinner>;
   }
 }

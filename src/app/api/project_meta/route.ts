@@ -23,34 +23,30 @@ const client = new S3Client({
   },
 });
 
-export async function POST(request: NextRequest) {
+// return all project ids for user
+export async function GET() {
   const session = await getServerSession(authOptions);
   if (session && session.user && session.user.email) {
+    let results = [];
     let user_uuid = getUuid(session.user.email, 5);
-    let proj_uuid = getUuid(session.user.email + Date.now(), 5);
-    let Body = await request.arrayBuffer();
-    let meta = JSON.stringify({
-      created: Date.now(),
-      media: user_uuid + "/" + proj_uuid,
-      name: "Unnamed Project",
-    });
-    client.send(
-      new PutObjectCommand({
-        Bucket,
-        Key: user_uuid + "/metadata_" + proj_uuid,
-        Body: meta,
-        ContentLength: meta.length,
+    const response = await client.send(
+      new ListObjectsCommand({
+        Bucket: Bucket,
+        Prefix: user_uuid + "/metadata_",
       })
     );
-    let response = client.send(
-      new PutObjectCommand({
-        Bucket,
-        Key: user_uuid + "/" + proj_uuid,
-        Body: Body,
-        ContentLength: Body.byteLength,
-      })
-    );
-    return NextResponse.json(response);
+
+    for (let item in response.Contents) {
+      let result = await client.send(
+        new GetObjectCommand({
+          Bucket: Bucket,
+          Key: response.Contents[item].Key,
+        })
+      );
+      let body = JSON.parse(await result.Body.transformToString());
+      results[results.length] = body;
+    }
+    return NextResponse.json(results ?? []);
   } else {
     return NextResponse.json(null, { status: 401, statusText: "No Session" });
   }
