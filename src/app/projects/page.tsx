@@ -34,7 +34,7 @@ export default function Projects() {
     }
   };
   if (isLoading) {
-    return <LoadingSpinner></LoadingSpinner>;
+    return <LoadingSpinner>Loading...</LoadingSpinner>;
   } else if (error) {
     return <div>An Error Occured {error}</div>;
   } else {
