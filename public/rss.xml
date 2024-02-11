@@ -9,23 +9,51 @@
             <link>https://fugue-state.io</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Sun, 07 Jan 2024 16:01:25 GMT</lastBuildDate>
+        <lastBuildDate>Sun, 11 Feb 2024 21:15:53 GMT</lastBuildDate>
         <atom:link href="https://fugue-state.io/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Sun, 07 Jan 2024 16:01:25 GMT</pubDate>
+        <pubDate>Sun, 11 Feb 2024 21:15:53 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2024]]></copyright>
         <item>
+            <title><![CDATA[0.1.0]]></title>
+            <description><![CDATA[beta release]]></description>
+            <link>https://fugue-state.io/blog/posts/2024-02-10-change</link>
+            <guid isPermaLink="true">https://fugue-state.io/blog/posts/2024-02-10-change</guid>
+            <pubDate>Sat, 10 Feb 2024 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[0.0.3]]></title>
+            <description><![CDATA[in progress]]></description>
+            <link>https://fugue-state.io/blog/posts/2024-01-11-change</link>
+            <guid isPermaLink="true">https://fugue-state.io/blog/posts/2024-01-11-change</guid>
+            <pubDate>Thu, 11 Jan 2024 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[0.0.2]]></title>
+            <description><![CDATA[UI and Playback support changes]]></description>
+            <link>https://fugue-state.io/blog/posts/2024-01-10-change</link>
+            <guid isPermaLink="true">https://fugue-state.io/blog/posts/2024-01-10-change</guid>
+            <pubDate>Wed, 10 Jan 2024 00:00:00 GMT</pubDate>
+        </item>
+        <item>
             <title><![CDATA[The path forward]]></title>
-            <description><![CDATA[The roadmap and way forward]]></description>
+            <description><![CDATA[The project outline for the future of fugue-state.io. What to expect and how to contribute.]]></description>
             <link>https://fugue-state.io/blog/posts/2024-01-07-roadmap</link>
             <guid isPermaLink="true">https://fugue-state.io/blog/posts/2024-01-07-roadmap</guid>
             <pubDate>Sun, 07 Jan 2024 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[What is fugue-state?]]></title>
-            <description><![CDATA[It's a song learning engine]]></description>
+            <description><![CDATA[fugue-state.io is a digital audio workstation geared towards learning songs. You bring an .mp3 or .mp4 and listen using the playback engine. fugue-state helps you listen faster.]]></description>
             <link>https://fugue-state.io/blog/posts/2024-01-06-what-is-fugue-state</link>
             <guid isPermaLink="true">https://fugue-state.io/blog/posts/2024-01-06-what-is-fugue-state</guid>
             <pubDate>Sat, 06 Jan 2024 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[0.0.1]]></title>
+            <description><![CDATA[fugue-state.io is live in alpha]]></description>
+            <link>https://fugue-state.io/blog/posts/2024-01-05-change</link>
+            <guid isPermaLink="true">https://fugue-state.io/blog/posts/2024-01-05-change</guid>
+            <pubDate>Fri, 05 Jan 2024 00:00:00 GMT</pubDate>
         </item>
     </channel>
 </rss>
