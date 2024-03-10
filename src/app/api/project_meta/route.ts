@@ -51,3 +51,35 @@ export async function GET() {
     return NextResponse.json(null, { status: 401, statusText: "No Session" });
   }
 }
+
+export async function POST(request: NextRequest) {
+  const session = await getServerSession(authOptions);
+  if (session && session.user && session.user.email) {
+    let meta = await request.json();
+    if (meta["name"] === "") {
+      meta["name"] = "Untitled";
+    }
+    
+    if (meta["name"] != null) {
+      let user_uuid = getUuid(session.user.email, 5);
+      let proj_uuid = getUuid(session.user.email + Date.now(), 5);
+      meta["media"] = user_uuid + "/" + proj_uuid
+      await client.send(
+        new PutObjectCommand({
+          Bucket,
+          Key: user_uuid + "/metadata_" + proj_uuid,
+          Body: JSON.stringify(meta),
+          ContentLength: JSON.stringify(meta).length,
+        })
+      );
+      return NextResponse.json(meta);
+    } else {
+      return NextResponse.json(null, {
+        status: 400,
+        statusText: "Invalid Request",
+      });
+    }
+  } else {
+    return NextResponse.json(null, { status: 401, statusText: "No Session" });
+  }
+}

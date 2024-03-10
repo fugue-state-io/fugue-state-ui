@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
     if (new_meta.name) {
       meta.name = new_meta.name
     }
-    client.send(
+    await client.send(
       new PutObjectCommand({
         Bucket,
         Key:
