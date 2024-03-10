@@ -8,6 +8,5 @@ RUN mv ./kubectl /usr/local/bin
 RUN --mount=type=secret,id=doctl,target=/root/.config/doctl/config.yaml --mount=type=secret,id=kube,target=/root/.kube/config \
     sh /application/scripts/source_config.sh
 RUN npm install
-RUN npm run build
 # RUN npm run test
-CMD npm run start
+ENTRYPOINT [ "./scripts/deploy.sh" ]

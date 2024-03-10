@@ -22,7 +22,6 @@ export default function Project(props: any) {
   } else {
     return (
       <>
-        <h1>{meta.data.name}</h1>
         <PlaybackEngine url={project.data.media}></PlaybackEngine>
       </>
     );

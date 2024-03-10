@@ -24,6 +24,8 @@ export default function Projects() {
   const [tempFile, setTempFile] = useState<Blob | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [inputError, setInputError] = useState<String | null>(null);
+  const [inputMessage, setInputMessage] = useState<String | null>(null);
+  const [modalSpinner, setModalSpinner] = useState<boolean>(false);
   const fileChanged = (file: Blob) => {
     if (file) {
       setTempFile(file);
@@ -33,6 +35,7 @@ export default function Projects() {
     if (tempFile) {
       if (inputRef.current) {
         let proj_uuid = null;
+        setModalSpinner(true);
         axios
           .post(
             "/api/project_meta",
@@ -49,17 +52,21 @@ export default function Projects() {
               .then((response: any) => {
                 console.log(response);
                 setInputError(null);
+                setInputMessage("Success");
+                setModalSpinner(false);
               })
               .catch((error: any) => {
                 setInputError("Failed to upload Media!");
+                setModalSpinner(false);
               });
           })
           .catch((error: any) => {
             setInputError("Failed to create Project!");
+            setModalSpinner(false);
           });
       }
     } else {
-      console.log("No file");
+      setInputError("No file uploaded!");
     }
   };
   const cancel = () => {
@@ -110,7 +117,7 @@ export default function Projects() {
             </button>
           </div>
         </div>
-        <div className={"mx-auto max-w-md my-6 "}>
+        <div className={"mx-auto max-w-md my-6 text-center"}>
           Select an Existing Project
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -161,13 +168,24 @@ export default function Projects() {
                 placeholder="Untitled"
               />
             </div>
-            <div className="mx-auto max-w-md my-12">
+            <div className="mx-auto max-w-md my-6">
               <FileUploader
                 handleChange={fileChanged}
                 name="file"
                 types={["mp4", "mp3"]}
               />
             </div>
+            {inputError ? (
+              <p className="text-red-500 my-6"> {inputError} </p>
+            ) : (
+              ""
+            )}
+            {inputMessage ? (
+              <p className="text-green-500 my-6"> {inputMessage} </p>
+            ) : (
+              ""
+            )}
+            {modalSpinner ? <LoadingSpinner>Updating</LoadingSpinner> : ""}
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <button
